@@ -1,0 +1,38 @@
+{
+  "version": "5",
+  "dialect": "pg",
+  "id": "dd42208e-b4a6-4298-b599-e7c610cd490a",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "tables": {
+    "test": {
+      "name": "test",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  }
+}
