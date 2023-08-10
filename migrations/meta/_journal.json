@@ -1,1 +1,13 @@
-{"version":"5","dialect":"pg","entries":[]}
+{
+  "version": "5",
+  "dialect": "pg",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1691668295095,
+      "tag": "0000_furry_princess_powerful",
+      "breakpoints": false
+    }
+  ]
+}
