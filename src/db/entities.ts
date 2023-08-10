@@ -113,11 +113,20 @@ export const comments = pgTable(
   }
 );
 
-export const locations = pgTable('locations', {
-  id: uuid('id').defaultRandom().notNull(),
-  name: text('name').notNull(),
-  siteId: uuid('site_id')
-    .notNull()
-    .references(() => sites.id),
-  status: statusEnum('status').notNull().default('active'),
-});
+export const locations = pgTable(
+  'locations',
+  {
+    id: uuid('id').defaultRandom().notNull(),
+    name: text('name').notNull(),
+    siteId: uuid('site_id')
+      .notNull()
+      .references(() => sites.id),
+    status: statusEnum('status').notNull().default('active'),
+  },
+  (locations) => {
+    return {
+      cpk: primaryKey(locations.id),
+      idIndex: uniqueIndex('locations_id_index'),
+    };
+  }
+);
