@@ -1,6 +1,7 @@
 import fastify from 'fastify';
 import { logger } from './logger';
 import { env } from '../config/env';
+import sitesRoutes from 'modules/sites/sites.routes';
 
 export async function buildServer() {
   const app = fastify({
@@ -12,6 +13,8 @@ export async function buildServer() {
   async function gracefulShutdown({ app: app }: { app: Awaited<ReturnType<typeof buildServer>> }) {
     await app.close();
   }
+
+  app.register(sitesRoutes, {prefix: "api/sites"})
 
   const signals = ['SIGINT', 'SIGTERM'];
 
