@@ -1,8 +1,6 @@
 import fastify from 'fastify';
 import { logger } from './logger';
 import { env } from '../config/env';
-import sitesRoutes from 'modules/sites/sites.routes';
-import fp from "fastify-plugin"
 import healthRoutes from 'modules/health/health.routes';
 import fastifySwagger from '@fastify/swagger';
 import fastifySwaggerUi from '@fastify/swagger-ui';
@@ -49,7 +47,7 @@ export async function buildServer() {
   }
 
   app.register(healthRoutes, { prefix: 'api/health' });
-  app.register(sitesRoutes, { prefix: 'api/sites' });
+  //app.register(sitesRoutes, { prefix: 'api/sites' });
 
   await app.ready();
   app.swagger();
