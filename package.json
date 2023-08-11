@@ -16,10 +16,11 @@
   "author": "Miguel Tinembart",
   "license": "GPL-3.0",
   "dependencies": {
+    "@fastify/swagger": "^8.8.0",
+    "@fastify/swagger-ui": "^1.9.3",
     "dotenv": "^16.3.1",
     "drizzle-orm": "^0.28.1",
     "fastify": "^4.21.0",
-    "fastify-swagger": "^5.2.0",
     "fastify-type-provider-zod": "^1.1.9",
     "pg": "^8.11.2",
     "pino": "^8.15.0",
