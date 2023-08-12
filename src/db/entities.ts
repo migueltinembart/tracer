@@ -1,4 +1,5 @@
 import { pgEnum, pgTable, primaryKey, text, uniqueIndex, uuid } from 'drizzle-orm/pg-core';
+import { InferModel } from 'drizzle-orm';
 
 export const statusEnum = pgEnum('status_enum', ['active', 'planned', 'staging', 'retired']);
 
@@ -130,3 +131,7 @@ export const locations = pgTable(
     };
   }
 );
+
+
+
+
