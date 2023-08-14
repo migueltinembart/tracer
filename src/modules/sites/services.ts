@@ -1,10 +1,14 @@
-import { sites } from 'db/entities';
+import { sites, comments } from 'db/entities';
 import { db } from 'utils/db';
 import { SitesInsertInterface, SitesInterface } from './schemas';
 import { eq } from 'drizzle-orm';
 
 export async function getSiteById(data: SitesInterface) {
-  const result = await db.select().from(sites).where(eq(sites.id, data.id));
+  const result = await db
+    .select()
+    .from(sites)
+    .leftJoin(comments, eq(sites.commentID, comments.id))
+    .where(eq(sites.id, data.id));
   return result;
 }
 

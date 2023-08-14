@@ -3,7 +3,6 @@ import { deleteSite, insertOneSite, putSite, selectAll, getSiteById } from './se
 import { SitesInsertInterface, SitesInterface } from './schemas';
 
 export async function getSiteByIdHandler(request: FastifyRequest<{ Params: SitesInterface }>, reply: FastifyReply) {
-  console.log(request.params);
   const result = await getSiteById(request.params);
   return result;
 }
@@ -15,7 +14,7 @@ export async function getIndexHandler(request: FastifyRequest, reply: FastifyRep
 
 export async function postSiteHandler(request: FastifyRequest<{ Body: SitesInsertInterface }>, reply: FastifyReply) {
   const result = await insertOneSite(request.body);
-  return result;
+  reply.code(201).send(result[0]);
 }
 
 export async function putSiteHandler(request: FastifyRequest<{ Body: SitesInterface }>, reply: FastifyReply) {
