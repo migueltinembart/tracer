@@ -1,0 +1,2 @@
+ALTER TABLE "comments" ALTER COLUMN "content" SET DEFAULT '';
+ALTER TABLE "comments" ALTER COLUMN "content" DROP NOT NULL;
