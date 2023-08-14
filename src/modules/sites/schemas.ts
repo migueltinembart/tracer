@@ -1,39 +1,63 @@
-import { sites, statusEnum, } from 'db/entities';
+import { sites, statusEnum } from 'db/entities';
 import { InferModel } from 'drizzle-orm';
 import { zodToJsonSchema } from 'zod-to-json-schema';
 import { string, z } from 'zod';
 import { FastifySchema } from 'fastify';
 
 // zod schemas here
-const responeZodSchema = z
+export const responseZodSchema = z
   .object({
-    id: z.string().uuid(),
-    name: z.string(),
-    status: z.enum([...statusEnum.enumValues]),
-    commentId: z.string().uuid().optional(),
+    sites: z.object({
+      id: z.string().uuid(),
+      name: z.string(),
+      status: z.enum([...statusEnum.enumValues]),
+      comment: z.string().optional(),
+    }),
+    comments: z.object({
+      id: z.string().uuid(),
+      content: z.string(),
+    }),
   })
   .describe('Standard response returns database entity');
 
-const getSitesByNameZodSchema = z
+export const responseManyZodSchema = z.array(
+  z
+    .object({
+    sites: z.object({
+      id: z.string().uuid(),
+      name: z.string(),
+      status: z.enum([...statusEnum.enumValues]),
+      comment: z.string().optional(),
+    }),
+    comments: z.object({
+      id: z.string().uuid(),
+      content: z.string(),
+    }),
+  })
+    .describe('Standard response returns many database entities')
+);
+
+export const getSitesByNameZodSchema = z
   .object({
     name: z.string(),
   })
   .describe('if name is present, returns specified site');
 
-const getSiteByIdZodSchema = z
+export const getSiteByIdZodSchema = z
   .object({
     id: string(),
   })
   .describe('returns specified site based on provided ID');
 
-const createSiteZodSchema = z
+export const createSiteZodSchema = z
   .object({
     name: z.string(),
     status: z.enum([...statusEnum.enumValues]),
+    comment: z.string().optional(),
   })
   .describe('Creates a site if supplied with a name and a status');
 
-const updateSiteZodSchema = z
+export const updateSiteZodSchema = z
   .object({
     id: z.string().uuid('Must provide uuid'),
     name: z.string().optional(),
@@ -41,7 +65,7 @@ const updateSiteZodSchema = z
   })
   .describe('updates a site based on ');
 
-const deleteSiteZodSchema = z.object({
+export const deleteSiteZodSchema = z.object({
   id: z.string().uuid('Must provide uuid'),
 });
 
@@ -57,21 +81,18 @@ export const getSiteByNameJsonSchema: FastifySchema = {
 export const getSiteByIdJsonSchema: FastifySchema = {
   params: zodToJsonSchema(getSiteByIdZodSchema),
   response: {
-    201: zodToJsonSchema(responeZodSchema),
+    200: zodToJsonSchema(responseZodSchema),
   },
 };
 
 export const createSiteJsonSchema: FastifySchema = {
   body: zodToJsonSchema(createSiteZodSchema),
-  response: {
-    201: zodToJsonSchema(responeZodSchema),
-  },
 };
 
 export const updateSiteJsonSchema: FastifySchema = {
   body: zodToJsonSchema(updateSiteZodSchema),
   response: {
-    202: zodToJsonSchema(responeZodSchema),
+    202: zodToJsonSchema(responseZodSchema),
   },
 };
 

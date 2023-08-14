@@ -13,16 +13,17 @@ export async function getIndexHandler(request: FastifyRequest, reply: FastifyRep
 }
 
 export async function postSiteHandler(request: FastifyRequest<{ Body: SitesInsertInterface }>, reply: FastifyReply) {
+  
   const result = await insertOneSite(request.body);
-  reply.code(201).send(result[0]);
+  reply.code(201).send(result);
 }
 
 export async function putSiteHandler(request: FastifyRequest<{ Body: SitesInterface }>, reply: FastifyReply) {
   const result = await putSite(request.body);
-  return result;
+  reply.code(202).send(result);
 }
 
 export async function deleteSiteHandler(request: FastifyRequest<{ Body: SitesInterface }>, reply: FastifyReply) {
   const result = await deleteSite(request.body);
-  return result;
+  reply.code(202).send(result)
 }
