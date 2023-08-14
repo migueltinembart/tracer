@@ -7,6 +7,6 @@ export default {
   breakpoints: false,
   driver: 'pg',
   dbCredentials: {
-    connectionString: env.CONNECTION_STRING,
+    connectionString: env.CONNECTION_STRING + '?sslmode=require',
   },
 } satisfies Config;
