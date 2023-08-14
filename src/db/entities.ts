@@ -1,6 +1,4 @@
 import { pgEnum, pgTable, primaryKey, text, uniqueIndex, uuid } from 'drizzle-orm/pg-core';
-import { InferModel, isNull } from 'drizzle-orm';
-import { nullable } from 'zod';
 
 export const statusEnum = pgEnum('status_enum', ['active', 'planned', 'staging', 'retired']);
 
@@ -105,7 +103,7 @@ export const comments = pgTable(
   'comments',
   {
     id: uuid('id').defaultRandom().notNull(),
-    content: text('content').default(""),
+    content: text('content').default(''),
   },
   (comments) => {
     return {
@@ -132,7 +130,3 @@ export const locations = pgTable(
     };
   }
 );
-
-
-
-
