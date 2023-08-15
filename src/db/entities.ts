@@ -1,4 +1,4 @@
-import { pgEnum, pgTable, primaryKey, text, uniqueIndex, uuid } from 'drizzle-orm/pg-core';
+import { pgEnum, pgTable, primaryKey, text, timestamp, uniqueIndex, uuid } from 'drizzle-orm/pg-core';
 
 export const statusEnum = pgEnum('status_enum', ['active', 'planned', 'staging', 'retired']);
 
@@ -8,7 +8,9 @@ export const sites = pgTable(
     id: uuid('id').defaultRandom().notNull(),
     name: text('name').notNull(),
     status: statusEnum('status').notNull(),
-    commentID: uuid('comment_id').references(() => comments.id),
+    comment: text('comment'),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
   },
   (sites) => {
     return {
@@ -23,7 +25,8 @@ export const siteGroups = pgTable(
   {
     id: uuid('id').defaultRandom().notNull(),
     name: text('name').notNull(),
-    commentID: uuid('comment_id').references(() => comments.id),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
   },
   (siteGroups) => {
     return {
@@ -39,7 +42,8 @@ export const tenants = pgTable(
     id: uuid('id').defaultRandom().notNull(),
     name: text('name').notNull(),
     tenantGroup: uuid('tenant_group_id').references(() => tenantGroups.id),
-    commentID: uuid('comment_id').references(() => comments.id),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
   },
   (tenants) => {
     return {
@@ -54,11 +58,12 @@ export const tenantGroups = pgTable(
   {
     id: uuid('id').defaultRandom().notNull(),
     name: text('name').notNull(),
-    commentID: uuid('comment_id').references(() => comments.id),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
   },
-  (siteGroups) => {
+  (tenantGroups) => {
     return {
-      cpk: primaryKey(siteGroups.id),
+      cpk: primaryKey(tenantGroups.id),
       idIndex: uniqueIndex('site_groups_id_index'),
     };
   }
@@ -74,7 +79,8 @@ export const contacts = pgTable(
     phone: text('phone'),
     email: text('email').unique(),
     adress: text('address'),
-    commentID: uuid('comment_id').references(() => comments.id),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
   },
   (contacts) => {
     return {
@@ -89,26 +95,13 @@ export const contactGroups = pgTable(
   {
     id: uuid('id').defaultRandom().notNull(),
     name: text('name').notNull(),
-    commentID: uuid('comment_id').references(() => comments.id),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
   },
   (contactGroups) => {
     return {
       cpk: primaryKey(contactGroups.id),
       idIndex: uniqueIndex('contact_groups_id_index'),
-    };
-  }
-);
-
-export const comments = pgTable(
-  'comments',
-  {
-    id: uuid('id').defaultRandom().notNull(),
-    content: text('content').default(''),
-  },
-  (comments) => {
-    return {
-      cpk: primaryKey(comments.id),
-      idIndex: uniqueIndex('comments_id_index'),
     };
   }
 );
@@ -122,6 +115,8 @@ export const locations = pgTable(
       .notNull()
       .references(() => sites.id),
     status: statusEnum('status').notNull().default('active'),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
   },
   (locations) => {
     return {

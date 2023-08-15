@@ -15,6 +15,20 @@
       "when": 1692015956377,
       "tag": "0001_rainy_iron_monger",
       "breakpoints": false
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1692137285434,
+      "tag": "0002_first_dragon_man",
+      "breakpoints": false
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1692137486889,
+      "tag": "0003_parched_excalibur",
+      "breakpoints": false
     }
   ]
 }
