@@ -10,6 +10,7 @@ export const sites = pgTable(
     name: text('name').notNull(),
     status: statusEnum('status').notNull(),
     comment: text('comment').notNull().default(''),
+    siteGroupId: uuid('site_group_id').references(() => siteGroups.id),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
     createdAt: timestamp('created_at').defaultNow().notNull(),
   },
