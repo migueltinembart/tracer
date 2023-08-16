@@ -1,77 +1,17 @@
 import { FastifyInstance } from 'fastify';
-import { deleteSiteHandler, getIndexHandler, getSiteByIdHandler, postSiteHandler, putSiteHandler } from './handlers';
-import { zodToJsonSchema } from 'zod-to-json-schema';
-import {
-  createSiteZodSchema,
-  deleteSiteZodSchema,
-  getSiteByIdZodSchema,
-  responseManyZodSchema,
-  responseZodSchema,
-  updateSiteZodSchema,
-} from './schemas';
+import { deleteSiteHandler, getIndexHandler, getSiteByIdHandler, postSiteHandler, putSiteHandler, putSitesHandler } from './handlers';
+import { getByIdSchema, getSitesSchema, postSiteSchema, putSitesSchema, putSiteSchema, deleteSiteSchema } from './schemas';
 
 export default async function sitesRoutes(fastify: FastifyInstance) {
-  fastify.get(
-    '/',
-    {
-      schema: {
-        response: {
-          200: zodToJsonSchema(responseManyZodSchema),
-        },
-      },
-    },
-    getIndexHandler
-  );
+  fastify.get('/', { schema: getSitesSchema }, getIndexHandler);
 
-  fastify.get(
-    '/:id',
-    {
-      schema: {
-        params: zodToJsonSchema(getSiteByIdZodSchema),
-        response: {
-          200: zodToJsonSchema(responseZodSchema),
-        },
-      },
-    },
-    getSiteByIdHandler
-  );
+  fastify.get('/:id', { schema: getByIdSchema }, getSiteByIdHandler);
 
-  fastify.post(
-    '/',
-    {
-      schema: {
-        body: zodToJsonSchema(createSiteZodSchema),
-        response: {
-          201: zodToJsonSchema(responseZodSchema),
-        },
-      },
-    },
-    postSiteHandler
-  );
+  fastify.post('/', { schema: postSiteSchema }, postSiteHandler);
 
-  fastify.put(
-    '/',
-    {
-      schema: {
-        body: zodToJsonSchema(updateSiteZodSchema),
-        response: {
-          202: zodToJsonSchema(updateSiteZodSchema),
-        },
-      },
-    },
-    putSiteHandler
-  );
+  fastify.put('/', { schema: putSitesSchema }, putSitesHandler);
 
-  fastify.delete(
-    '/',
-    {
-      schema: {
-        body: zodToJsonSchema(deleteSiteZodSchema),
-        response: {
-          202: zodToJsonSchema(deleteSiteZodSchema),
-        },
-      },
-    },
-    deleteSiteHandler
-  );
+  fastify.put('/:id', { schema: putSiteSchema }, putSiteHandler);
+
+  fastify.delete('/:id', {schema: deleteSiteSchema}, deleteSiteHandler);
 }

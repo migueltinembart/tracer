@@ -1,29 +1,54 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
-import { deleteSite, insertOneSite, putSite, selectAll, getSiteById } from './services';
-import { SitesInsertInterface, SitesInterface } from './schemas';
+import { insertOneSite, selectAll, SelectSiteById, updateSite, updateSites, deleteSite } from './services';
+import { SelectSitesInterface, AllowedQueryStrings, InsertSitesInterface } from './schemas';
 
-export async function getSiteByIdHandler(request: FastifyRequest<{ Params: SitesInterface }>, reply: FastifyReply) {
-  const result = await getSiteById(request.params);
+export async function getIndexHandler(
+  request: FastifyRequest<{ Querystring: AllowedQueryStrings }>,
+  reply: FastifyReply
+) {
+  const result = await selectAll(request.query);
   return result;
 }
 
-export async function getIndexHandler(request: FastifyRequest, reply: FastifyReply) {
-  const result = await selectAll();
-  return result;
+export async function getSiteByIdHandler(
+  request: FastifyRequest<{ Params: SelectSitesInterface }>,
+  reply: FastifyReply
+) {
+  const result = await SelectSiteById(request.params);
+
+  if (!result) {
+    reply.status(404).send();
+  } else {
+    reply.status(200).send(result);
+  }
 }
 
-export async function postSiteHandler(request: FastifyRequest<{ Body: SitesInsertInterface }>, reply: FastifyReply) {
-  
+export async function postSiteHandler(request: FastifyRequest<{ Body: InsertSitesInterface }>, reply: FastifyReply) {
   const result = await insertOneSite(request.body);
-  reply.code(201).send(result);
+  reply.status(201).send(result);
 }
 
-export async function putSiteHandler(request: FastifyRequest<{ Body: SitesInterface }>, reply: FastifyReply) {
-  const result = await putSite(request.body);
-  reply.code(202).send(result);
+export async function putSitesHandler(request: FastifyRequest<{ Body: SelectSitesInterface[] }>, reply: FastifyReply) {
+  const result = await updateSites(request.body);
+  reply.status(200).send(result);
 }
 
-export async function deleteSiteHandler(request: FastifyRequest<{ Body: SitesInterface }>, reply: FastifyReply) {
-  const result = await deleteSite(request.body);
-  reply.code(202).send(result)
+export async function putSiteHandler(
+  request: FastifyRequest<{ Body: SelectSitesInterface; Params: SelectSitesInterface }>,
+  reply: FastifyReply
+) {
+  const combinedRequest: SelectSitesInterface = { ...request.body, id: request.params.id };
+  const result = await updateSite(combinedRequest);
+  reply.status(200).send(result);
+}
+
+export async function deleteSiteHandler(
+  request: FastifyRequest<{ Params: SelectSitesInterface }>,
+  reply: FastifyReply
+) {
+  const result = await deleteSite(request.params);
+  if (!result) {
+    reply.status(400).send();
+  }
+  reply.status(204).send('Successfully deleted site');
 }
