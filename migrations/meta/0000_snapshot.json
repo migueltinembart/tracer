@@ -1,11 +1,11 @@
 {
   "version": "5",
   "dialect": "pg",
-  "id": "15e663b5-3ac0-4287-bb70-5a3e5ae148be",
+  "id": "5af8ba1c-173e-4e48-a3cb-7a6f357ca5d2",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
-    "comments": {
-      "name": "comments",
+    "tags": {
+      "name": "tags",
       "schema": "",
       "columns": {
         "id": {
@@ -15,18 +15,40 @@
           "notNull": true,
           "default": "gen_random_uuid()"
         },
-        "content": {
-          "name": "content",
-          "type": "text",
+        "name": {
+          "name": "name",
+          "type": "varchar",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
         }
       },
-      "indexes": {},
+      "indexes": {
+        "tags_name_index": {
+          "name": "tags_name_index",
+          "columns": [
+            "name"
+          ],
+          "isUnique": true
+        }
+      },
       "foreignKeys": {},
       "compositePrimaryKeys": {
-        "comments_id": {
-          "name": "comments_id",
+        "tags_id": {
+          "name": "tags_id",
           "columns": [
             "id"
           ]
@@ -51,29 +73,30 @@
           "primaryKey": false,
           "notNull": true
         },
-        "comment_id": {
-          "name": "comment_id",
-          "type": "uuid",
+        "comment": {
+          "name": "comment",
+          "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true,
+          "default": "''"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
         }
       },
       "indexes": {},
-      "foreignKeys": {
-        "contact_groups_comment_id_comments_id_fk": {
-          "name": "contact_groups_comment_id_comments_id_fk",
-          "tableFrom": "contact_groups",
-          "tableTo": "comments",
-          "columnsFrom": [
-            "comment_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
+      "foreignKeys": {},
       "compositePrimaryKeys": {
         "contact_groups_id": {
           "name": "contact_groups_id",
@@ -131,11 +154,26 @@
           "primaryKey": false,
           "notNull": false
         },
-        "comment_id": {
-          "name": "comment_id",
-          "type": "uuid",
+        "comment": {
+          "name": "comment",
+          "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true,
+          "default": "''"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
         }
       },
       "indexes": {
@@ -147,21 +185,7 @@
           "isUnique": true
         }
       },
-      "foreignKeys": {
-        "contacts_comment_id_comments_id_fk": {
-          "name": "contacts_comment_id_comments_id_fk",
-          "tableFrom": "contacts",
-          "tableTo": "comments",
-          "columnsFrom": [
-            "comment_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
+      "foreignKeys": {},
       "compositePrimaryKeys": {
         "contacts_id": {
           "name": "contacts_id",
@@ -209,6 +233,27 @@
           "primaryKey": false,
           "notNull": true,
           "default": "'active'"
+        },
+        "comment": {
+          "name": "comment",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "''"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
         }
       },
       "indexes": {},
@@ -254,29 +299,30 @@
           "primaryKey": false,
           "notNull": true
         },
-        "comment_id": {
-          "name": "comment_id",
-          "type": "uuid",
+        "comment": {
+          "name": "comment",
+          "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true,
+          "default": "''"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
         }
       },
       "indexes": {},
-      "foreignKeys": {
-        "site_groups_comment_id_comments_id_fk": {
-          "name": "site_groups_comment_id_comments_id_fk",
-          "tableFrom": "site_groups",
-          "tableTo": "comments",
-          "columnsFrom": [
-            "comment_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
+      "foreignKeys": {},
       "compositePrimaryKeys": {
         "site_groups_id": {
           "name": "site_groups_id",
@@ -310,11 +356,26 @@
           "primaryKey": false,
           "notNull": true
         },
-        "comment_id": {
-          "name": "comment_id",
-          "type": "uuid",
+        "comment": {
+          "name": "comment",
+          "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true,
+          "default": "''"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
         }
       },
       "indexes": {
@@ -326,21 +387,7 @@
           "isUnique": true
         }
       },
-      "foreignKeys": {
-        "sites_comment_id_comments_id_fk": {
-          "name": "sites_comment_id_comments_id_fk",
-          "tableFrom": "sites",
-          "tableTo": "comments",
-          "columnsFrom": [
-            "comment_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
+      "foreignKeys": {},
       "compositePrimaryKeys": {
         "sites_id": {
           "name": "sites_id",
@@ -368,29 +415,30 @@
           "primaryKey": false,
           "notNull": true
         },
-        "comment_id": {
-          "name": "comment_id",
-          "type": "uuid",
+        "comment": {
+          "name": "comment",
+          "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true,
+          "default": "''"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
         }
       },
       "indexes": {},
-      "foreignKeys": {
-        "tenant_groups_comment_id_comments_id_fk": {
-          "name": "tenant_groups_comment_id_comments_id_fk",
-          "tableFrom": "tenant_groups",
-          "tableTo": "comments",
-          "columnsFrom": [
-            "comment_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
+      "foreignKeys": {},
       "compositePrimaryKeys": {
         "tenant_groups_id": {
           "name": "tenant_groups_id",
@@ -424,11 +472,26 @@
           "primaryKey": false,
           "notNull": false
         },
-        "comment_id": {
-          "name": "comment_id",
-          "type": "uuid",
+        "comment": {
+          "name": "comment",
+          "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true,
+          "default": "''"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
         }
       },
       "indexes": {
@@ -447,19 +510,6 @@
           "tableTo": "tenant_groups",
           "columnsFrom": [
             "tenant_group_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "tenants_comment_id_comments_id_fk": {
-          "name": "tenants_comment_id_comments_id_fk",
-          "tableFrom": "tenants",
-          "tableTo": "comments",
-          "columnsFrom": [
-            "comment_id"
           ],
           "columnsTo": [
             "id"

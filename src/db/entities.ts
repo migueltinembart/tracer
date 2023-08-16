@@ -1,3 +1,4 @@
+import { sql } from 'drizzle-orm';
 import { pgEnum, pgTable, primaryKey, text, timestamp, uniqueIndex, uuid } from 'drizzle-orm/pg-core';
 
 export const statusEnum = pgEnum('status_enum', ['active', 'planned', 'staging', 'retired']);
@@ -8,7 +9,7 @@ export const sites = pgTable(
     id: uuid('id').defaultRandom().notNull(),
     name: text('name').notNull(),
     status: statusEnum('status').notNull(),
-    comment: text('comment'),
+    comment: text('comment').notNull().default(''),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
     createdAt: timestamp('created_at').defaultNow().notNull(),
   },
@@ -25,6 +26,7 @@ export const siteGroups = pgTable(
   {
     id: uuid('id').defaultRandom().notNull(),
     name: text('name').notNull(),
+    comment: text('comment').notNull().default(''),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
     createdAt: timestamp('created_at').defaultNow().notNull(),
   },
@@ -42,6 +44,7 @@ export const tenants = pgTable(
     id: uuid('id').defaultRandom().notNull(),
     name: text('name').notNull(),
     tenantGroup: uuid('tenant_group_id').references(() => tenantGroups.id),
+    comment: text('comment').notNull().default(''),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
     createdAt: timestamp('created_at').defaultNow().notNull(),
   },
@@ -58,6 +61,7 @@ export const tenantGroups = pgTable(
   {
     id: uuid('id').defaultRandom().notNull(),
     name: text('name').notNull(),
+    comment: text('comment').notNull().default(''),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
     createdAt: timestamp('created_at').defaultNow().notNull(),
   },
@@ -79,6 +83,7 @@ export const contacts = pgTable(
     phone: text('phone'),
     email: text('email').unique(),
     adress: text('address'),
+    comment: text('comment').notNull().default(''),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
     createdAt: timestamp('created_at').defaultNow().notNull(),
   },
@@ -95,6 +100,7 @@ export const contactGroups = pgTable(
   {
     id: uuid('id').defaultRandom().notNull(),
     name: text('name').notNull(),
+    comment: text('comment').notNull().default(''),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
     createdAt: timestamp('created_at').defaultNow().notNull(),
   },
@@ -115,6 +121,7 @@ export const locations = pgTable(
       .notNull()
       .references(() => sites.id),
     status: statusEnum('status').notNull().default('active'),
+    comment: text('comment').notNull().default(''),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
     createdAt: timestamp('created_at').defaultNow().notNull(),
   },
