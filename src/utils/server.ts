@@ -17,7 +17,7 @@ export async function buildServer() {
     openapi: {
       info: {
         title: 'Tracer',
-        version: '1.0',
+        version: '0.0.0',
       },
     },
   });
