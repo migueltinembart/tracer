@@ -18,14 +18,9 @@ export async function SelectSiteById(data: SelectSitesInterface) {
   return result[0];
 }
 
-export async function selectSiteComment(data: SelectSitesInterface) {
-  const result = await db.select().from(sites);
-
-  return result[0];
-}
-
 export async function insertOneSite(data: InsertSitesInterface) {
   const result = await db.insert(sites).values(data).returning();
+
   return result[0];
 }
 
