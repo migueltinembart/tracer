@@ -2,7 +2,7 @@ import { createSelectSchema, createInsertSchema } from 'drizzle-zod';
 import { sites } from 'db/entities';
 import { FastifySchema, RequestGenericInterface } from 'fastify';
 import { zodToJsonSchema } from 'zod-to-json-schema';
-import { nullable, z } from 'zod';
+import { z } from 'zod';
 import { InferModel } from 'drizzle-orm';
 // zod schemas here
 
@@ -11,6 +11,7 @@ const siteCollectionResponseZodSchema = z.array(siteResponseZodSchema);
 const insertSiteZodSchema = createInsertSchema(sites, {
   updatedAt: z.void(),
   createdAt: z.void(),
+  siteGroupId: z.void(),
 });
 const updateSitesZodSchema = z.array(insertSiteZodSchema);
 const updateSiteZodSchema = createInsertSchema(sites, { id: z.void(), updatedAt: z.void(), createdAt: z.void() });
@@ -27,7 +28,7 @@ const allowedQuerystrings = z
 
 const getSitesByIdZodSchema = z
   .object({
-    id: z.string().uuid(),
+    id: z.coerce.number(),
   })
   .describe('Takes an id as a parameter');
 
