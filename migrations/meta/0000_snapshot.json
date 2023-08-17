@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "pg",
-  "id": "5af8ba1c-173e-4e48-a3cb-7a6f357ca5d2",
+  "id": "40425551-9637-411f-b9af-940dca1e6287",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "tags": {
@@ -10,10 +10,9 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "uuid",
+          "type": "serial",
           "primaryKey": false,
-          "notNull": true,
-          "default": "gen_random_uuid()"
+          "notNull": true
         },
         "name": {
           "name": "name",
@@ -62,10 +61,9 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "uuid",
+          "type": "serial",
           "primaryKey": false,
-          "notNull": true,
-          "default": "gen_random_uuid()"
+          "notNull": true
         },
         "name": {
           "name": "name",
@@ -113,22 +111,15 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "uuid",
+          "type": "serial",
           "primaryKey": false,
-          "notNull": true,
-          "default": "gen_random_uuid()"
+          "notNull": true
         },
         "name": {
           "name": "name",
           "type": "text",
           "primaryKey": false,
           "notNull": true
-        },
-        "group": {
-          "name": "group",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": false
         },
         "title": {
           "name": "title",
@@ -161,6 +152,13 @@
           "notNull": true,
           "default": "''"
         },
+        "contact_group_id": {
+          "name": "contact_group_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "null"
+        },
         "updated_at": {
           "name": "updated_at",
           "type": "timestamp",
@@ -185,7 +183,21 @@
           "isUnique": true
         }
       },
-      "foreignKeys": {},
+      "foreignKeys": {
+        "contacts_contact_group_id_contact_groups_id_fk": {
+          "name": "contacts_contact_group_id_contact_groups_id_fk",
+          "tableFrom": "contacts",
+          "tableTo": "contact_groups",
+          "columnsFrom": [
+            "contact_group_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {
         "contacts_id": {
           "name": "contacts_id",
@@ -210,10 +222,9 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "uuid",
+          "type": "serial",
           "primaryKey": false,
-          "notNull": true,
-          "default": "gen_random_uuid()"
+          "notNull": true
         },
         "name": {
           "name": "name",
@@ -223,9 +234,10 @@
         },
         "site_id": {
           "name": "site_id",
-          "type": "uuid",
+          "type": "integer",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "default": "null"
         },
         "status": {
           "name": "status",
@@ -288,10 +300,9 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "uuid",
+          "type": "serial",
           "primaryKey": false,
-          "notNull": true,
-          "default": "gen_random_uuid()"
+          "notNull": true
         },
         "name": {
           "name": "name",
@@ -339,10 +350,9 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "uuid",
+          "type": "serial",
           "primaryKey": false,
-          "notNull": true,
-          "default": "gen_random_uuid()"
+          "notNull": true
         },
         "name": {
           "name": "name",
@@ -362,6 +372,13 @@
           "primaryKey": false,
           "notNull": true,
           "default": "''"
+        },
+        "site_group_id": {
+          "name": "site_group_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "null"
         },
         "updated_at": {
           "name": "updated_at",
@@ -387,7 +404,21 @@
           "isUnique": true
         }
       },
-      "foreignKeys": {},
+      "foreignKeys": {
+        "sites_site_group_id_site_groups_id_fk": {
+          "name": "sites_site_group_id_site_groups_id_fk",
+          "tableFrom": "sites",
+          "tableTo": "site_groups",
+          "columnsFrom": [
+            "site_group_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {
         "sites_id": {
           "name": "sites_id",
@@ -404,10 +435,9 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "uuid",
+          "type": "serial",
           "primaryKey": false,
-          "notNull": true,
-          "default": "gen_random_uuid()"
+          "notNull": true
         },
         "name": {
           "name": "name",
@@ -455,10 +485,9 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "uuid",
+          "type": "serial",
           "primaryKey": false,
-          "notNull": true,
-          "default": "gen_random_uuid()"
+          "notNull": true
         },
         "name": {
           "name": "name",
@@ -468,9 +497,10 @@
         },
         "tenant_group_id": {
           "name": "tenant_group_id",
-          "type": "uuid",
+          "type": "integer",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "default": "null"
         },
         "comment": {
           "name": "comment",

@@ -5,7 +5,7 @@ EXCEPTION
 END $$;
 
 CREATE TABLE IF NOT EXISTS "tags" (
-	"id" uuid DEFAULT gen_random_uuid() NOT NULL,
+	"id" serial NOT NULL,
 	"name" varchar,
 	"updated_at" timestamp DEFAULT now() NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS "tags" (
 );
 
 CREATE TABLE IF NOT EXISTS "contact_groups" (
-	"id" uuid DEFAULT gen_random_uuid() NOT NULL,
+	"id" serial NOT NULL,
 	"name" text NOT NULL,
 	"comment" text DEFAULT '' NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL,
@@ -22,14 +22,14 @@ CREATE TABLE IF NOT EXISTS "contact_groups" (
 );
 
 CREATE TABLE IF NOT EXISTS "contacts" (
-	"id" uuid DEFAULT gen_random_uuid() NOT NULL,
+	"id" serial NOT NULL,
 	"name" text NOT NULL,
-	"group" uuid,
 	"title" text,
 	"phone" text,
 	"email" text,
 	"address" text,
 	"comment" text DEFAULT '' NOT NULL,
+	"contact_group_id" integer DEFAULT null,
 	"updated_at" timestamp DEFAULT now() NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	CONSTRAINT contacts_id PRIMARY KEY("id"),
@@ -37,9 +37,9 @@ CREATE TABLE IF NOT EXISTS "contacts" (
 );
 
 CREATE TABLE IF NOT EXISTS "locations" (
-	"id" uuid DEFAULT gen_random_uuid() NOT NULL,
+	"id" serial NOT NULL,
 	"name" text NOT NULL,
-	"site_id" uuid NOT NULL,
+	"site_id" integer DEFAULT null NOT NULL,
 	"status" "status_enum" DEFAULT 'active' NOT NULL,
 	"comment" text DEFAULT '' NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL,
@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS "locations" (
 );
 
 CREATE TABLE IF NOT EXISTS "site_groups" (
-	"id" uuid DEFAULT gen_random_uuid() NOT NULL,
+	"id" serial NOT NULL,
 	"name" text NOT NULL,
 	"comment" text DEFAULT '' NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL,
@@ -57,17 +57,18 @@ CREATE TABLE IF NOT EXISTS "site_groups" (
 );
 
 CREATE TABLE IF NOT EXISTS "sites" (
-	"id" uuid DEFAULT gen_random_uuid() NOT NULL,
+	"id" serial NOT NULL,
 	"name" text NOT NULL,
 	"status" "status_enum" NOT NULL,
 	"comment" text DEFAULT '' NOT NULL,
+	"site_group_id" integer DEFAULT null,
 	"updated_at" timestamp DEFAULT now() NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	CONSTRAINT sites_id PRIMARY KEY("id")
 );
 
 CREATE TABLE IF NOT EXISTS "tenant_groups" (
-	"id" uuid DEFAULT gen_random_uuid() NOT NULL,
+	"id" serial NOT NULL,
 	"name" text NOT NULL,
 	"comment" text DEFAULT '' NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL,
@@ -76,9 +77,9 @@ CREATE TABLE IF NOT EXISTS "tenant_groups" (
 );
 
 CREATE TABLE IF NOT EXISTS "tenants" (
-	"id" uuid DEFAULT gen_random_uuid() NOT NULL,
+	"id" serial NOT NULL,
 	"name" text NOT NULL,
-	"tenant_group_id" uuid,
+	"tenant_group_id" integer DEFAULT null,
 	"comment" text DEFAULT '' NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
@@ -90,7 +91,19 @@ CREATE UNIQUE INDEX IF NOT EXISTS "contacts_id_index" ON "contacts" ("id");
 CREATE UNIQUE INDEX IF NOT EXISTS "sites_id_index" ON "sites" ("id");
 CREATE UNIQUE INDEX IF NOT EXISTS "tenants_id_index" ON "tenants" ("id");
 DO $$ BEGIN
+ ALTER TABLE "contacts" ADD CONSTRAINT "contacts_contact_group_id_contact_groups_id_fk" FOREIGN KEY ("contact_group_id") REFERENCES "contact_groups"("id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
  ALTER TABLE "locations" ADD CONSTRAINT "locations_site_id_sites_id_fk" FOREIGN KEY ("site_id") REFERENCES "sites"("id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+ ALTER TABLE "sites" ADD CONSTRAINT "sites_site_group_id_site_groups_id_fk" FOREIGN KEY ("site_group_id") REFERENCES "site_groups"("id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
