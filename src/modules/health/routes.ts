@@ -6,13 +6,15 @@ export default async function healthRoutes(fastify: FastifyInstance) {
     '/',
     {
       schema: {
-        description: 'healthcheck',
-        tags: ['health'],
-        summary: 'test',
+        description: 'returns status information about the server',
+        tags: ['status'],
       },
     },
     (req, res) => {
-      return {};
+      return {
+        server: fastify.server,
+        version: fastify.version
+      }
     }
   );
 }
