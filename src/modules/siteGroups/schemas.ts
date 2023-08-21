@@ -1,34 +1,34 @@
 import { createSelectSchema, createInsertSchema } from 'drizzle-zod';
 import { siteGroups } from 'db/entities';
-import { FastifySchema, RequestGenericInterface } from 'fastify';
+import { FastifySchema } from 'fastify';
 import { zodToJsonSchema } from 'zod-to-json-schema';
-import { nullable, z } from 'zod';
+import { z } from 'zod';
 import { InferModel } from 'drizzle-orm';
+import { createPaginationQueryStrings } from 'modules/pagination/apiUtils';
 // zod schemas here
 
 const siteGroupResponseZodSchema = createSelectSchema(siteGroups);
+
 const siteGroupCollectionResponseZodSchema = z.array(siteGroupResponseZodSchema);
-const insertsiteGroupZodSchema = createInsertSchema(siteGroups, {
-  id: z.void(),
-  updatedAt: z.void(),
-  createdAt: z.void(),
+
+export const allowedQueryStrings = createPaginationQueryStrings(siteGroupResponseZodSchema);
+
+const insertsiteGroupZodSchema = createInsertSchema(siteGroups).omit({
+  id: true,
+  updatedAt: true,
+  createdAt: true,
 });
-const updateSiteGroupsZodSchema = z.array(insertsiteGroupZodSchema);
-const updateSiteGroupZodSchema = createInsertSchema(siteGroups, {
-  id: z.void(),
-  updatedAt: z.void(),
-  createdAt: z.void(),
+
+const updateSiteGroupZodSchema = createInsertSchema(siteGroups).omit({
+  updatedAt: true,
+  createdAt: true,
 });
+
+const updateSiteGroupsZodSchema = z.array(updateSiteGroupZodSchema);
 
 const myschema: FastifySchema = {
   tags: ['site groups'],
 };
-
-const allowedQuerystrings = z
-  .object({
-    limit: z.coerce.number().optional(),
-  })
-  .describe('Allowed querystrings');
 
 const getSiteGroupsByIdZodSchema = z
   .object({
@@ -38,7 +38,7 @@ const getSiteGroupsByIdZodSchema = z
 
 export const getSiteGroupSchema: FastifySchema = {
   ...myschema,
-  querystring: zodToJsonSchema(allowedQuerystrings),
+  querystring: zodToJsonSchema(allowedQueryStrings),
   response: { 200: zodToJsonSchema(siteGroupCollectionResponseZodSchema) },
 };
 
@@ -80,4 +80,4 @@ export const deleteSiteGroupSchema: FastifySchema = {
 
 export type SelectSiteGroupsInterface = InferModel<typeof siteGroups>;
 export type InsertSiteGroupsInterface = InferModel<typeof siteGroups, 'insert'>;
-export type AllowedQueryStrings = z.infer<typeof allowedQuerystrings>;
+export type AllowedQueryStrings = z.infer<typeof allowedQueryStrings>;

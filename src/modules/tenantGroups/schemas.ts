@@ -1,34 +1,32 @@
-import { createSelectSchema, createInsertSchema } from 'drizzle-zod';
 import { tenantGroups } from 'db/entities';
-import { FastifySchema, RequestGenericInterface } from 'fastify';
-import { zodToJsonSchema } from 'zod-to-json-schema';
-import { nullable, z } from 'zod';
 import { InferModel } from 'drizzle-orm';
-// zod schemas here
+import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
+import { FastifySchema } from 'fastify';
+import { z } from 'zod';
+import { zodToJsonSchema } from 'zod-to-json-schema';
+import { createPaginationQueryStrings } from 'modules/pagination/apiUtils';
 
+// zod schemas here
 const tenantGroupResponseZodSchema = createSelectSchema(tenantGroups);
+
 const tenantGroupCollectionResponseZodSchema = z.array(tenantGroupResponseZodSchema);
-const inserttenantGroupZodSchema = createInsertSchema(tenantGroups, {
-  id: z.void(),
-  updatedAt: z.void(),
-  createdAt: z.void(),
+
+const allowedQueryStrings = createPaginationQueryStrings(tenantGroupResponseZodSchema);
+
+const insertTenantGroupZodSchema = createInsertSchema(tenantGroups).omit({
+  id: true,
+  updatedAt: true,
+  createdAt: true,
 });
-const updateTenantGroupsZodSchema = z.array(inserttenantGroupZodSchema);
-const updateTenantGroupZodSchema = createInsertSchema(tenantGroups, {
-  id: z.void(),
-  updatedAt: z.void(),
-  createdAt: z.void(),
+const updateTenantGroupZodSchema = createInsertSchema(tenantGroups).omit({
+  updatedAt: true,
+  createdAt: true,
 });
+const updateTenantGroupsZodSchema = z.array(updateTenantGroupZodSchema);
 
 const myschema: FastifySchema = {
   tags: ['tenant groups'],
 };
-
-const allowedQuerystrings = z
-  .object({
-    limit: z.coerce.number().optional(),
-  })
-  .describe('Allowed querystrings');
 
 const getTenantGroupsByIdZodSchema = z
   .object({
@@ -38,7 +36,7 @@ const getTenantGroupsByIdZodSchema = z
 
 export const getTenantGroupSchema: FastifySchema = {
   ...myschema,
-  querystring: zodToJsonSchema(allowedQuerystrings),
+  querystring: zodToJsonSchema(allowedQueryStrings),
   response: { 200: zodToJsonSchema(tenantGroupCollectionResponseZodSchema) },
 };
 
@@ -50,7 +48,7 @@ export const getByIdSchema: FastifySchema = {
 
 export const postTenantGroupSchema: FastifySchema = {
   ...myschema,
-  body: zodToJsonSchema(inserttenantGroupZodSchema),
+  body: zodToJsonSchema(insertTenantGroupZodSchema),
   response: { 201: zodToJsonSchema(tenantGroupResponseZodSchema) },
 };
 
@@ -80,4 +78,4 @@ export const deleteTenantGroupSchema: FastifySchema = {
 
 export type SelectTenantGroupsInterface = InferModel<typeof tenantGroups>;
 export type InsertTenantGroupsInterface = InferModel<typeof tenantGroups, 'insert'>;
-export type AllowedQueryStrings = z.infer<typeof allowedQuerystrings>;
+export type AllowedQueryStrings = z.infer<typeof allowedQueryStrings>;

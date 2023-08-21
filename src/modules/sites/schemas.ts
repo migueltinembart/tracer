@@ -4,27 +4,26 @@ import { FastifySchema, RequestGenericInterface } from 'fastify';
 import { zodToJsonSchema } from 'zod-to-json-schema';
 import { z } from 'zod';
 import { InferModel } from 'drizzle-orm';
+import { createPaginationQueryStrings } from 'modules/pagination/apiUtils';
+
 // zod schemas here
 
 const siteResponseZodSchema = createSelectSchema(sites);
+
 const siteCollectionResponseZodSchema = z.array(siteResponseZodSchema);
-const insertSiteZodSchema = createInsertSchema(sites, {
-  updatedAt: z.void(),
-  createdAt: z.void(),
-  siteGroupId: z.void(),
+
+export const allowedQueryStrings = createPaginationQueryStrings(siteResponseZodSchema);
+
+const insertSiteZodSchema = createInsertSchema(sites).omit({
+  updatedAt: true,
+  createdAt: true,
 });
-const updateSitesZodSchema = z.array(insertSiteZodSchema);
-const updateSiteZodSchema = createInsertSchema(sites, { id: z.void(), updatedAt: z.void(), createdAt: z.void() });
+const updateSiteZodSchema = createInsertSchema(sites).omit({ updatedAt: true, createdAt: true });
+const updateSitesZodSchema = z.array(updateSiteZodSchema);
 
 const myschema: FastifySchema = {
   tags: ['sites'],
 };
-
-const allowedQuerystrings = z
-  .object({
-    limit: z.coerce.number().optional(),
-  })
-  .describe('Allowed querystrings');
 
 const getSitesByIdZodSchema = z
   .object({
@@ -34,7 +33,7 @@ const getSitesByIdZodSchema = z
 
 export const getSitesSchema: FastifySchema = {
   ...myschema,
-  querystring: zodToJsonSchema(allowedQuerystrings),
+  querystring: zodToJsonSchema(allowedQueryStrings),
   response: { 200: zodToJsonSchema(siteCollectionResponseZodSchema) },
 };
 
@@ -76,4 +75,4 @@ export const deleteSiteSchema: FastifySchema = {
 
 export type SelectSitesInterface = InferModel<typeof sites>;
 export type InsertSitesInterface = InferModel<typeof sites, 'insert'>;
-export type AllowedQueryStrings = z.infer<typeof allowedQuerystrings>;
+export type AllowedQueryStrings = z.infer<typeof allowedQueryStrings>;

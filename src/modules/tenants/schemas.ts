@@ -4,27 +4,26 @@ import { FastifySchema, RequestGenericInterface } from 'fastify';
 import { zodToJsonSchema } from 'zod-to-json-schema';
 import { nullable, z } from 'zod';
 import { InferModel } from 'drizzle-orm';
-// zod schemas here
-
+import { createPaginationQueryStrings } from 'modules/pagination/apiUtils';
 const tenantResponseZodSchema = createSelectSchema(tenants);
+
 const tenantCollectionResponseZodSchema = z.array(tenantResponseZodSchema);
-const insertTenantZodSchema = createInsertSchema(tenants, {
-  id: z.void(),
-  updatedAt: z.void(),
-  createdAt: z.void(),
+
+const allowedQueryStrings = createPaginationQueryStrings(tenantResponseZodSchema);
+
+const insertTenantZodSchema = createInsertSchema(tenants).omit({
+  id: true,
+  updatedAt: true,
+  createdAt: true,
 });
-const updateTenantsZodSchema = z.array(insertTenantZodSchema);
-const updateTenantZodSchema = createInsertSchema(tenants, { id: z.void(), updatedAt: z.void(), createdAt: z.void() });
+
+const updateTenantZodSchema = createInsertSchema(tenants).omit({ updatedAt: true, createdAt: true });
+
+const updateTenantsZodSchema = z.array(updateTenantZodSchema);
 
 const myschema: FastifySchema = {
   tags: ['tenants'],
 };
-
-const allowedQuerystrings = z
-  .object({
-    limit: z.coerce.number().optional(),
-  })
-  .describe('Allowed querystrings');
 
 const getTenantsByIdZodSchema = z
   .object({
@@ -34,7 +33,7 @@ const getTenantsByIdZodSchema = z
 
 export const getTenantsSchema: FastifySchema = {
   ...myschema,
-  querystring: zodToJsonSchema(allowedQuerystrings),
+  querystring: zodToJsonSchema(allowedQueryStrings),
   response: { 200: zodToJsonSchema(tenantCollectionResponseZodSchema) },
 };
 
@@ -76,4 +75,4 @@ export const deleteTenantSchema: FastifySchema = {
 
 export type SelectTenantsInterface = InferModel<typeof tenants>;
 export type InsertTenantsInterface = InferModel<typeof tenants, 'insert'>;
-export type AllowedQueryStrings = z.infer<typeof allowedQuerystrings>;
+export type AllowedQueryStrings = z.infer<typeof allowedQueryStrings>;
