@@ -1,14 +1,19 @@
 import { tenantGroups } from 'db/entities';
 import { db } from 'utils/db';
-import { eq, sql } from 'drizzle-orm';
-import { SelectTenantGroupsInterface, InsertTenantGroupsInterface, AllowedQueryStrings } from './schemas';
+import { eq, sql, asc, desc } from 'drizzle-orm';
+import { SelectTenantGroupsInterface, AllowedQueryStrings } from './schemas';
 
 export async function selectAll(data: AllowedQueryStrings) {
   const result = await db
     .select()
     .from(tenantGroups)
-    .limit(data?.limit || 25);
-
+    .where(data.offset ? sql`${tenantGroups.id} > ${data.offset}` : sql`${tenantGroups.id} > 0`)
+    .orderBy(
+      data.sort_order == 'asc'
+        ? asc(data.sort_by ? tenantGroups[data.sort_by] : tenantGroups.id)
+        : desc(data.sort_by ? tenantGroups[data.sort_by] : tenantGroups.id)
+    )
+    .limit(data.limit!);
   return result;
 }
 

@@ -1,8 +1,8 @@
 import { createSelectSchema, createInsertSchema } from 'drizzle-zod';
 import { tenants } from 'db/entities';
-import { FastifySchema, RequestGenericInterface } from 'fastify';
+import { FastifySchema } from 'fastify';
 import { zodToJsonSchema } from 'zod-to-json-schema';
-import { nullable, z } from 'zod';
+import {  z } from 'zod';
 import { InferModel } from 'drizzle-orm';
 import { createPaginationQueryStrings } from 'modules/pagination/apiUtils';
 const tenantResponseZodSchema = createSelectSchema(tenants);

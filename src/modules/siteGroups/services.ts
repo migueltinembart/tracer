@@ -1,14 +1,19 @@
 import { siteGroups } from 'db/entities';
 import { db } from 'utils/db';
-import { eq, sql } from 'drizzle-orm';
-import { SelectSiteGroupsInterface, InsertSiteGroupsInterface, AllowedQueryStrings } from './schemas';
+import { eq, sql, asc, desc} from 'drizzle-orm';
+import { SelectSiteGroupsInterface, AllowedQueryStrings } from './schemas';
 
 export async function selectAll(data: AllowedQueryStrings) {
   const result = await db
     .select()
     .from(siteGroups)
-    .limit(data?.limit || 25);
-
+    .where(data.offset ? sql`${siteGroups.id} > ${data.offset}` : sql`${siteGroups.id} > 0`)
+    .orderBy(
+      data.sort_order == 'asc'
+        ? asc(data.sort_by ? siteGroups[data.sort_by] : siteGroups.id)
+        : desc(data.sort_by ? siteGroups[data.sort_by] : siteGroups.id)
+    )
+    .limit(data.limit!);
   return result;
 }
 
