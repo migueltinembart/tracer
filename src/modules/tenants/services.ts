@@ -1,13 +1,20 @@
 import { tenants } from 'db/entities';
 import { db } from 'utils/db';
-import { eq, sql } from 'drizzle-orm';
-import { SelectTenantsInterface, InsertTenantsInterface, AllowedQueryStrings } from './schemas';
+import { eq, sql, desc, asc } from 'drizzle-orm';
+import { SelectTenantsInterface, InsertTenantsInterface } from './schemas';
+import { AllowedQueryStrings } from './schemas';
 
 export async function selectAll(data: AllowedQueryStrings) {
   const result = await db
     .select()
     .from(tenants)
-    .limit(data?.limit || 25);
+    .where(data.offset ? sql`${tenants.id} > ${data.offset}` : sql`${tenants.id} > 0`)
+    .orderBy(
+      data.sort_order == 'asc'
+        ? asc(data.sort_by ? tenants[data.sort_by] : tenants.id)
+        : desc(data.sort_by ? tenants[data.sort_by] : tenants.id)
+    )
+    .limit(data.limit!);
 
   return result;
 }
