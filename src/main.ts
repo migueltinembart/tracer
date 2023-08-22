@@ -2,7 +2,6 @@ import { buildServer } from './utils/server';
 import { env } from './config/env';
 import { migrate } from 'drizzle-orm/node-postgres/migrator';
 import { db } from './utils/db';
-import { DatabaseError } from 'pg';
 
 async function main() {
   //Register swagger
