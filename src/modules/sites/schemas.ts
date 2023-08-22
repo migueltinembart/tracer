@@ -15,13 +15,14 @@ const siteCollectionResponseZodSchema = z.array(siteResponseZodSchema);
 export const allowedQueryStrings = createPaginationQueryStrings(siteResponseZodSchema);
 
 const insertSiteZodSchema = createInsertSchema(sites).omit({
+  id: true,
   updatedAt: true,
   createdAt: true,
 });
 const updateSiteZodSchema = createInsertSchema(sites).omit({ updatedAt: true, createdAt: true });
 const updateSitesZodSchema = z.array(updateSiteZodSchema);
 
-const myschema: FastifySchema = {
+const swaggerOpts: FastifySchema = {
   tags: ['sites'],
 };
 
@@ -32,38 +33,38 @@ const getSitesByIdZodSchema = z
   .describe('Takes an id as a parameter');
 
 export const getSitesSchema: FastifySchema = {
-  ...myschema,
+  ...swaggerOpts,
   querystring: zodToJsonSchema(allowedQueryStrings),
   response: { 200: zodToJsonSchema(siteCollectionResponseZodSchema) },
 };
 
 export const getByIdSchema: FastifySchema = {
-  ...myschema,
+  ...swaggerOpts,
   params: zodToJsonSchema(getSitesByIdZodSchema),
   response: { 200: zodToJsonSchema(siteResponseZodSchema) },
 };
 
 export const postSiteSchema: FastifySchema = {
-  ...myschema,
+  ...swaggerOpts,
   body: zodToJsonSchema(insertSiteZodSchema),
   response: { 201: zodToJsonSchema(siteResponseZodSchema) },
 };
 
 export const putSitesSchema: FastifySchema = {
-  ...myschema,
+  ...swaggerOpts,
   body: zodToJsonSchema(updateSitesZodSchema),
   response: { 200: zodToJsonSchema(siteCollectionResponseZodSchema) },
 };
 
 export const putSiteSchema: FastifySchema = {
-  ...myschema,
+  ...swaggerOpts,
   params: zodToJsonSchema(getSitesByIdZodSchema),
   body: zodToJsonSchema(updateSiteZodSchema),
   response: { 200: zodToJsonSchema(siteResponseZodSchema) },
 };
 
 export const deleteSiteSchema: FastifySchema = {
-  ...myschema,
+  ...swaggerOpts,
   params: zodToJsonSchema(getSitesByIdZodSchema),
   response: {
     204: {
