@@ -9,6 +9,8 @@ import siteGroupsRoutes from 'modules/siteGroups/routes';
 import tenantsRoutes from 'modules/tenants/routes';
 import tenantGroupsRoutes from 'modules/tenantGroups/routes';
 import contactsRoutes from 'modules/contacts/routes';
+import contactGroupsRoutes from 'modules/contactGroups/routes';
+import locationsRoutes from 'modules/locations/routes';
 
 export async function buildServer() {
   const app = fastify({
@@ -35,6 +37,8 @@ export async function buildServer() {
   await app.register(tenantsRoutes, { prefix: 'api/tenants' });
   await app.register(tenantGroupsRoutes, { prefix: 'api/tenant-groups' });
   await app.register(contactsRoutes, { prefix: 'api/contacts' });
+  await app.register(contactGroupsRoutes, { prefix: 'api/contact-groups' });
+  await app.register(locationsRoutes, { prefix: 'api/locations' });
 
   await app.ready();
   app.swagger();
