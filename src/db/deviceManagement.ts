@@ -17,7 +17,7 @@ import { sites, racks } from './entities';
 export const devices = pgTable(
   'devices',
   {
-    id: uuid('id').defaultRandom(),
+    id: uuid('id').notNull().defaultRandom(),
     name: text('name').notNull(),
     siteId: integer('site_id')
       .notNull()
@@ -39,7 +39,7 @@ export const devices = pgTable(
 export const qrCodes = pgTable(
   'qr_codes',
   {
-    id: serial('id'),
+    id: serial('id').notNull(),
     deviceId: uuid('device_id'),
     value: text('value').notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
@@ -61,7 +61,7 @@ export const deviceToQrCodeRelations = relations(qrCodes, ({ one }) => ({
 }));
 
 export const deviceTemplates = pgTable(
-  'device_types',
+  'device_templates',
   {
     id: serial('id'),
     name: text('name').notNull(),
