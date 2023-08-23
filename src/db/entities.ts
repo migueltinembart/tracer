@@ -1,5 +1,16 @@
 import { sql } from 'drizzle-orm';
-import { pgEnum, pgTable, primaryKey, text, timestamp, uniqueIndex, serial, integer } from 'drizzle-orm/pg-core';
+import {
+  pgEnum,
+  pgTable,
+  primaryKey,
+  text,
+  timestamp,
+  uniqueIndex,
+  serial,
+  integer,
+  uuid,
+  numeric,
+} from 'drizzle-orm/pg-core';
 
 export const statusEnum = pgEnum('status_enum', ['active', 'planned', 'staging', 'retired']);
 
@@ -12,7 +23,7 @@ export const sites = pgTable(
     comment: text('comment').notNull().default(''),
     siteGroupId: integer('site_group_id')
       .default(sql`null`)
-      .references(() => siteGroups.id),
+      .references(() => siteGroups.id, { onDelete: 'set null' }),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
     createdAt: timestamp('created_at').defaultNow().notNull(),
   },
@@ -30,9 +41,7 @@ export const siteGroups = pgTable(
     id: serial('id'),
     name: text('name').notNull(),
     comment: text('comment').notNull().default(''),
-    updatedAt: timestamp('updated_at')
-      .defaultNow()
-      .notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
     createdAt: timestamp('created_at').defaultNow().notNull(),
   },
   (siteGroups) => {
@@ -50,7 +59,7 @@ export const tenants = pgTable(
     name: text('name').notNull(),
     tenantGroupId: integer('tenant_group_id')
       .default(sql`null`)
-      .references(() => tenantGroups.id),
+      .references(() => tenantGroups.id, { onDelete: 'set null' }),
     comment: text('comment').notNull().default(''),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
     createdAt: timestamp('created_at').defaultNow().notNull(),
@@ -92,10 +101,8 @@ export const contacts = pgTable(
     comment: text('comment').notNull().default(''),
     contactGroupId: integer('contact_group_id')
       .default(sql`null`)
-      .references(() => contactGroups.id),
-    updatedAt: timestamp('updated_at')
-      .defaultNow()
-      .notNull(),
+      .references(() => contactGroups.id, { onDelete: 'set null' }),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
     createdAt: timestamp('created_at').defaultNow().notNull(),
   },
   (contacts) => {
@@ -141,6 +148,30 @@ export const locations = pgTable(
     return {
       cpk: primaryKey(locations.id),
       idIndex: uniqueIndex('locations_id_index'),
+    };
+  }
+);
+
+export const racks = pgTable(
+  'racks',
+  {
+    id: uuid('id').defaultRandom(),
+    name: text('name').notNull(),
+    units: numeric('units').notNull(),
+    comment: text('comment'),
+    site_id: integer('site_id')
+      .notNull()
+      .references(() => sites.id),
+    tenant_id: integer('tenant_id')
+      .notNull()
+      .references(() => tenants.id),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+  },
+  (racks) => {
+    return {
+      cpk: primaryKey(racks.id),
+      nameIndex: uniqueIndex('racks_name_index').on(racks.name),
     };
   }
 );
