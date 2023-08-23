@@ -155,7 +155,7 @@ export const locations = pgTable(
 export const racks = pgTable(
   'racks',
   {
-    id: uuid('id').defaultRandom(),
+    id: uuid('id').notNull().defaultRandom(),
     name: text('name').notNull(),
     units: numeric('units').notNull(),
     comment: text('comment'),
