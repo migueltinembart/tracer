@@ -159,10 +159,10 @@ export const racks = pgTable(
     name: text('name').notNull(),
     units: numeric('units').notNull(),
     comment: text('comment'),
-    site_id: integer('site_id')
+    siteId: integer('site_id')
       .notNull()
       .references(() => sites.id),
-    tenant_id: integer('tenant_id')
+    tenantId: integer('tenant_id')
       .notNull()
       .references(() => tenants.id),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
