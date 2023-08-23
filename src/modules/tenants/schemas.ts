@@ -2,7 +2,7 @@ import { createSelectSchema, createInsertSchema } from 'drizzle-zod';
 import { tenants } from 'db/entities';
 import { FastifySchema } from 'fastify';
 import { zodToJsonSchema } from 'zod-to-json-schema';
-import {  z } from 'zod';
+import { z } from 'zod';
 import { InferModel } from 'drizzle-orm';
 import { createPaginationQueryStrings } from 'modules/pagination/apiUtils';
 const tenantResponseZodSchema = createSelectSchema(tenants);
@@ -17,9 +17,9 @@ const insertTenantZodSchema = createInsertSchema(tenants).omit({
   createdAt: true,
 });
 
-const updateTenantZodSchema = createInsertSchema(tenants).omit({ updatedAt: true, createdAt: true });
+const updateTenantZodSchema = createInsertSchema(tenants).omit({ id: true, updatedAt: true, createdAt: true });
 
-const updateTenantsZodSchema = z.array(updateTenantZodSchema);
+const updateTenantsZodSchema = z.array(createInsertSchema(tenants).omit({ createdAt: true, updatedAt: true }));
 
 const myschema: FastifySchema = {
   tags: ['tenants'],

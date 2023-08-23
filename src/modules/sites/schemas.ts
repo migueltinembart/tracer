@@ -19,8 +19,8 @@ const insertSiteZodSchema = createInsertSchema(sites).omit({
   updatedAt: true,
   createdAt: true,
 });
-const updateSiteZodSchema = createInsertSchema(sites).omit({ updatedAt: true, createdAt: true });
-const updateSitesZodSchema = z.array(updateSiteZodSchema);
+const updateSiteZodSchema = createInsertSchema(sites).omit({ id: true, updatedAt: true, createdAt: true });
+const updateSitesZodSchema = z.array(createInsertSchema(sites).omit({ createdAt: true, updatedAt: true }));
 
 const swaggerOpts: FastifySchema = {
   tags: ['sites'],

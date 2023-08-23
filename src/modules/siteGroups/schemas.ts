@@ -19,12 +19,8 @@ const insertsiteGroupZodSchema = createInsertSchema(siteGroups).omit({
   createdAt: true,
 });
 
-const updateSiteGroupZodSchema = createInsertSchema(siteGroups).omit({
-  updatedAt: true,
-  createdAt: true,
-});
-
-const updateSiteGroupsZodSchema = z.array(updateSiteGroupZodSchema);
+const updateSiteGroupZodSchema = createInsertSchema(siteGroups).omit({ id: true, updatedAt: true, createdAt: true });
+const updateSiteGroupsZodSchema = z.array(createInsertSchema(siteGroups).omit({ createdAt: true, updatedAt: true }));
 
 const myschema: FastifySchema = {
   tags: ['site groups'],
