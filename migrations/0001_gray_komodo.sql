@@ -1,14 +1,14 @@
-CREATE TABLE IF NOT EXISTS "device_types" (
+CREATE TABLE IF NOT EXISTS "device_templates" (
 	"id" serial NOT NULL,
 	"name" text NOT NULL,
 	"template" json,
 	"updated_at" timestamp DEFAULT now() NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
-	CONSTRAINT device_types_id PRIMARY KEY("id")
+	CONSTRAINT device_templates_id PRIMARY KEY("id")
 );
 
 CREATE TABLE IF NOT EXISTS "devices" (
-	"id" uuid DEFAULT gen_random_uuid(),
+	"id" uuid DEFAULT gen_random_uuid() NOT NULL,
 	"name" text NOT NULL,
 	"site_id" integer NOT NULL,
 	"rack_id" uuid,
@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS "qr_codes" (
 );
 
 CREATE TABLE IF NOT EXISTS "racks" (
-	"id" uuid DEFAULT gen_random_uuid(),
+	"id" uuid DEFAULT gen_random_uuid() NOT NULL,
 	"name" text NOT NULL,
 	"units" numeric NOT NULL,
 	"comment" text,
@@ -58,8 +58,8 @@ ALTER TABLE "sites" DROP CONSTRAINT "sites_site_group_id_site_groups_id_fk";
 
 ALTER TABLE "tenants" DROP CONSTRAINT "tenants_tenant_group_id_tenant_groups_id_fk";
 
-CREATE UNIQUE INDEX IF NOT EXISTS "device_types_id_index" ON "device_types" ("id");
-CREATE UNIQUE INDEX IF NOT EXISTS "device_types_name_index" ON "device_types" ("name");
+CREATE UNIQUE INDEX IF NOT EXISTS "device_types_id_index" ON "device_templates" ("id");
+CREATE UNIQUE INDEX IF NOT EXISTS "device_types_name_index" ON "device_templates" ("name");
 CREATE UNIQUE INDEX IF NOT EXISTS "devices_name_index" ON "devices" ("name");
 CREATE UNIQUE INDEX IF NOT EXISTS "qr_codes_id_index" ON "qr_codes" ("id");
 CREATE UNIQUE INDEX IF NOT EXISTS "racks_name_index" ON "racks" ("name");
