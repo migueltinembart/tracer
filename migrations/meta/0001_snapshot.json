@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "pg",
-  "id": "4de0ff35-ed72-4f6a-866e-46cfd78f970f",
+  "id": "aca48954-0d5d-47c3-9367-5f6835415c3e",
   "prevId": "40425551-9637-411f-b9af-940dca1e6287",
   "tables": {
     "tags": {
@@ -55,8 +55,8 @@
       },
       "uniqueConstraints": {}
     },
-    "device_types": {
-      "name": "device_types",
+    "device_templates": {
+      "name": "device_templates",
       "schema": "",
       "columns": {
         "id": {
@@ -110,8 +110,8 @@
       },
       "foreignKeys": {},
       "compositePrimaryKeys": {
-        "device_types_id": {
-          "name": "device_types_id",
+        "device_templates_id": {
+          "name": "device_templates_id",
           "columns": [
             "id"
           ]
@@ -127,7 +127,7 @@
           "name": "id",
           "type": "uuid",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "default": "gen_random_uuid()"
         },
         "name": {
@@ -623,7 +623,7 @@
           "name": "id",
           "type": "uuid",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "default": "gen_random_uuid()"
         },
         "name": {
