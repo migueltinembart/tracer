@@ -19,8 +19,15 @@ const insertContactGroupZodSchema = createInsertSchema(contactGroups).omit({
   updatedAt: true,
   createdAt: true,
 });
-const updateContactGroupZodSchema = createInsertSchema(contactGroups).omit({ updatedAt: true, createdAt: true });
-const updateContactGroupsZodSchema = z.array(updateContactGroupZodSchema);
+
+const updateContactGroupZodSchema = createInsertSchema(contactGroups).omit({
+  id: true,
+  updatedAt: true,
+  createdAt: true,
+});
+const updateContactGroupsZodSchema = z.array(
+  createInsertSchema(contactGroups).omit({ createdAt: true, updatedAt: true })
+);
 
 const swaggerOpts: FastifySchema = {
   tags: ['contact groups'],

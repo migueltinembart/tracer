@@ -19,8 +19,8 @@ const insertContactZodSchema = createInsertSchema(contacts).omit({
   updatedAt: true,
   createdAt: true,
 });
-const updateContactZodSchema = createInsertSchema(contacts).omit({ updatedAt: true, createdAt: true });
-const updateContactsZodSchema = z.array(updateContactZodSchema);
+const updateContactZodSchema = createInsertSchema(contacts).omit({ id: true, updatedAt: true, createdAt: true });
+const updateContactsZodSchema = z.array(createInsertSchema(contacts).omit({ createdAt: true, updatedAt: true }));
 
 const swaggerOpts: FastifySchema = {
   tags: ['contacts'],
