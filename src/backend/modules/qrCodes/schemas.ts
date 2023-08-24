@@ -1,10 +1,10 @@
 import { createSelectSchema, createInsertSchema } from 'drizzle-zod';
-import { qrCodes } from 'db/deviceManagement';
+import { qrCodes } from '@backend/db/deviceManagement';
 import { FastifySchema, RequestGenericInterface } from 'fastify';
 import { zodToJsonSchema } from 'zod-to-json-schema';
 import { z } from 'zod';
 import { InferModel } from 'drizzle-orm';
-import { createPaginationQueryStrings } from 'modules/pagination/apiUtils';
+import { createPaginationQueryStrings } from '@backend/modules/pagination/apiUtils';
 
 // zod schemas here
 

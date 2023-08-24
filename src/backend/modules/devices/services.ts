@@ -1,5 +1,5 @@
-import { devices } from 'db/deviceManagement';
-import { db } from 'utils/db';
+import { devices } from '@backend/db/deviceManagement';
+import { db } from '@backend/utils/db';
 import { eq, sql, asc, desc } from 'drizzle-orm';
 import { SelectDevicesInterface, InsertDevicesInterface, AllowedQueryStrings } from './schemas';
 

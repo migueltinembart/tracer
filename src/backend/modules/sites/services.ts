@@ -1,5 +1,5 @@
-import { sites } from 'db/entities';
-import { db } from 'utils/db';
+import { sites } from '@backend/db/entities';
+import { db } from '@backend/utils/db';
 import { eq, sql, asc, desc } from 'drizzle-orm';
 import { SelectSitesInterface, InsertSitesInterface, AllowedQueryStrings } from './schemas';
 

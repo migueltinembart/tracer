@@ -1,5 +1,5 @@
-import { tenantGroups } from 'db/entities';
-import { db } from 'utils/db';
+import { tenantGroups } from '@backend/db/entities';
+import { db } from '@backend/utils/db';
 import { eq, sql, asc, desc } from 'drizzle-orm';
 import { SelectTenantGroupsInterface, AllowedQueryStrings } from './schemas';
 
