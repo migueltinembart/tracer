@@ -23,7 +23,7 @@ const updateRackZodSchema = createInsertSchema(racks).omit({ id: true, updatedAt
 const updateRacksZodSchema = z.array(createInsertSchema(racks).omit({ createdAt: true, updatedAt: true }));
 
 const swaggerOpts: FastifySchema = {
-  tags: ['racks'],
+  tags: ['Racks'],
 };
 
 const getRacksByIdZodSchema = z

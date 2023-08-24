@@ -23,7 +23,7 @@ const updateSiteGroupZodSchema = createInsertSchema(siteGroups).omit({ id: true,
 const updateSiteGroupsZodSchema = z.array(createInsertSchema(siteGroups).omit({ createdAt: true, updatedAt: true }));
 
 const myschema: FastifySchema = {
-  tags: ['site groups'],
+  tags: ['Site Groups'],
 };
 
 const getSiteGroupsByIdZodSchema = z

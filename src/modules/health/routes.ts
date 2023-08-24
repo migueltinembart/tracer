@@ -7,7 +7,7 @@ export default async function healthRoutes(fastify: FastifyInstance) {
     {
       schema: {
         description: 'returns status information about the server',
-        tags: ['status'],
+        tags: ['Status'],
       },
     },
     (req, res) => {
