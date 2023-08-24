@@ -1,13 +1,16 @@
 {
+  "_moduleAliases": {
+    "@backend": "./"
+  },
   "name": "tracer",
   "version": "1.0.0",
   "description": "An Application that helps to solve tracking of devices on site and safe documentation the devices",
-  "main": "dist/app.js",
+  "main": "dist/main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "tsx watch src/backend/main.ts",
-    "build": "tsc",
-    "watch": "tsc && node dist/main",
+    "build": "tsc && tsc-alias",
+    "watch": "npm run build && node dist/main",
     "migrate": "drizzle-kit generate:pg"
   },
   "keywords": [
@@ -43,6 +46,7 @@
     "jest": "^29.6.2",
     "npm": "^9.8.1",
     "prettier": "3.0.1",
+    "tsc-alias": "^1.8.7",
     "tsx": "^3.12.7",
     "typescript": "^5.1.6"
   }
