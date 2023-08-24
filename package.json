@@ -8,7 +8,7 @@
   "main": "dist/main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev:server": "tsx watch src/backend/main.ts",
+    "dev:server": "tsx watch src/main.ts",
     "dev:client": "npm run --prefix src/frontend dev",
     "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\" ",
     "build": "tsc && tsc-alias",
