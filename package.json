@@ -8,7 +8,9 @@
   "main": "dist/main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "tsx watch src/backend/main.ts",
+    "dev:server": "tsx watch src/backend/main.ts",
+    "dev:client": "npm run --prefix src/frontend dev",
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\" ",
     "build": "tsc && tsc-alias",
     "watch": "npm run build && node dist/main",
     "migrate": "drizzle-kit generate:pg"
@@ -36,6 +38,7 @@
     "@types/node": "^20.4.9",
     "@types/pg": "^8.10.2",
     "@typescript-eslint/eslint-plugin": "^5.62.0",
+    "concurrently": "^8.2.1",
     "drizzle-kit": "^0.19.12",
     "eslint": "^8.46.0",
     "eslint-config-standard-with-typescript": "^37.0.0",
