@@ -1,21 +1,21 @@
 import fastify from 'fastify';
 import { logger } from './logger';
 import { env } from '../config/env';
-import healthRoutes from 'modules/health/routes';
+import healthRoutes from 'src/backend/modules/health/routes';
 import fastifySwagger from '@fastify/swagger';
 import fastifySwaggerUi from '@fastify/swagger-ui';
-import sitesRoutes from 'modules/sites/routes';
-import siteGroupsRoutes from 'modules/siteGroups/routes';
-import tenantsRoutes from 'modules/tenants/routes';
-import tenantGroupsRoutes from 'modules/tenantGroups/routes';
-import contactsRoutes from 'modules/contacts/routes';
-import contactGroupsRoutes from 'modules/contactGroups/routes';
-import locationsRoutes from 'modules/locations/routes';
-import racksRoutes from 'modules/racks/routes';
-import deviceTemplatesRoutes from 'modules/deviceTemplates/routes';
-import devicesRoutes from 'modules/devices/routes';
-import qrCodesRoutes from 'modules/qrCodes/routes';
-import interfacesRoutes from 'modules/interfaces/routes';
+import sitesRoutes from 'src/backend/modules/sites/routes';
+import siteGroupsRoutes from 'src/backend/modules/siteGroups/routes';
+import tenantsRoutes from 'src/backend/modules/tenants/routes';
+import tenantGroupsRoutes from 'src/backend/modules/tenantGroups/routes';
+import contactsRoutes from 'src/backend/modules/contacts/routes';
+import contactGroupsRoutes from 'src/backend/modules/contactGroups/routes';
+import locationsRoutes from 'src/backend/modules/locations/routes';
+import racksRoutes from 'src/backend/modules/racks/routes';
+import deviceTemplatesRoutes from 'src/backend/modules/deviceTemplates/routes';
+import devicesRoutes from 'src/backend/modules/devices/routes';
+import qrCodesRoutes from 'src/backend/modules/qrCodes/routes';
+import interfacesRoutes from 'src/backend/modules/interfaces/routes';
 
 export async function buildServer() {
   const app = fastify({
