@@ -34,7 +34,7 @@ const updateDeviceTemplatesZodSchema = z.array(
 );
 
 const swaggerOpts: FastifySchema = {
-  tags: ['DeviceTemplates'],
+  tags: ['Device Templates'],
 };
 
 const getDeviceTemplatesByIdZodSchema = z
