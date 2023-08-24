@@ -1,10 +1,10 @@
 import { createSelectSchema, createInsertSchema } from 'drizzle-zod';
-import { contactGroups } from 'db/entities';
+import { contactGroups } from 'src/backend/db/entities';
 import { FastifySchema, RequestGenericInterface } from 'fastify';
 import { zodToJsonSchema } from 'zod-to-json-schema';
 import { z } from 'zod';
 import { InferModel } from 'drizzle-orm';
-import { createPaginationQueryStrings } from 'modules/pagination/apiUtils';
+import { createPaginationQueryStrings } from 'src/backend/modules/pagination/apiUtils';
 
 // zod schemas here
 
