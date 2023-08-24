@@ -1,5 +1,5 @@
-import { siteGroups } from 'db/entities';
-import { db } from 'utils/db';
+import { siteGroups } from '@backend/db/entities';
+import { db } from '@backend/utils/db';
 import { eq, sql, asc, desc} from 'drizzle-orm';
 import { SelectSiteGroupsInterface, AllowedQueryStrings } from './schemas';
 

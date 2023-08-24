@@ -1,5 +1,5 @@
-import { contacts } from 'db/entities';
-import { db } from 'utils/db';
+import { contacts } from '@backend/db/entities';
+import { db } from '@backend/utils/db';
 import { eq, sql, asc, desc } from 'drizzle-orm';
 import { SelectContactsInterface, InsertContactsInterface, AllowedQueryStrings } from './schemas';
 

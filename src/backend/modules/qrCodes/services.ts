@@ -1,5 +1,5 @@
-import { qrCodes } from 'db/deviceManagement';
-import { db } from 'utils/db';
+import { qrCodes } from '@backend/db/deviceManagement';
+import { db } from '@backend/utils/db';
 import { eq, sql, asc, desc } from 'drizzle-orm';
 import { SelectQrCodesInterface, InsertQrCodesInterface, AllowedQueryStrings } from './schemas';
 

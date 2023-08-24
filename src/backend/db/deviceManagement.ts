@@ -81,7 +81,7 @@ export const deviceTemplates = pgTable(
 export const interfaces = pgTable(
   'interfaces',
   {
-    id: uuid('id').defaultRandom(),
+    id: uuid('id').notNull().defaultRandom(),
     name: text('name').notNull(),
     label: text('label'),
     deviceId: uuid('device_id')

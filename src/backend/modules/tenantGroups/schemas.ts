@@ -1,10 +1,10 @@
-import { tenantGroups } from 'src/backend/db/entities';
+import { tenantGroups } from '@backend/db/entities';
 import { InferModel } from 'drizzle-orm';
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import { FastifySchema } from 'fastify';
 import { z } from 'zod';
 import { zodToJsonSchema } from 'zod-to-json-schema';
-import { createPaginationQueryStrings } from 'src/backend/modules/pagination/apiUtils';
+import { createPaginationQueryStrings } from '@backend/modules/pagination/apiUtils';
 
 // zod schemas here
 const tenantGroupResponseZodSchema = createSelectSchema(tenantGroups);

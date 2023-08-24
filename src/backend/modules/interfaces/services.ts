@@ -1,5 +1,5 @@
-import { interfaces } from 'db/deviceManagement';
-import { db } from 'utils/db';
+import { interfaces } from '@backend/db/deviceManagement';
+import { db } from '@backend/utils/db';
 import { eq, sql, asc, desc } from 'drizzle-orm';
 import { SelectInterfacesInterface, InsertInterfacesInterface, AllowedQueryStrings } from './schemas';
 
@@ -30,11 +30,11 @@ export async function insertOneInterface(data: InsertInterfacesInterface) {
 }
 
 export async function updateInterfaces(data: SelectInterfacesInterface[]) {
-  const result = data.map(async (interface) => {
+  const result = data.map(async (ctx) => {
     return await db
       .update(interfaces)
-      .set({ ...interface, updatedAt: sql`NOW()` })
-      .where(eq(interfaces.id, interface.id))
+      .set({ ...ctx, updatedAt: sql`NOW()` })
+      .where(eq(interfaces.id, ctx.id))
       .returning();
   });
 

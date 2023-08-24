@@ -1,5 +1,5 @@
-import { locations } from 'db/entities';
-import { db } from 'utils/db';
+import { locations } from '@backend/db/entities';
+import { db } from '@backend/utils/db';
 import { eq, sql, asc, desc } from 'drizzle-orm';
 import { SelectLocationsInterface, InsertLocationsInterface, AllowedQueryStrings } from './schemas';
 

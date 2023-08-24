@@ -1,5 +1,5 @@
-import { racks } from 'db/entities';
-import { db } from 'utils/db';
+import { racks } from '@backend/db/entities';
+import { db } from '@backend/utils/db';
 import { eq, sql, asc, desc } from 'drizzle-orm';
 import { SelectRacksInterface, InsertRacksInterface, AllowedQueryStrings } from './schemas';
 

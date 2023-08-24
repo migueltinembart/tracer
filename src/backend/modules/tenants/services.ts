@@ -1,5 +1,5 @@
-import { tenants } from 'db/entities';
-import { db } from 'utils/db';
+import { tenants } from '@backend/db/entities';
+import { db } from '@backend/utils/db';
 import { eq, sql, desc, asc } from 'drizzle-orm';
 import { SelectTenantsInterface, InsertTenantsInterface } from './schemas';
 import { AllowedQueryStrings } from './schemas';
