@@ -13,6 +13,8 @@ import contactGroupsRoutes from 'modules/contactGroups/routes';
 import locationsRoutes from 'modules/locations/routes';
 import racksRoutes from 'modules/racks/routes';
 import deviceTemplatesRoutes from 'modules/deviceTemplates/routes';
+import devicesRoutes from 'modules/devices/routes';
+import qrCodesRoutes from 'modules/qrCodes/routes';
 
 export async function buildServer() {
   const app = fastify({
@@ -43,6 +45,8 @@ export async function buildServer() {
   await app.register(locationsRoutes, { prefix: 'api/locations' });
   await app.register(racksRoutes, { prefix: 'api/racks' });
   await app.register(deviceTemplatesRoutes, { prefix: 'api/device-templates' });
+  await app.register(devicesRoutes, {prefix: "api/devices"})
+  await app.register(qrCodesRoutes, { prefix: 'api/qr' });
 
   await app.ready();
   app.swagger();
