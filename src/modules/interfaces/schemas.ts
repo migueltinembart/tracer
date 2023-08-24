@@ -23,7 +23,7 @@ const updateInterfaceZodSchema = createInsertSchema(interfaces).omit({ id: true,
 const updateInterfacesZodSchema = z.array(createInsertSchema(interfaces).omit({ createdAt: true, updatedAt: true }));
 
 const swaggerOpts: FastifySchema = {
-  tags: ['QR Codes'],
+  tags: ['Interfaces'],
 };
 
 const getInterfacesByIdZodSchema = z

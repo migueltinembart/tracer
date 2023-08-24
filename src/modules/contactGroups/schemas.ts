@@ -30,7 +30,7 @@ const updateContactGroupsZodSchema = z.array(
 );
 
 const swaggerOpts: FastifySchema = {
-  tags: ['contact groups'],
+  tags: ['Contact Groups'],
 };
 
 const getContactGroupsByIdZodSchema = z

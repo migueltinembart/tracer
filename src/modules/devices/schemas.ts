@@ -23,7 +23,7 @@ const updateDeviceZodSchema = createInsertSchema(devices).omit({ id: true, updat
 const updateDevicesZodSchema = z.array(createInsertSchema(devices).omit({ createdAt: true, updatedAt: true }));
 
 const swaggerOpts: FastifySchema = {
-  tags: ['devices'],
+  tags: ['Devices'],
 };
 
 const getDevicesByIdZodSchema = z

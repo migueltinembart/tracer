@@ -22,7 +22,7 @@ const updateTenantZodSchema = createInsertSchema(tenants).omit({ id: true, updat
 const updateTenantsZodSchema = z.array(createInsertSchema(tenants).omit({ createdAt: true, updatedAt: true }));
 
 const myschema: FastifySchema = {
-  tags: ['tenants'],
+  tags: ['Tenants'],
 };
 
 const getTenantsByIdZodSchema = z
