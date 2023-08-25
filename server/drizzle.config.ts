@@ -3,7 +3,7 @@ import { env } from 'config/env';
 
 export default {
   out: './migrations',
-  schema: './src/db/*.ts',
+  schema: './db/*.ts',
   breakpoints: false,
   driver: 'pg',
   dbCredentials: {
