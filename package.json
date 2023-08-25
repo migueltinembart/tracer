@@ -14,7 +14,8 @@
     "build:server": "npm run --prefix ./server build",
     "build:client": "npm run --prefix ./client build",
     "watch:server": "npm run --prefix ./server watch",
-    "watch:client": "npm run --prefix ./client preview"
+    "watch:client": "npm run --prefix ./client preview",
+    "db:migrate": "npm run --prefix server migrate"
   },
   "keywords": [
     "tracer"
