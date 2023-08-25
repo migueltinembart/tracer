@@ -1,25 +1,17 @@
 {
-  "_moduleAliases": {
-    "@backend": "./"
-  },
   "name": "tracer",
   "version": "1.0.0",
-  "description": "An Application that helps to solve tracking of devices on site and safe documentation the devices",
-  "main": "dist/main.js",
+  "description": "[![GitHub Stars](https://img.shields.io/github/stars/IgorAntun/node-chat.svg)](https://github.com/migueltinembart/tracer/stargazers) [![GitHub Issues](https://img.shields.io/github/issues/IgorAntun/node-chat.svg)](https://github.com/migueltinembart/tracer/issues) [![Current Version](https://img.shields.io/badge/version-1.0.7-green.svg)](https://github.com/migueltinembart/tracer)",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev:server": "tsx watch src/main.ts",
-    "dev:client": "npm run --prefix src/frontend dev",
-    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\" ",
-    "build": "tsc && tsc-alias",
-    "watch": "npm run build && node dist/main",
-    "migrate": "drizzle-kit generate:pg"
+    "dev:server": "npm run --prefix ./server dev",
+    "dev:client": "npm run --prefix ./client dev",
+    "build:server": "npm run --prefix ./server build",
+    "build:client": "npm run --prefix ./client build",
+    "watch:server": "npm run --prefix ./server watch",
+    "watch:client": "npm run --prefix ./client preview"
   },
-  "keywords": [
-    "tracer"
-  ],
-  "author": "Miguel Tinembart",
-  "license": "GPL-3.0",
   "dependencies": {
     "@fastify/swagger": "^8.8.0",
     "@fastify/swagger-ui": "^1.9.3",
@@ -51,6 +43,12 @@
     "prettier": "3.0.1",
     "tsc-alias": "^1.8.7",
     "tsx": "^3.12.7",
-    "typescript": "^5.1.6"
-  }
+    "typescript": "^5.1.6",
+    "vite": "^4.4.9"
+  },
+  "keywords": [
+    "tracer"
+  ],
+  "author": "Miguel Tinembart",
+  "license": "GPL-3.0"
 }
