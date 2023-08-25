@@ -1,0 +1,13 @@
+{
+  "name": "tracer",
+  "version": "1.0.0",
+  "description": "An Application that helps to solve tracking of devices on site and safe documentation the devices",
+  "main": "../build/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "tsx watch ./main.ts",
+    "build": "tsc && tsc-alias",
+    "watch": "npm run build && node ../build/main",
+    "migrate": "drizzle-kit generate:pg"
+  }
+}
