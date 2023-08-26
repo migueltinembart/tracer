@@ -21,5 +21,8 @@
     "tracer"
   ],
   "author": "Miguel Tinembart",
-  "license": "GPL-3.0"
+  "license": "GPL-3.0",
+  "dependencies": {
+    "@fastify/static": "^6.10.2"
+  }
 }

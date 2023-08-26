@@ -10,7 +10,7 @@ async function main() {
 
   await migrate(db, { migrationsFolder: env.MIGRATION_FOLDER });
 
-  app.listen({
+  await app.listen({
     port: env.PORT,
     host: env.HOST,
   });
