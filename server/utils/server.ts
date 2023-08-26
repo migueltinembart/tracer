@@ -16,6 +16,7 @@ import deviceTemplatesRoutes from 'modules/deviceTemplates/routes';
 import devicesRoutes from 'modules/devices/routes';
 import qrCodesRoutes from 'modules/qrCodes/routes';
 import interfacesRoutes from 'modules/interfaces/routes';
+import { catchAllRoutes } from 'modules/catchall/routes';
 
 export async function buildServer() {
   const app = fastify({
@@ -49,9 +50,9 @@ export async function buildServer() {
   await app.register(devicesRoutes, { prefix: 'api/devices' });
   await app.register(qrCodesRoutes, { prefix: 'api/qr' });
   await app.register(interfacesRoutes, { prefix: 'api/interfaces' });
-
+  await app.register(catchAllRoutes);
   await app.ready();
   app.swagger();
-
+  
   return app;
 }
