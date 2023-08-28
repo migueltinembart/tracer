@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "[![GitHub Stars](https://img.shields.io/github/stars/IgorAntun/node-chat.svg)](https://github.com/migueltinembart/tracer/stargazers) [![GitHub Issues](https://img.shields.io/github/issues/IgorAntun/node-chat.svg)](https://github.com/migueltinembart/tracer/issues) [![Current Version](https://img.shields.io/badge/version-1.0.7-green.svg)](https://github.com/migueltinembart/tracer)",
   "main": "index.js",
+  "engines": {
+    "pnpm": ">=7"
+  },
   "workspaces": [
     "server",
     "client"
@@ -22,7 +25,5 @@
   ],
   "author": "Miguel Tinembart",
   "license": "GPL-3.0",
-  "dependencies": {
-    "@fastify/static": "^6.10.2"
-  }
+  "packageManager": "pnpm@8.7.0"
 }

@@ -11,6 +11,7 @@
     "migrate": "drizzle-kit generate:pg"
   },
   "dependencies": {
+    "@fastify/static": "^6.10.2",
     "@fastify/swagger": "^8.8.0",
     "@fastify/swagger-ui": "^1.9.3",
     "dotenv": "^16.3.1",
