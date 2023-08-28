@@ -1,22 +1,22 @@
 import fastify from 'fastify';
 import { logger } from './logger';
 import { env } from '../config/env';
-import healthRoutes from 'modules/health/routes';
+import healthRoutes from 'modules/REST/health/routes';
 import fastifySwagger from '@fastify/swagger';
 import fastifySwaggerUi from '@fastify/swagger-ui';
-import sitesRoutes from 'modules/sites/routes';
-import siteGroupsRoutes from 'modules/siteGroups/routes';
-import tenantsRoutes from 'modules/tenants/routes';
-import tenantGroupsRoutes from 'modules/tenantGroups/routes';
-import contactsRoutes from 'modules/contacts/routes';
-import contactGroupsRoutes from 'modules/contactGroups/routes';
-import locationsRoutes from 'modules/locations/routes';
-import racksRoutes from 'modules/racks/routes';
-import deviceTemplatesRoutes from 'modules/deviceTemplates/routes';
-import devicesRoutes from 'modules/devices/routes';
-import qrCodesRoutes from 'modules/qrCodes/routes';
-import interfacesRoutes from 'modules/interfaces/routes';
-import { catchAllRoutes } from 'modules/catchall/routes';
+import sitesRoutes from 'modules/REST/sites/routes';
+import siteGroupsRoutes from 'modules/REST/siteGroups/routes';
+import tenantsRoutes from 'modules/REST/tenants/routes';
+import tenantGroupsRoutes from 'modules/REST/tenantGroups/routes';
+import contactsRoutes from 'modules/REST/contacts/routes';
+import contactGroupsRoutes from 'modules/REST/contactGroups/routes';
+import locationsRoutes from 'modules/REST/locations/routes';
+import racksRoutes from 'modules/REST/racks/routes';
+import deviceTemplatesRoutes from 'modules/REST/deviceTemplates/routes';
+import devicesRoutes from 'modules/REST/devices/routes';
+import qrCodesRoutes from 'modules/REST/qrCodes/routes';
+import interfacesRoutes from 'modules/REST/interfaces/routes';
+import { catchAllRoutes } from 'modules/REST/catchall/routes';
 
 export async function buildServer() {
   const app = fastify({

@@ -2,9 +2,9 @@ import { createSelectSchema, createInsertSchema } from 'drizzle-zod';
 import { deviceTemplates } from 'db/deviceManagement';
 import { FastifySchema } from 'fastify';
 import { zodToJsonSchema } from 'zod-to-json-schema';
-import { any, z } from 'zod';
+import { z } from 'zod';
 import { InferModel } from 'drizzle-orm';
-import { createPaginationQueryStrings } from 'modules/pagination/apiUtils';
+import { createPaginationQueryStrings } from 'modules/REST/pagination/apiUtils';
 
 // zod schemas here
 
@@ -71,7 +71,9 @@ export const putDeviceTemplateSchema: FastifySchema = {
   ...swaggerOpts,
   params: zodToJsonSchema(getDeviceTemplatesByIdZodSchema),
   body: zodToJsonSchema(updateDeviceTemplateZodSchema),
-  response: { 200: zodToJsonSchema(deviceTemplateResponseZodSchema) },
+  response: { 200: zodToJsonSchema(z.object({
+    
+  })) },
 };
 
 export const deleteDeviceTemplateSchema: FastifySchema = {

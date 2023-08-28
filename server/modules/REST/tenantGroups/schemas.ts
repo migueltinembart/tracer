@@ -4,7 +4,7 @@ import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import { FastifySchema } from 'fastify';
 import { z } from 'zod';
 import { zodToJsonSchema } from 'zod-to-json-schema';
-import { createPaginationQueryStrings } from 'modules/pagination/apiUtils';
+import { createPaginationQueryStrings } from 'modules/REST/pagination/apiUtils';
 
 // zod schemas here
 const tenantGroupResponseZodSchema = createSelectSchema(tenantGroups);
