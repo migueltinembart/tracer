@@ -13,11 +13,12 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev:server": "npm run --prefix ./server dev",
-    "dev:client": "npm run --prefix ./client dev",
+    "dev:client": "pnpm run --prefix ./client dev",
+    "dev": "concurrently \"pnpm run dev:server\" \"pnpm run dev:client\" ",
     "build:server": "npm run --prefix ./server build",
     "build:client": "npm run --prefix ./client build",
     "watch:server": "npm run --prefix ./server watch",
-    "watch:client": "npm run --prefix ./client preview",
+    "watch:client": "npm run --prefix ./client watch",
     "db:migrate": "npm run --prefix server migrate"
   },
   "keywords": [
