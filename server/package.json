@@ -1,5 +1,5 @@
 {
-  "name": "tracer",
+  "name": "server",
   "version": "1.0.0",
   "description": "An Application that helps to solve tracking of devices on site and safe documentation the devices",
   "main": "../build/main.js",
