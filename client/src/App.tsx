@@ -1,115 +1,19 @@
-import { useEffect, useState } from "react";
-import reactLogo from "./assets/react.svg";
-import { Outlet } from "react-router-dom";
-import { Button } from "./components/ui/button";
+import { SiteCreatorCard } from "./components/layout/dashboardItems.tsx/SIteCreatorCard";
+import { NavBar } from "./components/layout/navbar";
+
 
 function App() {
   return (
-    <>
-      <body className="h-screen w-screen ">
-        <div className="drawer lg:drawer-open">
-          <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
-          <div className="drawer-content ">
-            <div className="navbar h-16 max-md:sticky top-0 bg-base-100">
-              <div className="navbar-start">
-                <div className="h-16 px-4 flex items-cente lg:hidden">
-                  <a className="normal-case text-xl p-4">Tracer</a>
-                </div>
-              </div>
-              <div className="navbar-center">
-                
-              </div>
-              <div className="navbar-end">
-                <div className="flex">
-                  <div className="dropdown dropdown-end">
-                    <label tabIndex={0} className="btn btn-ghost btn-circle">
-                      <div className="indicator">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-5 w-5"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
-                          />
-                        </svg>
-                        <span className="badge badge-sm indicator-item">8</span>
-                      </div>
-                    </label>
-                    <div
-                      tabIndex={0}
-                      className="mt-3 z-[1] card card-compact dropdown-content w-52 bg-base-100 shadow"
-                    >
-                      <div className="card-body">
-                        <span className="font-bold text-lg">8 Items</span>
-                        <span className="text-info">Subtotal: $999</span>
-                        <div className="card-actions">
-                          <button className="btn btn-primary btn-block">
-                            View cart
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="dropdown dropdown-end">
-                    <label
-                      tabIndex={0}
-                      className="btn btn-ghost btn-circle avatar"
-                    >
-                      <div className="w-10 rounded-full">
-                        <img src="man-avatar-profile-picture-vector-illustration_268834-538.png" />
-                      </div>
-                    </label>
-                    <ul
-                      tabIndex={0}
-                      className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
-                    >
-                      <li>
-                        <a className="justify-between">
-                          Profile
-                          <span className="badge">New</span>
-                        </a>
-                      </li>
-                      <li>
-                        <a>Settings</a>
-                      </li>
-                      <li>
-                        <a>Logout</a>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <label
-              htmlFor="my-drawer-2"
-              className="btn btn-primary drawer-button lg:hidden"
-            >
-              Open drawer
-            </label>
-          </div>
-          <div className="drawer-side">
-            <label htmlFor="my-drawer-2" className="drawer-overlay"></label>
-            <div className="h-16 px-4 flex items-center">
-              <a className="normal-case text-xl p-4">Tracer</a>
-            </div>
-            <ul className="menu px-4 w-80 min-h-full text-base-content">
-              <li>
-                <a>Sidebar Item 1</a>
-              </li>
-              <li>
-                <a>Sidebar Item 2</a>
-              </li>
-            </ul>
+    <body className="h-screen w-screen">
+      <div className="w-full h-full flex flex-col pb-6">
+        <NavBar className="h-12 border-b-[2px] border-gray-300 shadow-md flex items-center gap-8 py-2 mb-6 px-28"></NavBar>
+        <div className="w-full h-full px-28">
+          <div className="border border-gray-300 rounded-sm grid h-full p-6 grid-cols-5 grid-rows-5 gap-6 grid-flow-col">
+            <SiteCreatorCard></SiteCreatorCard>
           </div>
         </div>
-      </body>
-    </>
+      </div>
+    </body>
   );
 }
 
