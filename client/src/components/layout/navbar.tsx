@@ -27,14 +27,12 @@ export type Props = {
 
 export function NavBar(props: Props) {
   return (
-    
-      <div
-        className={` ${props.className}`}
-      >
+    <div className="flex flex-col mb-6 shadow-md">
+      <div className={` ${props.className}`}>
         <div className="navbar-start">
           <span className="text-lg">tracer</span>
         </div>
-        <div className="navbar-center">
+        <div className="navbar-center max-md:hidden">
           <NavigationMenu>
             <NavigationMenuList>
               <NavigationMenuItem>
@@ -196,5 +194,7 @@ export function NavBar(props: Props) {
           </Avatar>
         </div>
       </div>
+      <div className="py-1 text-sm px-6 md:hidden lg:hidden">Test</div>
+    </div>
   );
 }
