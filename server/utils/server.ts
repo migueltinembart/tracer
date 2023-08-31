@@ -17,6 +17,9 @@ import devicesRoutes from 'modules/REST/devices/routes';
 import qrCodesRoutes from 'modules/REST/qrCodes/routes';
 import interfacesRoutes from 'modules/REST/interfaces/routes';
 import { catchAllRoutes } from 'modules/REST/catchall/routes';
+import { fastifyTRPCPlugin } from '@trpc/server/adapters/fastify';
+import { appRouter } from 'utils/trpc/routers';
+import { createContext } from './trpc/context';
 
 export async function buildServer() {
   const app = fastify({
@@ -24,6 +27,11 @@ export async function buildServer() {
   });
 
   logger.debug(env, 'using env');
+
+  await app.register(fastifyTRPCPlugin, {
+    prefix: '/trpc',
+    trpcOptions: { router: appRouter, createContext },
+  });
 
   await app.register(fastifySwagger, {
     openapi: {
@@ -53,6 +61,6 @@ export async function buildServer() {
   await app.register(catchAllRoutes);
   await app.ready();
   app.swagger();
-  
+
   return app;
 }

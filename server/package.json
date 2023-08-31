@@ -24,6 +24,7 @@
     "pino": "^8.15.0",
     "pino-pretty": "^10.2.0",
     "postgres": "^3.3.5",
+    "superjson": "^1.13.1",
     "watch": "^1.0.2",
     "zod": "^3.21.4",
     "zod-to-json-schema": "^3.21.4"

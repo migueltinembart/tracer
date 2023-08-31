@@ -11,7 +11,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": "http://0.0.0.0:5000/",
-      "/docs": "http://0.0.0.0:5000"
+      "/docs": "http://0.0.0.0:5000",
     },
   },
   resolve: {

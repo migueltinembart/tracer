@@ -1,5 +1,18 @@
-import { SiteCreatorCard, TenantCreatorCard } from "@/components/layout/dashboardItems";
-import { NavBar } from "./components/layout/navbar";
+import {
+  SiteCreatorCard,
+  TenantCreatorCard,
+} from "@client/src/components/layout/dashboardItems";
+import { NavBar } from "./components/layout/navbar/navbar";
+import { createTRPCProxyClient, httpBatchLink } from "@trpc/client";
+import type { AppRouter } from "@server/utils/trpc/routers";
+
+const trpc = createTRPCProxyClient<AppRouter>({
+  links: [
+    httpBatchLink({
+      url: "http://0.0.0.0:5000",
+    }),
+  ],
+});
 
 function App() {
   return (
@@ -10,6 +23,7 @@ function App() {
           <div className="border max-md:border-hidden max-md:px-0 border-gray-300 rounded-lg grid h-full p-6 lg:grid-cols-6 grid-rows-5 md:grid-cols-4 gap-6 grid-flow-row">
             <SiteCreatorCard></SiteCreatorCard>
             <TenantCreatorCard className="row-start-3"></TenantCreatorCard>
+            <div>{}</div>
           </div>
         </div>
       </div>

@@ -1,12 +1,5 @@
 import { Outlet, Link } from "react-router-dom";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -16,10 +9,10 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
   NavigationMenuViewport,
-} from "@/components/ui/navigation-menu";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+} from "@client/src/components/ui/navigation-menu";
+import { Switch } from "@client/src/components/ui/switch";
+import { Label } from "@client/src/components/ui/label";
+import { NavBarAvatar } from "./Avatar";
 
 export type Props = {
   className?: string;
@@ -187,11 +180,7 @@ export function NavBar(props: Props) {
             <Switch id="airplane-mode" />
             <Label htmlFor="airplane-mode">Color Mode</Label>
           </div>
-
-          <Avatar className="w-9 h-9">
-            <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-            <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
+          <NavBarAvatar></NavBarAvatar>
         </div>
       </div>
       <div className="py-1 text-sm px-6 md:hidden lg:hidden">Test</div>
