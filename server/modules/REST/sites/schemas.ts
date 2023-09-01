@@ -14,13 +14,13 @@ const siteCollectionResponseZodSchema = z.array(siteResponseZodSchema);
 
 export const allowedQueryStrings = createPaginationQueryStrings(siteResponseZodSchema);
 
-const insertSiteZodSchema = createInsertSchema(sites).omit({
+export const insertSiteZodSchema = createInsertSchema(sites).omit({
   id: true,
   updatedAt: true,
   createdAt: true,
 });
-const updateSiteZodSchema = createInsertSchema(sites).omit({ id: true, updatedAt: true, createdAt: true });
-const updateSitesZodSchema = z.array(createInsertSchema(sites).omit({ createdAt: true, updatedAt: true }));
+export const updateSiteZodSchema = createInsertSchema(sites).omit({ id: true, updatedAt: true, createdAt: true });
+export const updateSitesZodSchema = z.array(createInsertSchema(sites).omit({ createdAt: true, updatedAt: true }));
 
 const swaggerOpts: FastifySchema = {
   tags: ['Sites'],
