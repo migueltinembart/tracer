@@ -29,5 +29,9 @@
   "packageManager": "pnpm@8.7.0",
   "devDependencies": {
     "concurrently": "^8.2.1"
+  },
+  "dependencies": {
+    "@trpc/client": "^10.38.1",
+    "@trpc/server": "^10.38.1"
   }
 }

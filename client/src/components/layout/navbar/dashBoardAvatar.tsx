@@ -1,13 +1,9 @@
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@client/src/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@client/src/components/ui/popover";
+} from "@/components/ui/popover";
 
 export function NavBarAvatar() {
   return (

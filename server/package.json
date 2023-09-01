@@ -14,7 +14,7 @@
     "@fastify/static": "^6.10.2",
     "@fastify/swagger": "^8.8.0",
     "@fastify/swagger-ui": "^1.9.3",
-    "@trpc/server": "^10.38.0",
+    "@trpc/server": "^10.38.1",
     "dotenv": "^16.3.1",
     "drizzle-orm": "^0.28.1",
     "drizzle-zod": "^0.5.0",

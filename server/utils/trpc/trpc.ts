@@ -6,7 +6,7 @@ const t = initTRPC.context<Context>().create({
   errorFormatter({ shape }) {
     return shape;
   },
-  transformer: superjson,
+  isDev: true,
 });
 
 export const router = t.router;

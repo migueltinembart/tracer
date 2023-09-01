@@ -9,10 +9,10 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
   NavigationMenuViewport,
-} from "@client/src/components/ui/navigation-menu";
-import { Switch } from "@client/src/components/ui/switch";
-import { Label } from "@client/src/components/ui/label";
-import { NavBarAvatar } from "./Avatar";
+} from "@/components/ui/navigation-menu";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { NavBarAvatar } from "./dashBoardAvatar";
 
 export type Props = {
   className?: string;

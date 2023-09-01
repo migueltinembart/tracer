@@ -1,4 +1,4 @@
-import { Button } from "@client/src/components/ui/button";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -6,16 +6,16 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@client/src/components/ui/card";
-import { Input } from "@client/src/components/ui/input";
-import { Label } from "@client/src/components/ui/label";
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@client/src/components/ui/select";
+} from "@/components/ui/select";
 
 export type Props = {
   className?: string;
