@@ -10,7 +10,7 @@ import { createPaginationQueryStrings } from 'modules/REST/pagination/apiUtils';
 
 const siteResponseZodSchema = createSelectSchema(sites);
 
-const siteCollectionResponseZodSchema = z.array(siteResponseZodSchema);
+export const siteCollectionResponseZodSchema = z.array(siteResponseZodSchema);
 
 export const allowedQueryStrings = createPaginationQueryStrings(siteResponseZodSchema);
 

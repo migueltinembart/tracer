@@ -5,6 +5,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
+
 export function NavBarAvatar() {
   return (
     <Popover>
