@@ -18,11 +18,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {Toaster} from "@/components/ui/toaster"
 
 export function Dashboard() {
   return (
     <>
-      <Card className={`col-span-3 row-span-3`}>
+      <Card className={``}>
         <CardHeader>
           <CardTitle>Create Site</CardTitle>
           <CardDescription>Create a Site in one Click</CardDescription>
@@ -31,7 +32,7 @@ export function Dashboard() {
           <SiteForm></SiteForm>
         </CardContent>
       </Card>
-      <Card className={`col-span-3 row-span-3`}>
+      <Card className={``}>
         <CardHeader>
           <CardTitle>Create Tenant</CardTitle>
           <CardDescription>Create a Site in one Click</CardDescription>
@@ -65,6 +66,7 @@ export function Dashboard() {
           <Button>Deploy</Button>
         </CardFooter>
       </Card>
+      
     </>
   );
 }

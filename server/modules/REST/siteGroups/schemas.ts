@@ -7,13 +7,13 @@ import { InferModel } from 'drizzle-orm';
 import { createPaginationQueryStrings } from 'modules/REST/pagination/apiUtils';
 // zod schemas here
 
-const siteGroupResponseZodSchema = createSelectSchema(siteGroups);
+export const siteGroupResponseZodSchema = createSelectSchema(siteGroups);
 
-const siteGroupCollectionResponseZodSchema = z.array(siteGroupResponseZodSchema);
+export const siteGroupCollectionResponseZodSchema = z.array(siteGroupResponseZodSchema);
 
 export const allowedQueryStrings = createPaginationQueryStrings(siteGroupResponseZodSchema);
 
-const insertsiteGroupZodSchema = createInsertSchema(siteGroups).omit({
+export const insertSiteGroupZodSchema = createInsertSchema(siteGroups).omit({
   id: true,
   updatedAt: true,
   createdAt: true,
@@ -46,7 +46,7 @@ export const getByIdSchema: FastifySchema = {
 
 export const postSiteGroupSchema: FastifySchema = {
   ...myschema,
-  body: zodToJsonSchema(insertsiteGroupZodSchema),
+  body: zodToJsonSchema(insertSiteGroupZodSchema),
   response: { 201: zodToJsonSchema(siteGroupResponseZodSchema) },
 };
 

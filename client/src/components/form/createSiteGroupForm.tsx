@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/select";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { trpc } from "@/lib/trpc";
+import { RouterInput, trpc } from "@/lib/trpc";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { z } from "zod";
@@ -45,6 +45,14 @@ import {
   DialogHeader,
   DialogTrigger,
 } from "@/components/form/Dialog";
+import { AppRouter } from "@server/utils/trpc/routers";
+import { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
+
+type RouterInput = inferRouterInputs<AppRouter>;
+type RouterOutput = inferRouterOutputs<AppRouter>;
+
+type SiteGroupInput = RouterInput["siteGroups"]["insertOne"];
+type SiteGroupOutput = RouterOutput["siteGroups"]["getOneById"];
 
 const siteFormSchema = z.object({
   name: z
@@ -57,13 +65,11 @@ const siteFormSchema = z.object({
 });
 
 export function SiteForm() {
-  const form = useForm<z.infer<typeof siteFormSchema>>({
+  const form = useForm<SiteGroupInput>({
     resolver: zodResolver(siteFormSchema),
     defaultValues: {
       name: "",
-      status: "active",
       comment: undefined,
-      siteGroupId: undefined,
     },
   });
 
@@ -219,7 +225,6 @@ export function SiteForm() {
                                   easier.
                                 </DialogDescription>
                               </DialogHeader>
-                              
                             </DialogContent>
                           </div>
                         </div>

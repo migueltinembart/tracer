@@ -13,8 +13,8 @@ export const sitesRouter = router({
     return await db.select().from(sites).where(eq(sites.id, opts.input));
   }),
   insertOne: publicProcedure.input(insertSiteZodSchema).mutation(async (opts) => {
-    console.log(opts)
-    await db.insert(sites).values(opts.input);
-    return true;
+    console.log(opts);
+    const result = await db.insert(sites).values(opts.input).returning();
+    return result[0];
   }),
 });

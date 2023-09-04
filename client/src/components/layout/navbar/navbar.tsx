@@ -51,11 +51,10 @@ export function NavBar(props: Props) {
                       <NavigationMenuLink asChild>
                         <Link to={"/"}>
                           <div className="mb-2 mt-4 text-lg font-medium">
-                            Tenants
+                            Sites
                           </div>
                           <p className="text-md">
-                            Create Tenants which can house their own sites and
-                            contacts
+                            create Sites which can hold devices inside of locations
                           </p>
                         </Link>
                       </NavigationMenuLink>
@@ -64,11 +63,10 @@ export function NavBar(props: Props) {
                       <NavigationMenuLink asChild>
                         <Link to={"/"}>
                           <div className="mb-2 mt-4 text-lg font-medium">
-                            Tenants
+                            Site Groups
                           </div>
                           <p className="text-md">
-                            Create Tenants which can house their own sites and
-                            contacts
+                            Group many sites together in a group
                           </p>
                         </Link>
                       </NavigationMenuLink>
@@ -77,7 +75,7 @@ export function NavBar(props: Props) {
                       <NavigationMenuLink asChild>
                         <Link to={"/"}>
                           <div className="mb-2 mt-4 text-lg font-medium">
-                            Tenants
+                            locations
                           </div>
                           <p className="text-md">
                             Create Tenants which can house their own sites and
