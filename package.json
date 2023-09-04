@@ -32,6 +32,7 @@
   },
   "dependencies": {
     "@trpc/client": "^10.38.1",
-    "@trpc/server": "^10.38.1"
+    "@trpc/server": "^10.38.1",
+    "lucide-react": "^0.270.0"
   }
 }

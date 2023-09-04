@@ -8,6 +8,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -20,8 +25,17 @@ import { trpc } from "@/lib/trpc";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { z } from "zod";
-import { toast } from "../ui/use-toast";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from "../ui/command";
+import { CheckIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { CaretSortIcon } from "@radix-ui/react-icons";
 
 const siteFormSchema = z.object({
   name: z
@@ -30,32 +44,41 @@ const siteFormSchema = z.object({
     .max(64, { message: "Name cannot be longer than 64 characters" }),
   status: z.enum(["active", "planned", "staging", "retired"]),
   comment: z.string({ description: "Add a comment" }).optional(),
-  group: z.number(),
+  siteGroupId: z.number().optional(),
 });
 
-export function SiteForm() {
-  const { mutate, data, isError, isLoading, isIdle } =
-    trpc.sites.insertOne.useMutation();
+const siteGroups = [
+  {
+    value: 1,
+    label: "Site Group 1",
+  },
+  {
+    value: 2,
+    label: "Sit Group 2",
+  },
+  {
+    value: 3,
+    label: "Site Group 3",
+  },
+];
 
+export function SiteForm() {
   const form = useForm<z.infer<typeof siteFormSchema>>({
     resolver: zodResolver(siteFormSchema),
     defaultValues: {
       name: "",
       status: "active",
       comment: undefined,
-      group: undefined,
+      siteGroupId: undefined,
     },
   });
 
-  async function onSubmit(values?: z.infer<typeof siteFormSchema>) {
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
+  const { data, mutate } = trpc.sites.insertOne.useMutation();
+
+  async function onSubmit(values: z.infer<typeof siteFormSchema>) {
+    console.log(values);
+    mutate(values);
+    form.reset();
   }
 
   return (
@@ -106,9 +129,80 @@ export function SiteForm() {
             <FormItem>
               <FormLabel>Comment</FormLabel>
               <FormControl>
-                <Textarea></Textarea>
+                <Textarea value={field.value}></Textarea>
               </FormControl>
               <FormDescription>Try to be as exact as possible</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="siteGroupId"
+          render={({ field }) => (
+            <FormItem className="flex flex-col">
+              <FormLabel>Site group</FormLabel>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <FormControl>
+                    <Button
+                      variant="outline"
+                      role="combobox"
+                      className={cn(
+                        "w-full justify-between",
+                        !field.value && "text-muted-foreground"
+                      )}
+                    >
+                      {field.value
+                        ? siteGroups.find(
+                            (sitegroup) => sitegroup.value === field.value
+                          )?.label
+                        : "Select site group"}
+                      <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    </Button>
+                  </FormControl>
+                </PopoverTrigger>
+                <PopoverContent className="w-[200px] p-0">
+                  <Command className="w-full">
+                    <CommandInput
+                      placeholder="Search site groups"
+                      className="h-9"
+                    />
+                    <CommandEmpty>
+                      <div className="flex flex-col">
+                        <div>Want to create a new site?</div>
+                        <div>
+                          <Button>Create</Button>
+                        </div>
+                      </div>
+                    </CommandEmpty>
+                    <CommandGroup>
+                      {siteGroups.map((sitegroup) => (
+                        <CommandItem
+                          value={sitegroup.label}
+                          key={sitegroup.value}
+                          onSelect={() => {
+                            form.setValue("siteGroupId", sitegroup.value);
+                          }}
+                        >
+                          {sitegroup.label}
+                          <CheckIcon
+                            className={cn(
+                              "ml-auto h-4 w-4",
+                              sitegroup.value === field.value
+                                ? "opacity-100"
+                                : "opacity-0"
+                            )}
+                          />
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </Command>
+                </PopoverContent>
+              </Popover>
+              <FormDescription>
+                This is the sitegroup that will be used in the dashboard.
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}

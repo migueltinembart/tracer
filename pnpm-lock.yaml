@@ -14,6 +14,9 @@ importers:
       '@trpc/server':
         specifier: ^10.38.1
         version: 10.38.1
+      lucide-react:
+        specifier: ^0.270.0
+        version: 0.270.0(react@18.2.0)
     devDependencies:
       concurrently:
         specifier: ^8.2.1
