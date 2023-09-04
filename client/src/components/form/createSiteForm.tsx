@@ -45,6 +45,7 @@ import {
   DialogHeader,
   DialogTrigger,
 } from "@/components/form/Dialog";
+import { SiteGroupForm } from "./createSiteGroupForm";
 
 const siteFormSchema = z.object({
   name: z
@@ -71,6 +72,7 @@ export function SiteForm() {
 
   const { mutate: mutate, status: status } = trpc.sites.insertOne.useMutation({
     onSuccess: (data) => {
+
       return toast({
         title: `Site "${data.name}" created`,
       });
@@ -219,7 +221,7 @@ export function SiteForm() {
                                   easier.
                                 </DialogDescription>
                               </DialogHeader>
-                              
+                              <SiteGroupForm></SiteGroupForm>
                             </DialogContent>
                           </div>
                         </div>

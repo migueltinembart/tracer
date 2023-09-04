@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/select";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { RouterInput, trpc } from "@/lib/trpc";
+import { trpc } from "@/lib/trpc";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { z } from "zod";
@@ -59,12 +59,10 @@ const siteFormSchema = z.object({
     .string()
     .min(2, { message: "Name must be atleast 2 characters" })
     .max(64, { message: "Name cannot be longer than 64 characters" }),
-  status: z.enum(["active", "planned", "staging", "retired"]),
   comment: z.string({ description: "Add a comment" }).optional(),
-  siteGroupId: z.number().optional(),
 });
 
-export function SiteForm() {
+export function SiteGroupForm() {
   const form = useForm<SiteGroupInput>({
     resolver: zodResolver(siteFormSchema),
     defaultValues: {
@@ -75,20 +73,20 @@ export function SiteForm() {
 
   const { toast } = useToast();
 
-  const { mutate: mutate, status: status } = trpc.sites.insertOne.useMutation({
-    onSuccess: (data) => {
-      return toast({
-        title: `Site "${data.name}" created`,
-      });
-    },
-    onError: () => {
-      return toast({
-        variant: "destructive",
-        title: "Something with request went wrong! Trying again...",
-      });
-    },
-  });
-  const { data } = trpc.siteGroups.getMany.useQuery();
+  const { mutate: mutate, status: status } =
+    trpc.siteGroups.insertOne.useMutation({
+      onSuccess: (data) => {
+        return toast({
+          title: `Site "${data.name}" created`,
+        });
+      },
+      onError: () => {
+        return toast({
+          variant: "destructive",
+          title: "Something with request went wrong! Trying again...",
+        });
+      },
+    });
 
   function SubmitButton(props: {
     status: "idle" | "success" | "error" | "loading";
@@ -133,35 +131,7 @@ export function SiteForm() {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="status"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Status</FormLabel>
-              <FormControl>
-                <Select>
-                  <SelectTrigger id="status">
-                    <SelectValue
-                      placeholder={
-                        field.value.charAt(0).toUpperCase() +
-                        field.value.slice(1)
-                      }
-                    />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="active">Active</SelectItem>
-                    <SelectItem value="planned">Planned</SelectItem>
-                    <SelectItem value="staging">Staging</SelectItem>
-                    <SelectItem value="retired">Retired</SelectItem>
-                  </SelectContent>
-                </Select>
-              </FormControl>
-              <FormDescription>Set the Status</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+
         <FormField
           control={form.control}
           name="comment"
@@ -178,87 +148,7 @@ export function SiteForm() {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="siteGroupId"
-          render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel>Site group</FormLabel>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant="outline"
-                      role="combobox"
-                      className={cn(
-                        "w-full justify-between",
-                        !field.value && "text-muted-foreground"
-                      )}
-                    >
-                      {field.value
-                        ? data?.find(
-                            (sitegroup) => sitegroup.id === field.value
-                          )?.name
-                        : "Select site group"}
-                      <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="w-[200px] p-0">
-                  <Dialog>
-                    <Command className="w-full">
-                      <CommandInput
-                        placeholder="Search site groups"
-                        className="h-9"
-                      />
-                      <CommandEmpty>
-                        <div className="flex flex-col">
-                          <div>Want to create a new site?</div>
-                          <div>
-                            <DialogTrigger>Create</DialogTrigger>
-                            <DialogContent>
-                              <DialogHeader>
-                                <DialogTitle>Create siteGroup</DialogTitle>
-                                <DialogDescription>
-                                  Create a site group and and make accessing
-                                  devices belonging to the same site group
-                                  easier.
-                                </DialogDescription>
-                              </DialogHeader>
-                            </DialogContent>
-                          </div>
-                        </div>
-                      </CommandEmpty>
-                      <CommandGroup>
-                        {data?.map((sitegroup) => (
-                          <CommandItem
-                            value={sitegroup.name}
-                            key={sitegroup.id}
-                            onSelect={() => {
-                              form.setValue("siteGroupId", sitegroup.id);
-                            }}
-                          >
-                            {sitegroup.name}
-                            <CheckIcon
-                              className={cn(
-                                "ml-auto h-4 w-4",
-                                sitegroup.id === field.value
-                                  ? "opacity-100"
-                                  : "opacity-0"
-                              )}
-                            />
-                          </CommandItem>
-                        ))}
-                      </CommandGroup>
-                    </Command>
-                  </Dialog>
-                </PopoverContent>
-              </Popover>
 
-              <FormMessage />
-            </FormItem>
-          )}
-        />
         <div className="flex pt-3 justify-end w-full">
           <SubmitButton status={status}></SubmitButton>
         </div>
