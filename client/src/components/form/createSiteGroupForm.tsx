@@ -54,7 +54,7 @@ type RouterOutput = inferRouterOutputs<AppRouter>;
 type SiteGroupInput = RouterInput["siteGroups"]["insertOne"];
 type SiteGroupOutput = RouterOutput["siteGroups"]["getOneById"];
 
-const siteFormSchema = z.object({
+const siteGroupFormSchema = z.object({
   name: z
     .string()
     .min(2, { message: "Name must be atleast 2 characters" })
@@ -64,7 +64,7 @@ const siteFormSchema = z.object({
 
 export function SiteGroupForm() {
   const form = useForm<SiteGroupInput>({
-    resolver: zodResolver(siteFormSchema),
+    resolver: zodResolver(siteGroupFormSchema),
     defaultValues: {
       name: "",
       comment: undefined,
@@ -108,7 +108,7 @@ export function SiteGroupForm() {
     }
   }
 
-  async function onSubmit(values: z.infer<typeof siteFormSchema>) {
+  async function onSubmit(values: z.infer<typeof siteGroupFormSchema>) {
     console.log(values);
     mutate(values);
     form.reset();
