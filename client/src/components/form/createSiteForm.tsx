@@ -86,9 +86,7 @@ export function SiteForm() {
   });
   const { data } = trpc.siteGroups.getMany.useQuery();
 
-  function SubmitButton(props: {
-    status: "idle" | "success" | "error" | "loading";
-  }) {
+  function SubmitButton() {
     if (status === "loading") {
       return (
         <Button type="submit" className="bg-orange-500" disabled>
@@ -257,7 +255,7 @@ export function SiteForm() {
           )}
         />
         <div className="flex pt-3 justify-end w-full">
-          <SubmitButton status={status}></SubmitButton>
+          <SubmitButton></SubmitButton>
         </div>
       </form>
     </Form>
