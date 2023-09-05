@@ -91,7 +91,7 @@ export function SiteForm() {
   }) {
     if (status === "loading") {
       return (
-        <Button type="submit" className="bg-orange-500">
+        <Button type="submit" className="bg-orange-500" disabled>
           Loading <RefreshCw className="animate-spin"></RefreshCw>
         </Button>
       );

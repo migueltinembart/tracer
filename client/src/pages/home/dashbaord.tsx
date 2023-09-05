@@ -8,7 +8,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { FormField } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -18,12 +17,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {Toaster} from "@/components/ui/toaster"
 
 export function Dashboard() {
   return (
-    <>
-      <Card className={``}>
+    <div className="border max-md:border-hidden border-gray-300 rounded-lg grid p-6 max-md:p-0 md:grid-cols-4 gap-6">
+      <Card className={`col-span-2`}>
         <CardHeader>
           <CardTitle>Create Site</CardTitle>
           <CardDescription>Create a Site in one Click</CardDescription>
@@ -32,7 +30,7 @@ export function Dashboard() {
           <SiteForm></SiteForm>
         </CardContent>
       </Card>
-      <Card className={``}>
+      <Card className={`col-span-2`}>
         <CardHeader>
           <CardTitle>Create Tenant</CardTitle>
           <CardDescription>Create a Site in one Click</CardDescription>
@@ -66,7 +64,6 @@ export function Dashboard() {
           <Button>Deploy</Button>
         </CardFooter>
       </Card>
-      
-    </>
+    </div>
   );
 }
