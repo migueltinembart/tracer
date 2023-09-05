@@ -17,7 +17,7 @@ export const statusEnum = pgEnum('status_enum', ['active', 'planned', 'staging',
 export const sites = pgTable(
   'sites',
   {
-    id: serial('id'),
+    id: serial('id').notNull(),
     name: text('name').notNull(),
     status: statusEnum('status').notNull(),
     comment: text('comment').notNull().default(''),
@@ -38,7 +38,7 @@ export const sites = pgTable(
 export const siteGroups = pgTable(
   'site_groups',
   {
-    id: serial('id'),
+    id: serial('id').notNull(),
     name: text('name').notNull(),
     comment: text('comment').notNull().default(''),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
