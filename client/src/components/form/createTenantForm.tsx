@@ -47,34 +47,37 @@ import {
 } from "@/components/form/Dialog";
 import { AppRouter } from "@server/utils/trpc/routers";
 import { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
+import { TenantGroupForm } from "./createTenantgroupForm";
 
 type RouterInput = inferRouterInputs<AppRouter>;
 type RouterOutput = inferRouterOutputs<AppRouter>;
 
-type SiteGroupInput = RouterInput["siteGroups"]["insertOne"];
-type SiteGroupOutput = RouterOutput["siteGroups"]["getOneById"];
+type TenantInput = RouterInput["tenants"]["insertOne"];
+type TenantOutput = RouterOutput["tenants"]["getOneById"];
 
-const siteFormSchema = z.object({
+const tenantFormSchema = z.object({
   name: z
     .string()
     .min(2, { message: "Name must be atleast 2 characters" })
     .max(64, { message: "Name cannot be longer than 64 characters" }),
   comment: z.string({ description: "Add a comment" }).optional(),
+  tenantGroupId: z.number().optional(),
 });
 
-export function SiteGroupForm() {
-  const form = useForm<SiteGroupInput>({
-    resolver: zodResolver(siteFormSchema),
+export function TenantForm() {
+  const form = useForm<z.infer<typeof tenantFormSchema>>({
+    resolver: zodResolver(tenantFormSchema),
     defaultValues: {
       name: "",
       comment: undefined,
+      tenantGroupId: undefined,
     },
   });
 
   const { toast } = useToast();
 
-  const { mutate: mutate, status: status } =
-    trpc.siteGroups.insertOne.useMutation({
+  const { mutate: mutate, status: status } = trpc.tenants.insertOne.useMutation(
+    {
       onSuccess: (data) => {
         return toast({
           title: `Site "${data.name}" created`,
@@ -86,7 +89,10 @@ export function SiteGroupForm() {
           title: "Something with request went wrong! Trying again...",
         });
       },
-    });
+    }
+  );
+
+  const { data } = trpc.tenantGroups.getMany.useQuery();
 
   function SubmitButton(props: {
     status: "idle" | "success" | "error" | "loading";
@@ -108,7 +114,7 @@ export function SiteGroupForm() {
     }
   }
 
-  async function onSubmit(values: z.infer<typeof siteFormSchema>) {
+  async function onSubmit(values: z.infer<typeof tenantFormSchema>) {
     console.log(values);
     mutate(values);
     form.reset();
@@ -148,7 +154,87 @@ export function SiteGroupForm() {
             </FormItem>
           )}
         />
-
+        <FormField
+          control={form.control}
+          name="tenantGroupId"
+          render={({ field }) => (
+            <FormItem className="flex flex-col">
+              <FormLabel>Site group</FormLabel>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <FormControl>
+                    <Button
+                      variant="outline"
+                      role="combobox"
+                      className={cn(
+                        "w-full justify-between",
+                        !field.value && "text-muted-foreground"
+                      )}
+                    >
+                      {field.value
+                        ? data?.find(
+                            (tenantGroup) => tenantGroup.id === field.value
+                          )?.name
+                        : "Select site group"}
+                      <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    </Button>
+                  </FormControl>
+                </PopoverTrigger>
+                <PopoverContent className="w-[200px] p-0">
+                  <Dialog>
+                    <Command className="w-full">
+                      <CommandInput
+                        placeholder="Search site groups"
+                        className="h-9"
+                      />
+                      <CommandEmpty>
+                        <div className="flex flex-col">
+                          <div>Want to create a new site?</div>
+                          <div>
+                            <DialogTrigger>Create</DialogTrigger>
+                            <DialogContent>
+                              <DialogHeader>
+                                <DialogTitle>Create site group</DialogTitle>
+                                <DialogDescription>
+                                  Create a site group and and make accessing
+                                  devices belonging to the same site group
+                                  easier.
+                                </DialogDescription>
+                              </DialogHeader>
+                              <TenantGroupForm></TenantGroupForm>
+                            </DialogContent>
+                          </div>
+                        </div>
+                      </CommandEmpty>
+                      <CommandGroup>
+                        {data?.map((tenantGroup) => (
+                          <CommandItem
+                            value={tenantGroup.name}
+                            key={tenantGroup.id}
+                            onSelect={() => {
+                              form.setValue("tenantGroupId", tenantGroup.id);
+                            }}
+                          >
+                            {tenantGroup.name}
+                            <CheckIcon
+                              className={cn(
+                                "ml-auto h-4 w-4",
+                                tenantGroup.id === field.value
+                                  ? "opacity-100"
+                                  : "opacity-0"
+                              )}
+                            />
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </Command>
+                  </Dialog>
+                </PopoverContent>
+              </Popover>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <div className="flex pt-3 justify-end w-full">
           <SubmitButton status={status}></SubmitButton>
         </div>

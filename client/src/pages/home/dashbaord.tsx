@@ -1,4 +1,5 @@
 import { SiteForm } from "@/components/form/createSiteForm";
+import { TenantForm } from "@/components/form/createTenantForm";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -33,36 +34,11 @@ export function Dashboard() {
       <Card className={`col-span-2`}>
         <CardHeader>
           <CardTitle>Create Tenant</CardTitle>
-          <CardDescription>Create a Site in one Click</CardDescription>
+          <CardDescription>Create a Tenant in one Click</CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
-            <div className="grid w-full items-center gap-4">
-              <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="name">Name</Label>
-                <Input id="name" placeholder="Name of your project" />
-              </div>
-              <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="framework">Framework</Label>
-                <Select>
-                  <SelectTrigger id="framework">
-                    <SelectValue placeholder="Select" />
-                  </SelectTrigger>
-                  <SelectContent position="popper">
-                    <SelectItem value="next">Next.js</SelectItem>
-                    <SelectItem value="sveltekit">SvelteKit</SelectItem>
-                    <SelectItem value="astro">Astro</SelectItem>
-                    <SelectItem value="nuxt">Nuxt.js</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          </form>
+          <TenantForm></TenantForm>
         </CardContent>
-        <CardFooter className="flex justify-between">
-          <Button variant="outline">Cancel</Button>
-          <Button>Deploy</Button>
-        </CardFooter>
       </Card>
     </div>
   );
