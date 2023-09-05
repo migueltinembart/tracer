@@ -5,7 +5,7 @@ import { z } from 'zod';
 import { eq } from 'drizzle-orm';
 import { insertTenantZodSchema, tenantCollectionResponseZodSchema } from '@server/modules/REST/tenants/schemas';
 
-export const sitesRouter = router({
+export const tenantsRouter = router({
   getMany: publicProcedure.output(tenantCollectionResponseZodSchema).query(async () => {
     return await db.select().from(tenants);
   }),

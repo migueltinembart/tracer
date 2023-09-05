@@ -7,11 +7,11 @@ import { InferModel } from 'drizzle-orm';
 import { createPaginationQueryStrings } from 'modules/REST/pagination/apiUtils';
 const tenantResponseZodSchema = createSelectSchema(tenants);
 
-const tenantCollectionResponseZodSchema = z.array(tenantResponseZodSchema);
+export const tenantCollectionResponseZodSchema = z.array(tenantResponseZodSchema);
 
 const allowedQueryStrings = createPaginationQueryStrings(tenantResponseZodSchema);
 
-const insertTenantZodSchema = createInsertSchema(tenants).omit({
+export const insertTenantZodSchema = createInsertSchema(tenants).omit({
   id: true,
   updatedAt: true,
   createdAt: true,
