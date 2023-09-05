@@ -21,7 +21,7 @@ import {
 
 export function Dashboard() {
   return (
-    <div className="border max-md:border-hidden border-gray-300 rounded-lg grid p-6 max-md:p-0 md:grid-cols-4 gap-6">
+    <div className="border max-md:border-hidden border-gray-300 rounded-lg grid p-6 max-md:p-0 md:grid-cols-4 gap-6 h-full">
       <Card className={`col-span-2`}>
         <CardHeader>
           <CardTitle>Create Site</CardTitle>

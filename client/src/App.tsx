@@ -4,11 +4,23 @@ import { trpc } from "./lib/trpc";
 import { httpBatchLink } from "@trpc/client";
 import { useState } from "react";
 import { Index } from "./pages";
+import { Dashboard } from "./pages/home/dashbaord";
+import { Sites } from "./pages/Entities/sites";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Index />,
+    children: [
+      {
+        path: "/",
+        element: <Dashboard />,
+      },
+      {
+        path: "/sites",
+        element: <Sites />,
+      },
+    ],
   },
 ]);
 
