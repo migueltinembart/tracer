@@ -49,7 +49,7 @@ export function NavBar(props: Props) {
                     </li>
                     <li className="">
                       <NavigationMenuLink asChild>
-                        <Link to={"/"}>
+                        <Link to={"/sites"}>
                           <div className="mb-2 mt-4 text-lg font-medium">
                             Sites
                           </div>
