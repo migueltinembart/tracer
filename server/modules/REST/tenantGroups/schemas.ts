@@ -9,11 +9,11 @@ import { createPaginationQueryStrings } from 'modules/REST/pagination/apiUtils';
 // zod schemas here
 const tenantGroupResponseZodSchema = createSelectSchema(tenantGroups);
 
-const tenantGroupCollectionResponseZodSchema = z.array(tenantGroupResponseZodSchema);
+export const tenantGroupCollectionResponseZodSchema = z.array(tenantGroupResponseZodSchema);
 
 const allowedQueryStrings = createPaginationQueryStrings(tenantGroupResponseZodSchema);
 
-const insertTenantGroupZodSchema = createInsertSchema(tenantGroups).omit({
+export const insertTenantGroupZodSchema = createInsertSchema(tenantGroups).omit({
   id: true,
   updatedAt: true,
   createdAt: true,
