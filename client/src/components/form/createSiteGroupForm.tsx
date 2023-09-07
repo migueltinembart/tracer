@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/select";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { trpc } from "@/lib/trpc";
+import { trpc } from "@/trpc";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { z } from "zod";
