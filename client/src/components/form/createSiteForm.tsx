@@ -70,7 +70,7 @@ export function SiteForm() {
 
   const { toast } = useToast();
 
-  const { mutate: mutate, status: status } = trpc.sites.insertOne.useMutation({
+  const { mutate: mutate, status: status } = trpc.sites.create.one.useMutation({
     onSuccess: (data) => {
 
       return toast({

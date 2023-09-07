@@ -1,8 +1,7 @@
 import fastify from 'fastify';
 import { logger } from './logger';
 import { env } from '../config/env';
-
-import { catchAllRoutes } from 'modules/REST/catchall/routes';
+import { catchAllRoutes } from '@server/modules/catchall/routes';
 import { fastifyTRPCPlugin } from '@trpc/server/adapters/fastify';
 import { appRouter } from 'utils/trpc/routers';
 import { createContext } from './trpc/context';

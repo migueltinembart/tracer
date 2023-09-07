@@ -1,20 +1,50 @@
 import { publicProcedure, router } from 'utils/trpc/trpc';
 import { db } from 'utils/db';
-import { sites } from 'db/entities';
+import { siteGroups, sites } from 'db/entities';
 import { z } from 'zod';
 import { eq } from 'drizzle-orm';
-import { insertSiteZodSchema, siteCollectionResponseZodSchema } from '@server/modules/REST/sites/schemas';
+import { createInsertSchema } from 'drizzle-zod';
+
+const insertSchema = createInsertSchema(sites);
 
 export const sitesRouter = router({
-  getMany: publicProcedure.output(siteCollectionResponseZodSchema).query(async () => {
-    return await db.select().from(sites);
+  read: router({
+    all: publicProcedure.query(async () => {
+      const result = await db
+        .select({
+          id: sites.id,
+          name: sites.name,
+          status: sites.status,
+          groupName: siteGroups.name,
+          groupId: siteGroups.id,
+          createdAt: sites.createdAt,
+          updatedAt: sites.updatedAt,
+        })
+        .from(sites)
+        .leftJoin(siteGroups, eq(sites.siteGroupId, siteGroups.id));
+      return result;
+    }),
+    one: publicProcedure.query(async (opts) => {
+      const result = await db
+        .select({
+          id: sites.id,
+          name: sites.name,
+          status: sites.status,
+          groupName: siteGroups.name,
+          groupId: siteGroups.id,
+          createdAt: sites.createdAt,
+          updatedAt: sites.updatedAt,
+        })
+        .from(sites)
+        .leftJoin(siteGroups, eq(sites.siteGroupId, siteGroups.id))
+        .where(opts.input);
+      return result[0];
+    }),
   }),
-  getOneById: publicProcedure.input(z.number()).query(async (opts) => {
-    return await db.select().from(sites).where(eq(sites.id, opts.input));
-  }),
-  insertOne: publicProcedure.input(insertSiteZodSchema).mutation(async (opts) => {
-    console.log(opts);
-    const result = await db.insert(sites).values(opts.input).returning();
-    return result[0];
+  create: router({
+    one: publicProcedure.input(insertSchema).mutation(async (opts) => {
+      const result = await db.insert(sites).values(opts.input).returning();
+      return result[0];
+    }),
   }),
 });
