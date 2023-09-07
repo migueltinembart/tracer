@@ -1,5 +1,5 @@
 import { trpc } from "@/lib/trpc";
-import { SitesForm } from "./Form";
+import { SitesForm } from "./table";
 import { ColumnDef } from "@tanstack/react-table";
 import { RouterOutput } from "@/lib/trpc";
 import { Checkbox } from "@/components/ui/checkbox";
