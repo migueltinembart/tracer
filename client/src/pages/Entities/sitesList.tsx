@@ -1,5 +1,5 @@
 import { trpc } from "@/trpc";
-import { SitesForm } from "./table";
+import { SitesForm } from "../../components/layout/table";
 import { ColumnDef } from "@tanstack/react-table";
 import { RouterOutput } from "@/trpc";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import moment from "moment";
 
-export type SiteOutput = RouterOutput["sites"]["read"]["one"];
+export type SiteOutput = RouterOutput["sites"]["select"]["one"];
 
 export const columns: ColumnDef<SiteOutput>[] = [
   {
@@ -111,8 +111,8 @@ export const columns: ColumnDef<SiteOutput>[] = [
   },
 ];
 
-export function Sites() {
-  const query = trpc.sites.read.all.useQuery();
+export function SitesList() {
+  const query = trpc.sites.select.all.useQuery();
 
   if (query.isLoading) {
     <div>is Loading</div>;

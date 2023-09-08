@@ -7,18 +7,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { trpc } from "@/trpc";
@@ -26,33 +14,11 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { z } from "zod";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-} from "../ui/command";
-import { CheckIcon, RefreshCw, X } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { CaretSortIcon } from "@radix-ui/react-icons";
+import { RefreshCw, X } from "lucide-react";
 import { useToast } from "../ui/use-toast";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogTitle,
-  DialogHeader,
-  DialogTrigger,
-} from "@/components/form/Dialog";
-import { AppRouter } from "@server/utils/trpc/routers";
-import { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
+import type { RouterInput } from "@/trpc";
 
-type RouterInput = inferRouterInputs<AppRouter>;
-type RouterOutput = inferRouterOutputs<AppRouter>;
-
-type SiteGroupInput = RouterInput["siteGroups"]["insertOne"];
-type SiteGroupOutput = RouterOutput["siteGroups"]["getOneById"];
+type SiteGroupFormInput = RouterInput["siteGroups"]["create"]["one"];
 
 const siteGroupFormSchema = z.object({
   name: z
@@ -63,7 +29,22 @@ const siteGroupFormSchema = z.object({
 });
 
 export function SiteGroupForm() {
-  const form = useForm<SiteGroupInput>({
+  const siteGroupCreator = trpc.siteGroups.create.one.useMutation({
+    onSuccess: (data) => {
+      return toast({
+        title: `Site "${data.name}" created`,
+      });
+    },
+    onError: () => {
+      return toast({
+        variant: "destructive",
+        title: "Something with request went wrong! Trying again...",
+      });
+    },
+  });
+  const { toast } = useToast();
+
+  const form = useForm<SiteGroupFormInput>({
     resolver: zodResolver(siteGroupFormSchema),
     defaultValues: {
       name: "",
@@ -71,27 +52,8 @@ export function SiteGroupForm() {
     },
   });
 
-  const { toast } = useToast();
-
-  const { mutate: mutate, status: status } =
-    trpc.siteGroups.insertOne.useMutation({
-      onSuccess: (data) => {
-        return toast({
-          title: `Site "${data.name}" created`,
-        });
-      },
-      onError: () => {
-        return toast({
-          variant: "destructive",
-          title: "Something with request went wrong! Trying again...",
-        });
-      },
-    });
-
-  function SubmitButton(props: {
-    status: "idle" | "success" | "error" | "loading";
-  }) {
-    if (status === "loading") {
+  function SubmitButton() {
+    if (siteGroupCreator.status === "loading") {
       return (
         <Button type="submit" className="bg-orange-500" disabled>
           Loading <RefreshCw className="animate-spin"></RefreshCw>
@@ -99,18 +61,17 @@ export function SiteGroupForm() {
       );
     }
 
-    if (status === "success") {
+    if (siteGroupCreator.status === "success") {
       return <Button type="submit">Deploy</Button>;
     }
 
-    if (status === "idle") {
+    if (siteGroupCreator.status === "idle") {
       return <Button type="submit">Deploy</Button>;
     }
   }
 
   async function onSubmit(values: z.infer<typeof siteGroupFormSchema>) {
-    console.log(values);
-    mutate(values);
+    siteGroupCreator.mutate(values);
     form.reset();
   }
 
@@ -122,7 +83,7 @@ export function SiteGroupForm() {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Site Name</FormLabel>
+              <FormLabel>Site group Name</FormLabel>
               <FormControl>
                 <Input placeholder="Contoso" {...field} />
               </FormControl>
@@ -139,7 +100,7 @@ export function SiteGroupForm() {
             <FormItem>
               <FormLabel>Comment</FormLabel>
               <FormControl>
-                <Textarea value={field.value}></Textarea>
+                <Textarea {...field}></Textarea>
               </FormControl>
               <FormDescription>
                 Add a comment to the newly created site
@@ -150,7 +111,7 @@ export function SiteGroupForm() {
         />
 
         <div className="flex pt-3 justify-end w-full">
-          <SubmitButton status={status}></SubmitButton>
+          <SubmitButton></SubmitButton>
         </div>
       </form>
     </Form>

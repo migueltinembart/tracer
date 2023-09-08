@@ -1,5 +1,4 @@
 import { NavBar } from "@/components/layout/navbar/navbar";
-import { Dashboard } from "./home/dashbaord";
 import { Toaster } from "@/components/ui/toaster";
 import { Outlet } from "react-router-dom";
 
