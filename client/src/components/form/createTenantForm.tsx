@@ -12,13 +12,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { trpc } from "@/trpc";
@@ -44,16 +37,11 @@ import {
   DialogTitle,
   DialogHeader,
   DialogTrigger,
-} from "@/components/form/Dialog";
-import { AppRouter } from "@server/utils/trpc/routers";
-import { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
+} from "@/components/ui/dialog";
 import { TenantGroupForm } from "./createTenantgroupForm";
+import type { RouterInput } from "@/trpc";
 
-type RouterInput = inferRouterInputs<AppRouter>;
-type RouterOutput = inferRouterOutputs<AppRouter>;
-
-type TenantInput = RouterInput["tenants"]["insertOne"];
-type TenantOutput = RouterOutput["tenants"]["getOneById"];
+type tenantFormInput = RouterInput["tenants"]["create"]["one"];
 
 const tenantFormSchema = z.object({
   name: z
@@ -61,11 +49,27 @@ const tenantFormSchema = z.object({
     .min(2, { message: "Name must be atleast 2 characters" })
     .max(64, { message: "Name cannot be longer than 64 characters" }),
   comment: z.string({ description: "Add a comment" }).optional(),
-  tenantGroupId: z.number().optional(),
+  tenantGroupId: z.optional(z.number().nullable()),
 });
 
 export function TenantForm() {
-  const form = useForm<z.infer<typeof tenantFormSchema>>({
+  const tenantCreator = trpc.tenants.create.one.useMutation({
+    onSuccess: (data) => {
+      return toast({
+        title: `Site "${data.name}" created`,
+      });
+    },
+    onError: () => {
+      return toast({
+        variant: "destructive",
+        title: "Something with request went wrong! Trying again...",
+      });
+    },
+  });
+  const { toast } = useToast();
+  const tenantGroupsQuery = trpc.tenantGroups.select.all.useQuery();
+
+  const form = useForm<tenantFormInput>({
     resolver: zodResolver(tenantFormSchema),
     defaultValues: {
       name: "",
@@ -74,30 +78,8 @@ export function TenantForm() {
     },
   });
 
-  const { toast } = useToast();
-
-  const { mutate: mutate, status: status } = trpc.tenants.insertOne.useMutation(
-    {
-      onSuccess: (data) => {
-        return toast({
-          title: `Site "${data.name}" created`,
-        });
-      },
-      onError: () => {
-        return toast({
-          variant: "destructive",
-          title: "Something with request went wrong! Trying again...",
-        });
-      },
-    }
-  );
-
-  const { data } = trpc.tenantGroups.getMany.useQuery();
-
-  function SubmitButton(props: {
-    status: "idle" | "success" | "error" | "loading";
-  }) {
-    if (status === "loading") {
+  function SubmitButton() {
+    if (tenantCreator.status === "loading") {
       return (
         <Button type="submit" className="bg-orange-500" disabled>
           Loading <RefreshCw className="animate-spin"></RefreshCw>
@@ -105,18 +87,17 @@ export function TenantForm() {
       );
     }
 
-    if (status === "success") {
+    if (tenantCreator.status === "success") {
       return <Button type="submit">Deploy</Button>;
     }
 
-    if (status === "idle") {
+    if (tenantCreator.status === "idle") {
       return <Button type="submit">Deploy</Button>;
     }
   }
 
   async function onSubmit(values: z.infer<typeof tenantFormSchema>) {
-    console.log(values);
-    mutate(values);
+    tenantCreator.mutate(values);
     form.reset();
   }
 
@@ -172,7 +153,7 @@ export function TenantForm() {
                       )}
                     >
                       {field.value
-                        ? data?.find(
+                        ? tenantGroupsQuery.data?.find(
                             (tenantGroup) => tenantGroup.id === field.value
                           )?.name
                         : "Select site group"}
@@ -182,61 +163,70 @@ export function TenantForm() {
                 </PopoverTrigger>
                 <PopoverContent className="w-[200px] p-0">
                   <Dialog>
-                    <Command className="w-full">
-                      <CommandInput
-                        placeholder="Search site groups"
-                        className="h-9"
-                      />
-                      <CommandEmpty>
-                        <div className="flex flex-col">
-                          <div>Want to create a new site?</div>
-                          <div>
-                            <DialogTrigger>Create</DialogTrigger>
-                            <DialogContent>
-                              <DialogHeader>
-                                <DialogTitle>Create site group</DialogTitle>
-                                <DialogDescription>
-                                  Create a site group and and make accessing
-                                  devices belonging to the same site group
-                                  easier.
-                                </DialogDescription>
-                              </DialogHeader>
-                              <TenantGroupForm></TenantGroupForm>
-                            </DialogContent>
+                    {tenantGroupsQuery.isStale && (
+                      <Command className="w-full">
+                        <CommandInput
+                          placeholder="Search site groups"
+                          className="h-9 pt-1"
+                        />
+                        {tenantGroupsQuery.data?.length == 0 && (
+                          <div className="flex flex-col text-center">
+                            <p className="p-3">Create site group?</p>
+                            <DialogTrigger>
+                              <Button>Create</Button>
+                            </DialogTrigger>
                           </div>
-                        </div>
-                      </CommandEmpty>
-                      <CommandGroup>
-                        {data?.map((tenantGroup) => (
-                          <CommandItem
-                            value={tenantGroup.name}
-                            key={tenantGroup.id}
-                            onSelect={() => {
-                              form.setValue("tenantGroupId", tenantGroup.id);
-                            }}
-                          >
-                            {tenantGroup.name}
-                            <CheckIcon
-                              className={cn(
-                                "ml-auto h-4 w-4",
-                                tenantGroup.id === field.value
-                                  ? "opacity-100"
-                                  : "opacity-0"
-                              )}
-                            />
-                          </CommandItem>
-                        ))}
-                      </CommandGroup>
-                    </Command>
+                        )}
+                        <CommandEmpty>
+                          <DialogTrigger>
+                            <p className="pb-2">Create a new group?</p>
+                            <Button>Create</Button>
+                          </DialogTrigger>
+                        </CommandEmpty>
+                        <DialogContent>
+                          <DialogHeader>
+                            <DialogTitle>Create site group</DialogTitle>
+                            <DialogDescription>
+                              Create a site group and and make accessing devices
+                              belonging to the same site group easier.
+                            </DialogDescription>
+                          </DialogHeader>
+                          <TenantGroupForm></TenantGroupForm>
+                        </DialogContent>
+
+                        <CommandGroup>
+                          {tenantGroupsQuery.data?.map((tenantGroup) => (
+                            <CommandItem
+                              value={tenantGroup.name}
+                              key={tenantGroup.id}
+                              onSelect={() => {
+                                form.setValue("tenantGroupId", tenantGroup.id);
+                              }}
+                            >
+                              {tenantGroup.name}
+                              <CheckIcon
+                                className={cn(
+                                  "ml-auto h-4 w-4",
+                                  tenantGroup.id === field.value
+                                    ? "opacity-100"
+                                    : "opacity-0"
+                                )}
+                              />
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </Command>
+                    )}
                   </Dialog>
                 </PopoverContent>
               </Popover>
+
               <FormMessage />
             </FormItem>
           )}
         />
         <div className="flex pt-3 justify-end w-full">
-          <SubmitButton status={status}></SubmitButton>
+          <SubmitButton></SubmitButton>
         </div>
       </form>
     </Form>

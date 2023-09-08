@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/select";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { trpc } from "@/lib/trpc";
+import { trpc } from "@/trpc";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { z } from "zod";
@@ -44,8 +44,12 @@ import {
   DialogTitle,
   DialogHeader,
   DialogTrigger,
-} from "@/components/form/Dialog";
+} from "@/components/ui/dialog";
 import { SiteGroupForm } from "./createSiteGroupForm";
+import type { RouterInput } from "@/trpc";
+import { UseTRPCMutationResult } from "@trpc/react-query/dist/shared";
+
+type SiteFormInput = RouterInput["sites"]["create"]["one"];
 
 const siteFormSchema = z.object({
   name: z
@@ -54,25 +58,12 @@ const siteFormSchema = z.object({
     .max(64, { message: "Name cannot be longer than 64 characters" }),
   status: z.enum(["active", "planned", "staging", "retired"]),
   comment: z.string({ description: "Add a comment" }).optional(),
-  siteGroupId: z.number().optional(),
+  siteGroupId: z.optional(z.number().nullable()),
 });
 
 export function SiteForm() {
-  const form = useForm<z.infer<typeof siteFormSchema>>({
-    resolver: zodResolver(siteFormSchema),
-    defaultValues: {
-      name: "",
-      status: "active",
-      comment: undefined,
-      siteGroupId: undefined,
-    },
-  });
-
-  const { toast } = useToast();
-
-  const { mutate: mutate, status: status } = trpc.sites.create.one.useMutation({
+  const siteCreator = trpc.sites.create.one.useMutation({
     onSuccess: (data) => {
-
       return toast({
         title: `Site "${data.name}" created`,
       });
@@ -84,10 +75,22 @@ export function SiteForm() {
       });
     },
   });
-  const { data } = trpc.siteGroups.getMany.useQuery();
+
+  const { toast } = useToast();
+  const siteGroupsQuery = trpc.siteGroups.select.all.useQuery();
+
+  const form = useForm<SiteFormInput>({
+    resolver: zodResolver(siteFormSchema),
+    defaultValues: {
+      name: "",
+      status: "active",
+      comment: undefined,
+      siteGroupId: undefined,
+    },
+  });
 
   function SubmitButton() {
-    if (status === "loading") {
+    if (siteCreator.status === "loading") {
       return (
         <Button type="submit" className="bg-orange-500" disabled>
           Loading <RefreshCw className="animate-spin"></RefreshCw>
@@ -95,18 +98,17 @@ export function SiteForm() {
       );
     }
 
-    if (status === "success") {
+    if (siteCreator.status === "success") {
       return <Button type="submit">Deploy</Button>;
     }
 
-    if (status === "idle") {
+    if (siteCreator.status === "idle") {
       return <Button type="submit">Deploy</Button>;
     }
   }
 
   async function onSubmit(values: z.infer<typeof siteFormSchema>) {
-    console.log(values);
-    mutate(values);
+    siteCreator.mutate(values);
     form.reset();
   }
 
@@ -132,10 +134,10 @@ export function SiteForm() {
           name="status"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Status</FormLabel>
+              <FormLabel>{field.name}</FormLabel>
               <FormControl>
                 <Select>
-                  <SelectTrigger id="status">
+                  <SelectTrigger>
                     <SelectValue
                       placeholder={
                         field.value.charAt(0).toUpperCase() +
@@ -144,10 +146,9 @@ export function SiteForm() {
                     />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="active">Active</SelectItem>
-                    <SelectItem value="planned">Planned</SelectItem>
-                    <SelectItem value="staging">Staging</SelectItem>
-                    <SelectItem value="retired">Retired</SelectItem>
+                    {Object.values(field.value).map((data) => {
+                      return <SelectItem value={data}>{data}</SelectItem>;
+                    })}
                   </SelectContent>
                 </Select>
               </FormControl>
@@ -190,7 +191,7 @@ export function SiteForm() {
                       )}
                     >
                       {field.value
-                        ? data?.find(
+                        ? siteGroupsQuery.data?.find(
                             (sitegroup) => sitegroup.id === field.value
                           )?.name
                         : "Select site group"}
@@ -200,52 +201,60 @@ export function SiteForm() {
                 </PopoverTrigger>
                 <PopoverContent className="w-[200px] p-0">
                   <Dialog>
-                    <Command className="w-full">
-                      <CommandInput
-                        placeholder="Search site groups"
-                        className="h-9"
-                      />
-                      <CommandEmpty>
-                        <div className="flex flex-col">
-                          <div>Want to create a new site?</div>
-                          <div>
-                            <DialogTrigger>Create</DialogTrigger>
-                            <DialogContent>
-                              <DialogHeader>
-                                <DialogTitle>Create siteGroup</DialogTitle>
-                                <DialogDescription>
-                                  Create a site group and and make accessing
-                                  devices belonging to the same site group
-                                  easier.
-                                </DialogDescription>
-                              </DialogHeader>
-                              <SiteGroupForm></SiteGroupForm>
-                            </DialogContent>
+                    {siteGroupsQuery.isStale && (
+                      <Command className="w-full">
+                        <CommandInput
+                          placeholder="Search site groups"
+                          className="h-9 pt-1"
+                        />
+                        {siteGroupsQuery.data?.length == 0 && (
+                          <div className="flex flex-col text-center">
+                            <p className="p-3">Create site group?</p>
+                            <DialogTrigger>
+                              <Button>Create</Button>
+                            </DialogTrigger>
                           </div>
-                        </div>
-                      </CommandEmpty>
-                      <CommandGroup>
-                        {data?.map((sitegroup) => (
-                          <CommandItem
-                            value={sitegroup.name}
-                            key={sitegroup.id}
-                            onSelect={() => {
-                              form.setValue("siteGroupId", sitegroup.id);
-                            }}
-                          >
-                            {sitegroup.name}
-                            <CheckIcon
-                              className={cn(
-                                "ml-auto h-4 w-4",
-                                sitegroup.id === field.value
-                                  ? "opacity-100"
-                                  : "opacity-0"
-                              )}
-                            />
-                          </CommandItem>
-                        ))}
-                      </CommandGroup>
-                    </Command>
+                        )}
+                        <CommandEmpty>
+                          <DialogTrigger>
+                            <p className="pb-2">Create a new group?</p>
+                            <Button>Create</Button>
+                          </DialogTrigger>
+                        </CommandEmpty>
+                        <DialogContent>
+                          <DialogHeader>
+                            <DialogTitle>Create site group</DialogTitle>
+                            <DialogDescription>
+                              Create a site group and and make accessing devices
+                              belonging to the same site group easier.
+                            </DialogDescription>
+                          </DialogHeader>
+                          <SiteGroupForm></SiteGroupForm>
+                        </DialogContent>
+
+                        <CommandGroup>
+                          {siteGroupsQuery.data?.map((sitegroup) => (
+                            <CommandItem
+                              value={sitegroup.name}
+                              key={sitegroup.id}
+                              onSelect={() => {
+                                form.setValue("siteGroupId", sitegroup.id);
+                              }}
+                            >
+                              {sitegroup.name}
+                              <CheckIcon
+                                className={cn(
+                                  "ml-auto h-4 w-4",
+                                  sitegroup.id === field.value
+                                    ? "opacity-100"
+                                    : "opacity-0"
+                                )}
+                              />
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </Command>
+                    )}
                   </Dialog>
                 </PopoverContent>
               </Popover>

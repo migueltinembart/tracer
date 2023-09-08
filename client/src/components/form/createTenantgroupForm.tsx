@@ -7,52 +7,17 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { trpc } from "@/trpc";
+import { RouterInput, trpc } from "@/trpc";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { z } from "zod";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-} from "../ui/command";
-import { CheckIcon, RefreshCw, X } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { CaretSortIcon } from "@radix-ui/react-icons";
+import { RefreshCw, X } from "lucide-react";
 import { useToast } from "../ui/use-toast";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogTitle,
-  DialogHeader,
-  DialogTrigger,
-} from "@/components/form/Dialog";
-import { AppRouter } from "@server/utils/trpc/routers";
-import { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 
-type RouterInput = inferRouterInputs<AppRouter>;
-type RouterOutput = inferRouterOutputs<AppRouter>;
-
-type TenantGroupInput = RouterInput["tenantGroups"]["insertOne"];
-type TenantGroupOutput = RouterOutput["tenantGroups"]["getOneById"];
+type TenantGroupInput = RouterInput["tenantGroups"]["create"]["one"];
 
 const tenantGroupFormSchema = z.object({
   name: z
@@ -63,6 +28,21 @@ const tenantGroupFormSchema = z.object({
 });
 
 export function TenantGroupForm() {
+  const tenantGroupCreator = trpc.tenantGroups.create.one.useMutation({
+    onSuccess: (data) => {
+      return toast({
+        title: `Site "${data.name}" created`,
+      });
+    },
+    onError: () => {
+      return toast({
+        variant: "destructive",
+        title: "Something with request went wrong! Trying again...",
+      });
+    },
+  });
+  const { toast } = useToast();
+
   const form = useForm<TenantGroupInput>({
     resolver: zodResolver(tenantGroupFormSchema),
     defaultValues: {
@@ -71,27 +51,8 @@ export function TenantGroupForm() {
     },
   });
 
-  const { toast } = useToast();
-
-  const { mutate: mutate, status: status } =
-    trpc.tenantGroups.insertOne.useMutation({
-      onSuccess: (data) => {
-        return toast({
-          title: `Site "${data.name}" created`,
-        });
-      },
-      onError: () => {
-        return toast({
-          variant: "destructive",
-          title: "Something with request went wrong! Trying again...",
-        });
-      },
-    });
-
-  function SubmitButton(props: {
-    status: "idle" | "success" | "error" | "loading";
-  }) {
-    if (status === "loading") {
+  function SubmitButton() {
+    if (tenantGroupCreator.status === "loading") {
       return (
         <Button type="submit" className="bg-orange-500" disabled>
           Loading <RefreshCw className="animate-spin"></RefreshCw>
@@ -99,18 +60,17 @@ export function TenantGroupForm() {
       );
     }
 
-    if (status === "success") {
+    if (tenantGroupCreator.status === "success") {
       return <Button type="submit">Deploy</Button>;
     }
 
-    if (status === "idle") {
+    if (tenantGroupCreator.status === "idle") {
       return <Button type="submit">Deploy</Button>;
     }
   }
 
-  async function onSubmit(values: z.infer<typeof tenantGroupFormSchema>) {
-    console.log(values);
-    mutate(values);
+  async function onSubmit(values: TenantGroupInput) {
+    tenantGroupCreator.mutate(values);
     form.reset();
   }
 
@@ -150,7 +110,7 @@ export function TenantGroupForm() {
         />
 
         <div className="flex pt-3 justify-end w-full">
-          <SubmitButton status={status}></SubmitButton>
+          <SubmitButton></SubmitButton>
         </div>
       </form>
     </Form>

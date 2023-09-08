@@ -5,7 +5,7 @@ import { httpBatchLink } from "@trpc/client";
 import { useState } from "react";
 import { Index } from "./pages";
 import { Dashboard } from "./pages/home/dashbaord";
-import { Sites } from "./pages/Entities/sites";
+import { SitesList } from "./pages/Entities/sitesList";
 
 const router = createBrowserRouter([
   {
@@ -18,7 +18,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/sites",
-        element: <Sites />,
+        element: <SitesList />,
       },
     ],
   },
