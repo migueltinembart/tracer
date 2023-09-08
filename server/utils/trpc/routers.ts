@@ -5,6 +5,7 @@ import { tenantsRouter } from '@server/modules/TRPC/tenantRouter';
 import { tenantGroupsRouter } from '@server/modules/TRPC/tenantGroupRouter';
 import { contactsRouter } from '@server/modules/TRPC/contactRoter';
 import { contactGroupsRouter } from '@server/modules/TRPC/contactGroupRouter';
+import { racksRouter } from '@server/modules/TRPC/rackRouter';
 
 export const appRouter = router({
   sites: sitesRouter,
@@ -13,6 +14,7 @@ export const appRouter = router({
   tenantGroups: tenantGroupsRouter,
   contacts: contactsRouter,
   contactGroups: contactGroupsRouter,
+  racks: racksRouter
 });
 
 export type AppRouter = typeof appRouter;
