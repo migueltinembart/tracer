@@ -10,27 +10,12 @@ const insertSchema = createInsertSchema(siteGroups);
 export const siteGroupsRouter = router({
   select: router({
     all: publicProcedure.query(async () => {
-      const result = await db
-        .select({
-          id: siteGroups.id,
-          name: siteGroups.name,
-          createdAt: siteGroups.createdAt,
-          updatedAt: siteGroups.updatedAt,
-        })
-        .from(siteGroups);
+      const result = await db.select().from(siteGroups);
 
       return result;
     }),
     one: publicProcedure.input(z.number()).query(async (opts) => {
-      const result = await db
-        .select({
-          id: siteGroups.id,
-          name: siteGroups.name,
-          createdAt: siteGroups.createdAt,
-          updatedAt: siteGroups.updatedAt,
-        })
-        .from(siteGroups)
-        .where(eq(siteGroups.id, opts.input));
+      const result = await db.select().from(siteGroups).where(eq(siteGroups.id, opts.input));
       return result[0];
     }),
   }),
@@ -53,7 +38,7 @@ export const siteGroupsRouter = router({
   delete: router({
     one: publicProcedure.input(z.coerce.number()).mutation(async (opts) => {
       const result = await db.delete(siteGroups).where(eq(siteGroups.id, opts.input)).returning();
-      return result
+      return result;
     }),
     many: publicProcedure.input(z.array(z.number())).mutation(async (opts) => {
       const result = await db.delete(siteGroups).where(inArray(siteGroups.id, opts.input));
