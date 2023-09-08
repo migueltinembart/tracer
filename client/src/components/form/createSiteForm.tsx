@@ -47,7 +47,6 @@ import {
 } from "@/components/ui/dialog";
 import { SiteGroupForm } from "./createSiteGroupForm";
 import type { RouterInput } from "@/trpc";
-import { UseTRPCMutationResult } from "@trpc/react-query/dist/shared";
 
 type SiteFormInput = RouterInput["sites"]["create"]["one"];
 
