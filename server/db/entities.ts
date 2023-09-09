@@ -14,6 +14,43 @@ import {
 
 export const statusEnum = pgEnum('status_enum', ['active', 'planned', 'staging', 'retired']);
 
+export const tenants = pgTable(
+  'tenants',
+  {
+    id: serial('id').notNull(),
+    name: text('name').notNull(),
+    tenantGroupId: integer('tenant_group_id')
+      .default(sql`null`)
+      .references(() => tenantGroups.id, { onDelete: 'set null' }),
+    comment: text('comment').notNull().default(''),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+  },
+  (tenants) => {
+    return {
+      cpk: primaryKey(tenants.id),
+      idIndex: uniqueIndex('tenants_id_index').on(tenants.id),
+    };
+  }
+);
+
+export const tenantGroups = pgTable(
+  'tenant_groups',
+  {
+    id: serial('id').notNull(),
+    name: text('name').notNull(),
+    comment: text('comment').notNull().default(''),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+  },
+  (tenantGroups) => {
+    return {
+      cpk: primaryKey(tenantGroups.id),
+      idIndex: uniqueIndex('site_groups_id_index').on(tenantGroups.id),
+    };
+  }
+);
+
 export const sites = pgTable(
   'sites',
   {
@@ -24,6 +61,7 @@ export const sites = pgTable(
     siteGroupId: integer('site_group_id')
       .default(sql`null`)
       .references(() => siteGroups.id, { onDelete: 'set null' }),
+    tenantId: integer('tenant_id').references(() => tenants.id),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
     createdAt: timestamp('created_at').defaultNow().notNull(),
   },
@@ -47,44 +85,7 @@ export const siteGroups = pgTable(
   (siteGroups) => {
     return {
       cpk: primaryKey(siteGroups.id),
-      idIndex: uniqueIndex('site_groups_id_index'),
-    };
-  }
-);
-
-export const tenants = pgTable(
-  'tenants',
-  {
-    id: serial('id').notNull(),
-    name: text('name').notNull(),
-    tenantGroupId: integer('tenant_group_id')
-      .default(sql`null`)
-      .references(() => tenantGroups.id, { onDelete: 'set null' }),
-    comment: text('comment').notNull().default(''),
-    updatedAt: timestamp('updated_at').defaultNow().notNull(),
-    createdAt: timestamp('created_at').defaultNow().notNull(),
-  },
-  (tenants) => {
-    return {
-      cpk: primaryKey(tenants.id),
-      idIndex: uniqueIndex('tenants_id_index').on(sites.id),
-    };
-  }
-);
-
-export const tenantGroups = pgTable(
-  'tenant_groups',
-  {
-    id: serial('id').notNull(),
-    name: text('name').notNull(),
-    comment: text('comment').notNull().default(''),
-    updatedAt: timestamp('updated_at').defaultNow().notNull(),
-    createdAt: timestamp('created_at').defaultNow().notNull(),
-  },
-  (tenantGroups) => {
-    return {
-      cpk: primaryKey(tenantGroups.id),
-      idIndex: uniqueIndex('site_groups_id_index'),
+      idIndex: uniqueIndex('site_groups_id_index').on(siteGroups.id),
     };
   }
 );
@@ -125,7 +126,7 @@ export const contactGroups = pgTable(
   (contactGroups) => {
     return {
       cpk: primaryKey(contactGroups.id),
-      idIndex: uniqueIndex('contact_groups_id_index'),
+      idIndex: uniqueIndex('contact_groups_id_index').on(contactGroups.id),
     };
   }
 );
@@ -147,7 +148,7 @@ export const locations = pgTable(
   (locations) => {
     return {
       cpk: primaryKey(locations.id),
-      idIndex: uniqueIndex('locations_id_index'),
+      idIndex: uniqueIndex('locations_id_index').on(locations.id),
     };
   }
 );
@@ -159,12 +160,9 @@ export const racks = pgTable(
     name: text('name').notNull(),
     units: numeric('units').notNull(),
     comment: text('comment'),
-    siteId: integer('site_id')
+    locationId: integer('location_id')
       .notNull()
-      .references(() => sites.id),
-    tenantId: integer('tenant_id')
-      .notNull()
-      .references(() => tenants.id),
+      .references(() => locations.id),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
     createdAt: timestamp('created_at').defaultNow().notNull(),
   },
