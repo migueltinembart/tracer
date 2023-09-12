@@ -52,7 +52,7 @@ export const sitesRouter = router({
   update: router({
     one: publicProcedure.input(insertSchema.required()).mutation(async (opts) => {
       const result = await db.update(sites).set(opts.input).where(eq(sites.id, opts.input.id)).returning();
-      return result;
+      return result[0];
     }),
   }),
   delete: router({
