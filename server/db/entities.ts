@@ -61,7 +61,7 @@ export const sites = pgTable(
     siteGroupId: integer('site_group_id')
       .default(sql`null`)
       .references(() => siteGroups.id, { onDelete: 'set null' }),
-    tenantId: integer('tenant_id').references(() => tenants.id),
+    tenantId: integer('tenant_id').references(() => tenants.id, { onDelete: 'set null' }),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
     createdAt: timestamp('created_at').defaultNow().notNull(),
   },
@@ -139,7 +139,7 @@ export const locations = pgTable(
     siteId: integer('site_id')
       .notNull()
       .default(sql`null`)
-      .references(() => sites.id),
+      .references(() => sites.id, { onDelete: 'set null' }),
     status: statusEnum('status').notNull().default('active'),
     comment: text('comment').notNull().default(''),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
@@ -162,7 +162,7 @@ export const racks = pgTable(
     comment: text('comment'),
     locationId: integer('location_id')
       .notNull()
-      .references(() => locations.id),
+      .references(() => locations.id, { onDelete: 'set null' }),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
     createdAt: timestamp('created_at').defaultNow().notNull(),
   },
