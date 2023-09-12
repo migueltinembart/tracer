@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Index } from "./pages";
 import { Dashboard } from "./pages/home/dashbaord";
 import { SitesList } from "./pages/Entities/sitesList";
+import { Site } from "./pages/Entities/site";
 
 const router = createBrowserRouter([
   {
@@ -19,6 +20,10 @@ const router = createBrowserRouter([
       {
         path: "/sites",
         element: <SitesList />,
+      },
+      {
+        path: "/sites/:id",
+        element: <Site></Site>,
       },
     ],
   },
