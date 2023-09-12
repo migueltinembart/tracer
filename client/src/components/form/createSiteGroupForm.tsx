@@ -17,6 +17,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { RefreshCw, X } from "lucide-react";
 import { useToast } from "../ui/use-toast";
 import type { RouterInput } from "@/trpc";
+import { FormEvent } from "react";
 
 type SiteGroupFormInput = RouterInput["siteGroups"]["create"]["one"];
 
@@ -77,7 +78,12 @@ export function SiteGroupForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
+      <form
+        onSubmit={(e) => {
+          e.stopPropagation();
+          form.handleSubmit(onSubmit)(e);
+        }}
+      >
         <FormField
           control={form.control}
           name="name"
@@ -111,7 +117,16 @@ export function SiteGroupForm() {
         />
 
         <div className="flex pt-3 justify-end w-full">
-          <SubmitButton></SubmitButton>
+          <FormField
+            name={"submit"}
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <SubmitButton></SubmitButton>
+                </FormControl>
+              </FormItem>
+            )}
+          />
         </div>
       </form>
     </Form>

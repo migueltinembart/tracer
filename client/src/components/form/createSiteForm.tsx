@@ -37,18 +37,19 @@ import { CheckIcon, RefreshCw, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CaretSortIcon } from "@radix-ui/react-icons";
 import { useToast } from "../ui/use-toast";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogTitle,
-  DialogHeader,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { SiteGroupForm } from "./createSiteGroupForm";
 import type { RouterInput } from "@/trpc";
+import { ScrollArea } from "../ui/scroll-area";
+import { capitalize, UnionTuple } from "@/lib/helpers";
+import { CreateButton } from "../layout/navbar/createButton";
 
 type SiteFormInput = RouterInput["sites"]["create"]["one"];
+const status: UnionTuple<SiteFormInput["status"]> = [
+  "active",
+  "planned",
+  "retired",
+  "staging",
+];
 
 const siteFormSchema = z.object({
   name: z
@@ -77,6 +78,7 @@ export function SiteForm() {
 
   const { toast } = useToast();
   const siteGroupsQuery = trpc.siteGroups.select.all.useQuery();
+  const context = trpc.useContext();
 
   const form = useForm<SiteFormInput>({
     resolver: zodResolver(siteFormSchema),
@@ -103,17 +105,25 @@ export function SiteForm() {
 
     if (siteCreator.status === "idle") {
       return <Button type="submit">Deploy</Button>;
+    } else {
+      return null;
     }
   }
 
   async function onSubmit(values: z.infer<typeof siteFormSchema>) {
     siteCreator.mutate(values);
+    context.sites.select.all.invalidate();
     form.reset();
   }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
+      <form
+        onSubmit={(e) => {
+          e.stopPropagation();
+          form.handleSubmit(onSubmit)(e);
+        }}
+      >
         <FormField
           control={form.control}
           name="name"
@@ -133,20 +143,26 @@ export function SiteForm() {
           name="status"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{field.name}</FormLabel>
+              <FormLabel>Status</FormLabel>
               <FormControl>
                 <Select>
                   <SelectTrigger>
                     <SelectValue
-                      placeholder={
-                        field.value.charAt(0).toUpperCase() +
-                        field.value.slice(1)
-                      }
+                      className={"capitalize"}
+                      placeholder={capitalize(field.value)}
                     />
                   </SelectTrigger>
                   <SelectContent>
-                    {Object.values(field.value).map((data) => {
-                      return <SelectItem value={data}>{data}</SelectItem>;
+                    {status.map((value) => {
+                      return (
+                        <SelectItem
+                          key={value}
+                          value={value}
+                          className="capitalize"
+                        >
+                          {capitalize(value)}
+                        </SelectItem>
+                      );
                     })}
                   </SelectContent>
                 </Select>
@@ -198,38 +214,34 @@ export function SiteForm() {
                     </Button>
                   </FormControl>
                 </PopoverTrigger>
-                <PopoverContent className="w-[200px] p-0">
-                  <Dialog>
-                    {siteGroupsQuery.isStale && (
-                      <Command className="w-full">
-                        <CommandInput
-                          placeholder="Search site groups"
-                          className="h-9 pt-1"
-                        />
-                        {siteGroupsQuery.data?.length == 0 && (
-                          <div className="flex flex-col text-center">
-                            <p className="p-3">Create site group?</p>
-                            <DialogTrigger>
-                              <Button>Create</Button>
-                            </DialogTrigger>
-                          </div>
-                        )}
+                <PopoverContent
+                  className="w-[200px] p-0"
+                  align="center"
+                  side="bottom"
+                >
+                  {siteGroupsQuery.isStale && (
+                    <Command className="w-full">
+                      <CommandInput
+                        placeholder="Search site groups"
+                        className="h-9 pt-1"
+                      />
+                      {siteGroupsQuery.data?.length === 0 && (
+                        <div className="flex flex-col text-center">
+                          <p className="p-3">there are no site Groups...</p>
+                          <CreateButton
+                            goToElement={<SiteGroupForm />}
+                            title="create Site Group"
+                          ></CreateButton>
+                        </div>
+                      )}
+                      <ScrollArea className="max-h-[300px]">
                         <CommandEmpty>
-                          <DialogTrigger>
-                            <p className="pb-2">Create a new group?</p>
-                            <Button>Create</Button>
-                          </DialogTrigger>
+                          <p className="pb-2">Create a new group?</p>
+                          <CreateButton
+                            goToElement={<SiteGroupForm />}
+                            title="Create Site Group"
+                          ></CreateButton>
                         </CommandEmpty>
-                        <DialogContent>
-                          <DialogHeader>
-                            <DialogTitle>Create site group</DialogTitle>
-                            <DialogDescription>
-                              Create a site group and and make accessing devices
-                              belonging to the same site group easier.
-                            </DialogDescription>
-                          </DialogHeader>
-                          <SiteGroupForm></SiteGroupForm>
-                        </DialogContent>
 
                         <CommandGroup>
                           {siteGroupsQuery.data?.map((sitegroup) => (
@@ -252,9 +264,9 @@ export function SiteForm() {
                             </CommandItem>
                           ))}
                         </CommandGroup>
-                      </Command>
-                    )}
-                  </Dialog>
+                      </ScrollArea>
+                    </Command>
+                  )}
                 </PopoverContent>
               </Popover>
 
@@ -263,7 +275,16 @@ export function SiteForm() {
           )}
         />
         <div className="flex pt-3 justify-end w-full">
-          <SubmitButton></SubmitButton>
+          <FormField
+            name={"submit"}
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <SubmitButton></SubmitButton>
+                </FormControl>
+              </FormItem>
+            )}
+          />
         </div>
       </form>
     </Form>

@@ -76,7 +76,12 @@ export function TenantGroupForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
+      <form
+        onSubmit={(e) => {
+          e.stopPropagation();
+          form.handleSubmit(onSubmit)(e);
+        }}
+      >
         <FormField
           control={form.control}
           name="name"
@@ -110,7 +115,16 @@ export function TenantGroupForm() {
         />
 
         <div className="flex pt-3 justify-end w-full">
-          <SubmitButton></SubmitButton>
+          <FormField
+            name={"submit"}
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <SubmitButton></SubmitButton>
+                </FormControl>
+              </FormItem>
+            )}
+          />
         </div>
       </form>
     </Form>
