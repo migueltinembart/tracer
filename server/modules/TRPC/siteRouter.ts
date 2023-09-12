@@ -56,7 +56,7 @@ export const sitesRouter = router({
     }),
   }),
   delete: router({
-    one: publicProcedure.input(z.coerce.number()).mutation(async (opts) => {
+    one: publicProcedure.input(z.number()).mutation(async (opts) => {
       const result = await db.delete(sites).where(eq(sites.id, opts.input));
       return result;
     }),
