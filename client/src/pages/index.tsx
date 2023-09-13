@@ -10,13 +10,9 @@ export function Index() {
       <div className="flex flex-1 flex-col pb-6">
         <NavBar className="h-12  flex items-center gap-8 py-2  lg:px-28 max-lg:px-6"></NavBar>
         <div className="w-full flex flex-col flex-1 lg:px-28 max-lg:px-6">
-          <AlertDialog>
-            
-              <div className="border max-md:border-hidden border-gray-300 rounded-lg h-full p-6 ">
-                <Outlet></Outlet>
-              </div>
-            
-          </AlertDialog>
+          <div className="border max-md:border-hidden border-gray-300 rounded-lg h-full p-6 ">
+            <Outlet></Outlet>
+          </div>
         </div>
       </div>
       <Toaster></Toaster>

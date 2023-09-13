@@ -63,6 +63,7 @@ export function TenantForm() {
   });
   const { toast } = useToast();
   const tenantGroupsQuery = trpc.tenantGroups.select.all.useQuery();
+  const context = trpc.useContext();
 
   const form = useForm<tenantFormInput>({
     resolver: zodResolver(tenantFormSchema),
@@ -93,6 +94,9 @@ export function TenantForm() {
 
   async function onSubmit(values: z.infer<typeof tenantFormSchema>) {
     tenantCreator.mutate(values);
+    setTimeout(() => {
+      context.tenants.select.all.invalidate();
+    }, 1000);
     form.reset();
   }
 

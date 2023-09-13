@@ -30,8 +30,11 @@ const siteGroupFormSchema = z.object({
 });
 
 export function SiteGroupForm() {
+  const context = trpc.useContext();
+  const { toast } = useToast();
   const siteGroupCreator = trpc.siteGroups.create.one.useMutation({
     onSuccess: (data) => {
+      context.siteGroups.select.all.invalidate();
       return toast({
         title: `Site "${data.name}" created`,
       });
@@ -43,7 +46,6 @@ export function SiteGroupForm() {
       });
     },
   });
-  const { toast } = useToast();
 
   const form = useForm<SiteGroupFormInput>({
     resolver: zodResolver(siteGroupFormSchema),
@@ -63,7 +65,12 @@ export function SiteGroupForm() {
     }
 
     if (siteGroupCreator.status === "success") {
+      setTimeout(() => {}, 1000);
       return <Button type="submit">Deploy</Button>;
+    }
+
+    if (siteGroupCreator.status  === "error") {
+      return <Button type="submit" className="bg-red-800">Deploy</Button>;
     }
 
     if (siteGroupCreator.status === "idle") {
@@ -73,6 +80,7 @@ export function SiteGroupForm() {
 
   async function onSubmit(values: z.infer<typeof siteGroupFormSchema>) {
     siteGroupCreator.mutate(values);
+
     form.reset();
   }
 

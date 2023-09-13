@@ -63,8 +63,12 @@ const siteFormSchema = z.object({
 });
 
 export function SiteForm() {
+  const { toast } = useToast();
+  const siteGroupsQuery = trpc.siteGroups.select.all.useQuery();
+  const context = trpc.useContext();
   const siteCreator = trpc.sites.create.one.useMutation({
     onSuccess: (data) => {
+      context.sites.select.all.invalidate();
       return toast({
         title: `Site "${data.name}" created`,
       });
@@ -76,10 +80,6 @@ export function SiteForm() {
       });
     },
   });
-
-  const { toast } = useToast();
-  const siteGroupsQuery = trpc.siteGroups.select.all.useQuery();
-  const context = trpc.useContext();
 
   const form = useForm<SiteFormInput>({
     resolver: zodResolver(siteFormSchema),
@@ -113,7 +113,6 @@ export function SiteForm() {
 
   async function onSubmit(values: z.infer<typeof siteFormSchema>) {
     siteCreator.mutate(values);
-    context.sites.select.all.invalidate();
     form.reset();
   }
 
@@ -149,7 +148,7 @@ export function SiteForm() {
               <FormItem>
                 <FormLabel>Status</FormLabel>
                 <FormControl>
-                  <Select>
+                  <Select onValueChange={field.onChange}>
                     <SelectTrigger>
                       <SelectValue
                         className={"capitalize"}
@@ -238,7 +237,8 @@ export function SiteForm() {
                             ></CreateButton>
                           </div>
                         )}
-                        <ScrollArea className="max-h-[300px]">
+                        <ScrollArea className="
+                        max-h-40">
                           <CommandEmpty>
                             <p className="pb-2">Create a new group?</p>
                             <CreateButton
