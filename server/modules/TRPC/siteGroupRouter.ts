@@ -2,10 +2,15 @@ import { publicProcedure, router } from 'utils/trpc/trpc';
 import { db } from 'utils/db';
 import { siteGroups } from 'db/entities';
 import { z } from 'zod';
-import { eq, inArray } from 'drizzle-orm';
-import { createInsertSchema } from 'drizzle-zod';
+import { eq, inArray, sql } from 'drizzle-orm';
+import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 
 const insertSchema = createInsertSchema(siteGroups);
+const updateSchema = createSelectSchema(siteGroups)
+  .omit({ createdAt: true, updatedAt: true })
+  .partial()
+  .required({ id: true });
+const updatedAt = sql`now()`;
 
 export const siteGroupsRouter = router({
   select: router({
@@ -30,8 +35,8 @@ export const siteGroupsRouter = router({
     }),
   }),
   update: router({
-    one: publicProcedure.input(insertSchema.required()).mutation(async (opts) => {
-      const result = await db.update(siteGroups).set(opts.input).where(eq(siteGroups.id, opts.input.id)).returning();
+    one: publicProcedure.input(updateSchema).mutation(async (opts) => {
+      const result = await db.update(siteGroups).set({...opts.input, updatedAt}).where(eq(siteGroups.id, opts.input.id)).returning();
       return result[0];
     }),
   }),

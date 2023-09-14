@@ -2,10 +2,15 @@ import { publicProcedure, router } from 'utils/trpc/trpc';
 import { db } from 'utils/db';
 import { contactGroups } from 'db/entities';
 import { z } from 'zod';
-import { eq, inArray } from 'drizzle-orm';
-import { createInsertSchema } from 'drizzle-zod';
+import { eq, inArray, sql } from 'drizzle-orm';
+import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 
 const insertSchema = createInsertSchema(contactGroups);
+const updateSchema = createSelectSchema(contactGroups)
+  .omit({ createdAt: true, updatedAt: true })
+  .partial()
+  .required({ id: true });
+const updatedAt = sql`now()`;
 
 export const contactGroupsRouter = router({
   select: router({
@@ -30,10 +35,10 @@ export const contactGroupsRouter = router({
     }),
   }),
   update: router({
-    one: publicProcedure.input(insertSchema.required()).mutation(async (opts) => {
+    one: publicProcedure.input(updateSchema).mutation(async (opts) => {
       const result = await db
         .update(contactGroups)
-        .set(opts.input)
+        .set({ ...opts.input, updatedAt })
         .where(eq(contactGroups.id, opts.input.id))
         .returning();
       return result;

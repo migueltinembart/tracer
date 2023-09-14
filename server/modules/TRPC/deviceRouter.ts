@@ -2,11 +2,16 @@ import { publicProcedure, router } from 'utils/trpc/trpc';
 import { db } from 'utils/db';
 import { devices, qrCodes } from 'db/deviceManagement';
 import { z } from 'zod';
-import { eq, inArray } from 'drizzle-orm';
-import { createInsertSchema } from 'drizzle-zod';
+import { eq, inArray, sql } from 'drizzle-orm';
+import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import { racks } from '@server/db/entities';
 
 const insertSchema = createInsertSchema(devices);
+const updateSchema = createSelectSchema(devices)
+  .omit({ createdAt: true, updatedAt: true })
+  .partial()
+  .required({ id: true });
+const updatedAt = sql`now()`
 
 export const devicesRouter = router({
   select: router({
@@ -52,9 +57,13 @@ export const devicesRouter = router({
   }),
   update: router({
     one: publicProcedure
-      .input(insertSchema.required().omit({ updatedAt: true, createdAt: true }))
+      .input(updateSchema)
       .mutation(async (opts) => {
-        const result = await db.update(devices).set(opts.input).where(eq(devices.id, opts.input.id)).returning();
+        const result = await db
+          .update(devices)
+          .set({ ...opts.input, updatedAt })
+          .where(eq(devices.id, opts.input.id))
+          .returning();
         return result;
       }),
   }),
