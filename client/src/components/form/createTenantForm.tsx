@@ -31,7 +31,7 @@ import { cn } from "@/lib/utils";
 import { CaretSortIcon } from "@radix-ui/react-icons";
 import { useToast } from "../ui/use-toast";
 import { Dialog } from "@/components/ui/dialog";
-import { TenantGroupForm } from "./createTenantgroupForm";
+import { TenantGroupForm } from "./createTenantGroupForm";
 import type { RouterInput } from "@/trpc";
 import { ScrollArea } from "../ui/scroll-area";
 import { CreateButton } from "../layout/navbar/createButton";
@@ -184,8 +184,8 @@ export function TenantForm() {
                             className="h-9 pt-1"
                           />
                           {tenantGroupsQuery.data?.length === 0 && (
-                            <div className="flex flex-col text-center">
-                              <p className="p-3">Create tenant group?</p>
+                            <div className="flex flex-col text-center p-1">
+                              <p className="p-3">Group not found?</p>
                               <CreateButton
                                 goToElement={<TenantGroupForm />}
                                 title="Create Tenant Group"
@@ -194,7 +194,7 @@ export function TenantForm() {
                           )}
                           <ScrollArea className="max-h-[300px]">
                             <CommandEmpty>
-                              <p className="pb-2">Create a new group?</p>
+                              <p className="pb-2">Group not found?</p>
                               <CreateButton
                                 goToElement={<TenantGroupForm />}
                                 title="Create Tenant Group"

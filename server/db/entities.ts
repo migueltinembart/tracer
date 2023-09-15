@@ -140,7 +140,7 @@ export const locations = pgTable(
       .notNull()
       .default(sql`null`)
       .references(() => sites.id, { onDelete: 'set null' }),
-    status: statusEnum('status').notNull().default('active'),
+    status: statusEnum('status').notNull(),
     comment: text('comment').notNull().default(''),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
     createdAt: timestamp('created_at').defaultNow().notNull(),

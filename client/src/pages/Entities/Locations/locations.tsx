@@ -58,16 +58,15 @@ import {
   Dialog,
 } from "@/components/ui/dialog";
 import { CreateButton } from "@/components/layout/navbar/createButton";
-import { SiteForm } from "@/components/form/createSiteForm";
+import { LocationForm } from "@/components/form/createLocationForm";
 import { Link } from "react-router-dom";
 
-export type SiteOutput = RouterOutput["sites"]["select"]["one"];
+export type LocationOutput = RouterOutput["locations"]["select"]["one"];
 
-export function SitesList() {
+export function Locations() {
   const [deleteItem, setDeleteItem] = useState<number>(0);
-  const siteDeleter = trpc.sites.delete.one.useMutation();
-  const siteQuery = trpc.sites.select.all.useQuery();
-  const utils = trpc.useContext();
+  const locationDeleter = trpc.locations.delete.one.useMutation();
+  const locationQuery = trpc.locations.select.all.useQuery();
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -78,7 +77,7 @@ export function SitesList() {
   });
   const [rowSelection, setRowSelection] = useState({});
 
-  const columns: ColumnDef<SiteOutput>[] = [
+  const columns: ColumnDef<LocationOutput>[] = [
     {
       id: "select",
       header: ({ table }) => (
@@ -102,7 +101,7 @@ export function SitesList() {
       id: "name",
       accessorFn: (row) => row.name,
       cell: ({ row }) => (
-        <Link to={`/sites/${row.original.id}`}>
+        <Link to={`/locations/${row.original.id}`}>
           <Button variant={"link"}>{row.original.name}</Button>
         </Link>
       ),
@@ -118,31 +117,20 @@ export function SitesList() {
         );
       },
     },
+
     {
-      id: "status",
-      accessorFn: (row) => row.status,
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Status
-            <CaretSortIcon className="ml-2 h-4 w-4" />
-          </Button>
-        );
-      },
+      id: "site",
+      accessorFn: (row) => row.site?.name,
+      header: () => <div>Location Group</div>,
       cell: ({ row }) => (
-        <div className="lowercase">{row.getValue("status")}</div>
+        <div className="lowercase">{row?.original.site?.name}</div>
       ),
     },
     {
-      id: "SiteGroup",
-      accessorFn: (row) => row.siteGroup?.name,
-      header: () => <div>Site Group</div>,
-      cell: ({ row }) => (
-        <div className="lowercase">{row?.original.siteGroup?.name}</div>
-      ),
+      id: "comment",
+      accessorFn: (row) => row.comment,
+      header: () => <div>Comment</div>,
+      cell: ({ row }) => <div>{row?.original.comment}</div>,
     },
     {
       id: "createdAt",
@@ -196,7 +184,7 @@ export function SitesList() {
   ];
 
   const table = useReactTable({
-    data: siteQuery.data ?? [],
+    data: locationQuery.data ?? [],
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -225,12 +213,12 @@ export function SitesList() {
       <AlertDialog>
         <Dialog>
           <h1 className="scroll-m-20 text-3xl font-extrabold tracking-tight lg:text-3xl">
-            Sites
+            Locations
           </h1>
           <div className="w-full">
             <div className="flex items-center justify-between py-4">
               <Input
-                placeholder="Filter by Site..."
+                placeholder="Filter by Location..."
                 value={
                   (table.getColumn("name")?.getFilterValue() as string) ?? ""
                 }
@@ -241,8 +229,8 @@ export function SitesList() {
               />
               <div className="flex gap-2">
                 <CreateButton
-                  goToElement={<SiteForm />}
-                  title="Create Site"
+                  goToElement={<LocationForm />}
+                  title="Create Location"
                 ></CreateButton>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -359,7 +347,7 @@ export function SitesList() {
               <AlertDialogCancel>Cancel</AlertDialogCancel>
               <AlertDialogAction
                 onClick={() => {
-                  siteDeleter.mutate(deleteItem);
+                  locationDeleter.mutate(deleteItem);
                 }}
               >
                 Continue

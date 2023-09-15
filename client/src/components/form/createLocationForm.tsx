@@ -37,62 +37,62 @@ import { CheckIcon, RefreshCw, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CaretSortIcon } from "@radix-ui/react-icons";
 import { useToast } from "../ui/use-toast";
-import { SiteGroupForm } from "./createSiteGroupForm";
 import type { RouterInput } from "@/trpc";
 import { ScrollArea } from "../ui/scroll-area";
 import { capitalize, UnionTuple } from "@/lib/helpers";
 import { CreateButton } from "../layout/navbar/createButton";
 import { Dialog } from "@/components/ui/dialog";
+import { SiteForm } from "./createSiteForm";
 
-type SiteFormInput = RouterInput["sites"]["create"]["one"];
-const status: UnionTuple<SiteFormInput["status"]> = [
+type LocationFormInput = RouterInput["locations"]["create"]["one"];
+const status: UnionTuple<LocationFormInput["status"]> = [
   "active",
   "planned",
   "retired",
   "staging",
 ];
 
-const siteFormSchema = z.object({
+const locationFormSchema = z.object({
   name: z
     .string()
     .min(2, { message: "Name must be atleast 2 characters" })
     .max(64, { message: "Name cannot be longer than 64 characters" }),
   status: z.enum(["active", "planned", "staging", "retired"]),
   comment: z.string({ description: "Add a comment" }).optional(),
-  siteGroupId: z.optional(z.number().nullable()),
+  siteId: z.number().optional(),
 });
 
-export function SiteForm() {
+export function LocationForm() {
   const { toast } = useToast();
-  const siteGroupsQuery = trpc.siteGroups.select.all.useQuery();
   const context = trpc.useContext();
-  const siteCreator = trpc.sites.create.one.useMutation({
+  const siteQuery = trpc.sites.select.all.useQuery();
+  const locationCreator = trpc.locations.create.one.useMutation({
     onSuccess: (data) => {
-      context.sites.select.all.invalidate();
+      context.locations.select.all.invalidate();
       return toast({
-        title: `Site "${data.name}" created`,
+        title: `Location "${data.name}" created`,
       });
     },
-    onError: () => {
+    onError: (error) => {
       return toast({
         variant: "destructive",
-        title: "Something with request went wrong! Trying again...",
+        title: `Something with request went wrong! Trying again...`,
       });
     },
   });
 
-  const form = useForm<SiteFormInput>({
-    resolver: zodResolver(siteFormSchema),
+  const form = useForm<LocationFormInput>({
+    resolver: zodResolver(locationFormSchema),
     defaultValues: {
       name: "",
       status: "active",
       comment: undefined,
-      siteGroupId: undefined,
+      siteId: undefined,
     },
   });
 
   function SubmitButton() {
-    if (siteCreator.status === "loading") {
+    if (locationCreator.status === "loading") {
       return (
         <Button type="submit" className="bg-orange-500" disabled>
           Loading <RefreshCw className="animate-spin"></RefreshCw>
@@ -100,19 +100,19 @@ export function SiteForm() {
       );
     }
 
-    if (siteCreator.status === "success") {
+    if (locationCreator.status === "success") {
       return <Button type="submit">Deploy</Button>;
     }
 
-    if (siteCreator.status === "idle") {
+    if (locationCreator.status === "idle") {
       return <Button type="submit">Deploy</Button>;
     } else {
       return null;
     }
   }
 
-  async function onSubmit(values: z.infer<typeof siteFormSchema>) {
-    siteCreator.mutate(values);
+  async function onSubmit(values: z.infer<typeof locationFormSchema>) {
+    locationCreator.mutate(values);
     form.reset();
   }
 
@@ -130,7 +130,7 @@ export function SiteForm() {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Site Name</FormLabel>
+                <FormLabel>Location Name</FormLabel>
                 <FormControl>
                   <Input placeholder="Contoso" {...field} />
                 </FormControl>
@@ -185,7 +185,7 @@ export function SiteForm() {
                   <Textarea value={field.value}></Textarea>
                 </FormControl>
                 <FormDescription>
-                  Add a comment to the newly created site
+                  Add a comment to the newly created location
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -193,10 +193,10 @@ export function SiteForm() {
           />
           <FormField
             control={form.control}
-            name="siteGroupId"
+            name="siteId"
             render={({ field }) => (
               <FormItem className="flex flex-col">
-                <FormLabel>Site group</FormLabel>
+                <FormLabel>Site</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
                     <FormControl>
@@ -209,10 +209,10 @@ export function SiteForm() {
                         )}
                       >
                         {field.value
-                          ? siteGroupsQuery.data?.find(
-                              (sitegroup) => sitegroup.id === field.value
+                          ? siteQuery.data?.find(
+                              (site) => site.id === field.value
                             )?.name
-                          : "Select site group"}
+                          : "Select site"}
                         <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       </Button>
                     </FormControl>
@@ -222,45 +222,47 @@ export function SiteForm() {
                     align="center"
                     side="bottom"
                   >
-                    {siteGroupsQuery.isStale && (
+                    {siteQuery.isStale && (
                       <Command className="w-full">
                         <CommandInput
-                          placeholder="Search site groups"
+                          placeholder="Search site"
                           className="h-9 pt-1"
                         />
-                        {siteGroupsQuery.data?.length === 0 && (
+                        {siteQuery.data?.length === 0 && (
                           <div className="flex flex-col text-center">
                             <p className="p-3">there are no site Groups...</p>
                             <CreateButton
-                              goToElement={<SiteGroupForm />}
-                              title="create Site Group"
+                              goToElement={<SiteForm />}
+                              title="create Site"
                             ></CreateButton>
                           </div>
                         )}
-                        <ScrollArea className="
-                        max-h-40">
+                        <ScrollArea
+                          className="
+                        max-h-40"
+                        >
                           <CommandEmpty>
-                            <p className="pb-2">Group not found?</p>
+                            <p className="pb-2">Site not found?</p>
                             <CreateButton
-                              goToElement={<SiteGroupForm />}
-                              title="Create Site Group"
+                              goToElement={<SiteForm />}
+                              title="Create Site"
                             ></CreateButton>
                           </CommandEmpty>
 
                           <CommandGroup>
-                            {siteGroupsQuery.data?.map((sitegroup) => (
+                            {siteQuery.data?.map((site) => (
                               <CommandItem
-                                value={sitegroup.name}
-                                key={sitegroup.id}
+                                value={site.name}
+                                key={site.id}
                                 onSelect={() => {
-                                  form.setValue("siteGroupId", sitegroup.id);
+                                  form.setValue("siteId", site.id);
                                 }}
                               >
-                                {sitegroup.name}
+                                {site.name}
                                 <CheckIcon
                                   className={cn(
                                     "ml-auto h-4 w-4",
-                                    sitegroup.id === field.value
+                                    site.id === field.value
                                       ? "opacity-100"
                                       : "opacity-0"
                                   )}

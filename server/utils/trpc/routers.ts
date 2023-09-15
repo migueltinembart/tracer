@@ -1,12 +1,13 @@
 import { router } from 'utils/trpc/trpc';
-import { sitesRouter } from '../../modules/TRPC/siteRouter';
-import { siteGroupsRouter } from '@server/modules/TRPC/siteGroupRouter';
-import { tenantsRouter } from '@server/modules/TRPC/tenantRouter';
-import { tenantGroupsRouter } from '@server/modules/TRPC/tenantGroupRouter';
-import { contactsRouter } from '@server/modules/TRPC/contactRoter';
-import { contactGroupsRouter } from '@server/modules/TRPC/contactGroupRouter';
-import { racksRouter } from '@server/modules/TRPC/rackRouter';
-import { interfacesRouter } from '@server/modules/TRPC/interfaceRouter';
+import { sitesRouter } from '../../modules/tRPC/siteRouter';
+import { siteGroupsRouter } from '@server/modules/tRPC/siteGroupRouter';
+import { tenantsRouter } from '@server/modules/tRPC/tenantRouter';
+import { tenantGroupsRouter } from '@server/modules/tRPC/tenantGroupRouter';
+import { contactsRouter } from '@server/modules/tRPC/contactRoter';
+import { contactGroupsRouter } from '@server/modules/tRPC/contactGroupRouter';
+import { racksRouter } from '@server/modules/tRPC/rackRouter';
+import { interfacesRouter } from '@server/modules/tRPC/interfaceRouter';
+import { locationsRouter } from '@server/modules/tRPC/locationRouter';
 
 export const appRouter = router({
   sites: sitesRouter,
@@ -17,6 +18,7 @@ export const appRouter = router({
   contactGroups: contactGroupsRouter,
   racks: racksRouter,
   interfaces: interfacesRouter,
+  locations: locationsRouter,
 });
 
 export type AppRouter = typeof appRouter;

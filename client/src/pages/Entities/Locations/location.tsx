@@ -3,15 +3,15 @@ import { trpc } from "@/trpc";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import QrReader from "react-qr-scanner";
+import { Button } from "@/components/ui/button";
 
 export function Site() {
   const params = useParams();
 
-  const site = trpc.sites.select.one.useQuery(Number(params.id));
   const siteUpdater = trpc.sites.update.one.useMutation({
     onSuccess: (data) => {
       return toast({
-        title: `Site "${data}" created`,
+        title: `Site "${data.name}" created`,
       });
     },
     onError: () => {
@@ -55,6 +55,17 @@ export function Site() {
       ) : (
         <div>{result?.text}</div>
       )}
+      <Button
+        onClick={() =>
+          siteUpdater.mutate({
+            id: 1,
+            comment: "Test",
+            name: "Rebsamen",
+            status: "active",
+            siteGroupId: 1,
+          })
+        }
+      ></Button>
     </div>
   );
 }
