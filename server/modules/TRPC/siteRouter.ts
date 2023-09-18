@@ -1,6 +1,6 @@
 import { publicProcedure, router } from 'utils/trpc/trpc';
 import { db } from 'utils/db';
-import { siteGroups, sites } from 'db/entities';
+import { siteGroups, sites, tenants } from 'db/entities';
 import { z } from 'zod';
 import { eq, inArray, sql } from 'drizzle-orm';
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
@@ -22,11 +22,13 @@ export const sitesRouter = router({
           name: sites.name,
           status: sites.status,
           siteGroup: siteGroups,
+          tenant: tenants,
           createdAt: sites.createdAt,
           updatedAt: sites.updatedAt,
         })
         .from(sites)
-        .leftJoin(siteGroups, eq(sites.siteGroupId, siteGroups.id));
+        .leftJoin(siteGroups, eq(sites.siteGroupId, siteGroups.id))
+        .leftJoin(tenants, eq(sites.tenantId, tenants.id));
       return result;
     }),
     one: publicProcedure.input(z.number()).query(async (opts) => {
@@ -36,11 +38,13 @@ export const sitesRouter = router({
           name: sites.name,
           status: sites.status,
           siteGroup: siteGroups,
+          tenant: tenants,
           createdAt: sites.createdAt,
           updatedAt: sites.updatedAt,
         })
         .from(sites)
         .leftJoin(siteGroups, eq(sites.siteGroupId, siteGroups.id))
+        .leftJoin(tenants, eq(sites.tenantId, tenants.id))
         .where(eq(sites.id, opts.input));
       return result[0];
     }),
