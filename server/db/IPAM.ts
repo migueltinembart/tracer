@@ -71,6 +71,7 @@ export const vlans = pgTable(
     vlanId: integer('vlan_id').notNull(),
     siteId: integer('site_id').references(() => sites.id),
     roleId: integer('role_id').references(() => networkRoles.id),
+    subnetId: integer('subnet_id').references(() => subnets.id),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
     createdAt: timestamp('created_at').defaultNow().notNull(),
   },
