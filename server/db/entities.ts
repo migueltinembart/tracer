@@ -22,7 +22,7 @@ export const tenants = pgTable(
     tenantGroupId: integer('tenant_group_id')
       .default(sql`null`)
       .references(() => tenantGroups.id, { onDelete: 'set null' }),
-    comment: text('comment').notNull().default(''),
+    description: text('description').notNull().default(''),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
     createdAt: timestamp('created_at').defaultNow().notNull(),
   },
@@ -39,7 +39,7 @@ export const tenantGroups = pgTable(
   {
     id: serial('id').notNull(),
     name: text('name').notNull(),
-    comment: text('comment').notNull().default(''),
+    description: text('description').notNull().default(''),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
     createdAt: timestamp('created_at').defaultNow().notNull(),
   },
@@ -57,7 +57,7 @@ export const sites = pgTable(
     id: serial('id').notNull(),
     name: text('name').notNull(),
     status: statusEnum('status').notNull(),
-    comment: text('comment').notNull().default(''),
+    description: text('description').notNull().default(''),
     siteGroupId: integer('site_group_id')
       .default(sql`null`)
       .references(() => siteGroups.id, { onDelete: 'set null' }),
@@ -78,7 +78,7 @@ export const siteGroups = pgTable(
   {
     id: serial('id').notNull(),
     name: text('name').notNull(),
-    comment: text('comment').notNull().default(''),
+    description: text('description').notNull().default(''),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
     createdAt: timestamp('created_at').defaultNow().notNull(),
   },
@@ -99,7 +99,7 @@ export const contacts = pgTable(
     phone: text('phone'),
     email: text('email').unique(),
     address: text('address'),
-    comment: text('comment').notNull().default(''),
+    description: text('description').notNull().default(''),
     contactGroupId: integer('contact_group_id')
       .default(sql`null`)
       .references(() => contactGroups.id, { onDelete: 'set null' }),
@@ -119,7 +119,7 @@ export const contactGroups = pgTable(
   {
     id: serial('id').notNull(),
     name: text('name').notNull(),
-    comment: text('comment').notNull().default(''),
+    description: text('description').notNull().default(''),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
     createdAt: timestamp('created_at').defaultNow().notNull(),
   },
@@ -141,7 +141,7 @@ export const locations = pgTable(
       .default(sql`null`)
       .references(() => sites.id, { onDelete: 'set null' }),
     status: statusEnum('status').notNull(),
-    comment: text('comment').notNull().default(''),
+    description: text('description').notNull().default(''),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
     createdAt: timestamp('created_at').defaultNow().notNull(),
   },
@@ -153,16 +153,26 @@ export const locations = pgTable(
   }
 );
 
+export const rackRoles = pgTable('rack_roles', {
+  id: serial('id').notNull(),
+  name: text('name').notNull().unique(),
+  colorName: text('color_name'),
+  description: text('description'),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
 export const racks = pgTable(
   'racks',
   {
     id: uuid('id').notNull().defaultRandom(),
     name: text('name').notNull(),
     units: numeric('units').notNull(),
-    comment: text('comment'),
+    description: text('description'),
     locationId: integer('location_id')
       .notNull()
       .references(() => locations.id, { onDelete: 'set null' }),
+    roleId: integer('role_id').references(() => rackRoles.id),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
     createdAt: timestamp('created_at').defaultNow().notNull(),
   },
