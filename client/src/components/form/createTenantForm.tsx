@@ -43,7 +43,7 @@ const tenantFormSchema = z.object({
     .string()
     .min(2, { message: "Name must be atleast 2 characters" })
     .max(64, { message: "Name cannot be longer than 64 characters" }),
-  comment: z.string({ description: "Add a comment" }).optional(),
+  description: z.string({ description: "Add a description" }).optional(),
   tenantGroupId: z.optional(z.number().nullable()),
 });
 
@@ -69,7 +69,7 @@ export function TenantForm() {
     resolver: zodResolver(tenantFormSchema),
     defaultValues: {
       name: "",
-      comment: undefined,
+      description: undefined,
       tenantGroupId: undefined,
     },
   });
@@ -128,15 +128,15 @@ export function TenantForm() {
 
           <FormField
             control={form.control}
-            name="comment"
+            name="description"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Comment</FormLabel>
+                <FormLabel>description</FormLabel>
                 <FormControl>
                   <Textarea value={field.value}></Textarea>
                 </FormControl>
                 <FormDescription>
-                  Add a comment to the newly created tenant
+                  Add a description to the newly created tenant
                 </FormDescription>
                 <FormMessage />
               </FormItem>

@@ -58,7 +58,7 @@ const siteFormSchema = z.object({
     .min(2, { message: "Name must be atleast 2 characters" })
     .max(64, { message: "Name cannot be longer than 64 characters" }),
   status: z.enum(["active", "planned", "staging", "retired"]),
-  comment: z.string({ description: "Add a comment" }).optional(),
+  description: z.string({ description: "Add a description" }).optional(),
   siteGroupId: z.optional(z.number().nullable()),
 });
 
@@ -86,7 +86,7 @@ export function SiteForm() {
     defaultValues: {
       name: "",
       status: "active",
-      comment: undefined,
+      description: undefined,
       siteGroupId: undefined,
     },
   });
@@ -177,15 +177,15 @@ export function SiteForm() {
           />
           <FormField
             control={form.control}
-            name="comment"
+            name="description"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Comment</FormLabel>
+                <FormLabel>description</FormLabel>
                 <FormControl>
                   <Textarea value={field.value}></Textarea>
                 </FormControl>
                 <FormDescription>
-                  Add a comment to the newly created site
+                  Add a description to the newly created site
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -237,8 +237,10 @@ export function SiteForm() {
                             ></CreateButton>
                           </div>
                         )}
-                        <ScrollArea className="
-                        max-h-40">
+                        <ScrollArea
+                          className="
+                        max-h-40"
+                        >
                           <CommandEmpty>
                             <p className="pb-2">Group not found?</p>
                             <CreateButton

@@ -26,7 +26,7 @@ const siteGroupFormSchema = z.object({
     .string()
     .min(2, { message: "Name must be atleast 2 characters" })
     .max(64, { message: "Name cannot be longer than 64 characters" }),
-  comment: z.string({ description: "Add a comment" }).optional(),
+  description: z.string({ description: "Add a description" }).optional(),
 });
 
 export function SiteGroupForm() {
@@ -51,7 +51,7 @@ export function SiteGroupForm() {
     resolver: zodResolver(siteGroupFormSchema),
     defaultValues: {
       name: "",
-      comment: undefined,
+      description: undefined,
     },
   });
 
@@ -69,8 +69,12 @@ export function SiteGroupForm() {
       return <Button type="submit">Deploy</Button>;
     }
 
-    if (siteGroupCreator.status  === "error") {
-      return <Button type="submit" className="bg-red-800">Deploy</Button>;
+    if (siteGroupCreator.status === "error") {
+      return (
+        <Button type="submit" className="bg-red-800">
+          Deploy
+        </Button>
+      );
     }
 
     if (siteGroupCreator.status === "idle") {
@@ -109,15 +113,15 @@ export function SiteGroupForm() {
 
         <FormField
           control={form.control}
-          name="comment"
+          name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Comment</FormLabel>
+              <FormLabel>description</FormLabel>
               <FormControl>
                 <Textarea {...field}></Textarea>
               </FormControl>
               <FormDescription>
-                Add a comment to the newly created site
+                Add a description to the newly created site
               </FormDescription>
               <FormMessage />
             </FormItem>

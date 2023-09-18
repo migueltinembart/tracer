@@ -59,7 +59,7 @@ export function Site() {
         onClick={() =>
           siteUpdater.mutate({
             id: 1,
-            comment: "Test",
+            description: "Test",
             name: "Rebsamen",
             status: "active",
             siteGroupId: 1,

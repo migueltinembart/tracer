@@ -127,10 +127,10 @@ export function Locations() {
       ),
     },
     {
-      id: "comment",
-      accessorFn: (row) => row.comment,
-      header: () => <div>Comment</div>,
-      cell: ({ row }) => <div>{row?.original.comment}</div>,
+      id: "description",
+      accessorFn: (row) => row.description,
+      header: () => <div>description</div>,
+      cell: ({ row }) => <div>{row?.original.description}</div>,
     },
     {
       id: "createdAt",
