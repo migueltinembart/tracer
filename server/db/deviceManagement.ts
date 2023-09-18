@@ -36,7 +36,7 @@ export const devices = pgTable(
     description: text('description'),
     serialNumber: text('serial_number'),
     color: text('color').references(() => colors.name),
-    qrCodeId: uuid('qr_code_id'), //Reference defined inside deviceToQrCodeRelations
+    qrCodeId: uuid('qr_code_id'), // Reference defined inside deviceToQrCodeRelations
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
     createdAt: timestamp('created_at').defaultNow().notNull(),
   },
@@ -83,7 +83,7 @@ export const deviceRoles = pgTable(
   (deviceRoles) => {
     return {
       cpk: primaryKey(deviceRoles.id),
-      idIndex: uniqueIndex('device_types_id_index').on(deviceRoles.id),
+      idIndex: uniqueIndex('device_roles_id_index').on(deviceRoles.id),
     };
   }
 );
@@ -98,7 +98,7 @@ export const manufacturer = pgTable(
   (manufacturer) => {
     return {
       cpk: primaryKey(manufacturer.id),
-      idIndex: uniqueIndex('device_types_id_index').on(manufacturer.id),
+      idIndex: uniqueIndex('manufacturer_id_index').on(manufacturer.id),
     };
   }
 );
@@ -115,8 +115,7 @@ export const plattforms = pgTable(
   (plattforms) => {
     return {
       cpk: primaryKey(plattforms.id),
-      idIndex: uniqueIndex('device_types_id_index').on(plattforms.id),
-      nameIndex: uniqueIndex('device_types_name_index').on(plattforms.name),
+      idIndex: uniqueIndex('plattforms_id_index').on(plattforms.id),
     };
   }
 );
@@ -182,7 +181,7 @@ export const services = pgTable(
   (services) => {
     return {
       cpk: primaryKey(services.id),
-      nameIndex: uniqueIndex('devices_name_index').on(services.name),
+      nameIndex: uniqueIndex('services_name_index').on(services.name),
     };
   }
 );

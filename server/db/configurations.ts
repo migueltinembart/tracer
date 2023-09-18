@@ -1,16 +1,4 @@
-import { sql } from 'drizzle-orm';
-import {
-  pgEnum,
-  pgTable,
-  primaryKey,
-  text,
-  timestamp,
-  uniqueIndex,
-  serial,
-  integer,
-  uuid,
-  numeric,
-} from 'drizzle-orm/pg-core';
+import { pgTable, primaryKey, text, uniqueIndex } from 'drizzle-orm/pg-core';
 
 export const colors = pgTable(
   'colors',
@@ -21,7 +9,7 @@ export const colors = pgTable(
   (colors) => {
     return {
       cpk: primaryKey(colors.name),
-      nameIndex: uniqueIndex('racks_name_index').on(colors.name),
+      nameIndex: uniqueIndex('colors_name_index').on(colors.name),
     };
   }
 );
