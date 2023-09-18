@@ -153,14 +153,23 @@ export const locations = pgTable(
   }
 );
 
-export const rackRoles = pgTable('rack_roles', {
-  id: serial('id').notNull(),
-  name: text('name').notNull().unique(),
-  colorName: text('color_name'),
-  description: text('description'),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-});
+export const rackRoles = pgTable(
+  'rack_roles',
+  {
+    id: serial('id').notNull(),
+    name: text('name').notNull().unique(),
+    colorName: text('color_name'),
+    description: text('description'),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+  },
+  (rackRoles) => {
+    return {
+      cpk: primaryKey(rackRoles.id),
+      nameIndex: uniqueIndex('rack_roles_name_index').on(rackRoles.name),
+    };
+  }
+);
 
 export const racks = pgTable(
   'racks',
