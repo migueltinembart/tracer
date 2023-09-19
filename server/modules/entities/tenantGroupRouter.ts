@@ -55,7 +55,7 @@ export const tenantGroupsRouter = router({
         .set({ ...opts.input, updatedAt })
         .where(eq(tenantGroups.id, opts.input.id))
         .returning();
-      return result;
+      return result[0];
     }),
   }),
   delete: router({

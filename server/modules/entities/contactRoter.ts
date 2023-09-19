@@ -21,9 +21,9 @@ export const contactsRouter = router({
           name: contacts.name,
           phone: contacts.phone,
           email: contacts.email,
-          address: contacts.address,
+          address: contacts.adress,
           contactGroup: contactGroups,
-          comment: contacts.comment,
+          description: contacts.description,
           title: contacts.title,
           createdAt: contacts.createdAt,
           updatedAt: contacts.updatedAt,
@@ -39,9 +39,9 @@ export const contactsRouter = router({
           name: contacts.name,
           phone: contacts.phone,
           email: contacts.email,
-          address: contacts.address,
+          address: contacts.adress,
           contactGroup: contactGroups,
-          comment: contacts.comment,
+          description: contacts.description,
           title: contacts.title,
           createdAt: contacts.createdAt,
           updatedAt: contacts.updatedAt,
@@ -68,7 +68,7 @@ export const contactsRouter = router({
         .set({ ...opts.input, updatedAt })
         .where(eq(contacts.id, opts.input.id))
         .returning();
-      return result;
+      return result[0];
     }),
   }),
   delete: router({

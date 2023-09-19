@@ -61,12 +61,12 @@ import { CreateButton } from "@/components/layout/navbar/createButton";
 import { SiteForm } from "@/components/form/createSiteForm";
 import { Link } from "react-router-dom";
 
-export type SiteOutput = RouterOutput["sites"]["select"]["one"];
+export type SiteOutput = RouterOutput["entities"]["sites"]["select"]["one"];
 
 export function Sites() {
   const [deleteItem, setDeleteItem] = useState<number>(0);
-  const siteDeleter = trpc.sites.delete.one.useMutation();
-  const siteQuery = trpc.sites.select.all.useQuery();
+  const siteDeleter = trpc.entities.sites.delete.one.useMutation();
+  const siteQuery = trpc.entities.sites.select.all.useQuery();
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);

@@ -41,7 +41,7 @@ export const contactGroupsRouter = router({
         .set({ ...opts.input, updatedAt })
         .where(eq(contactGroups.id, opts.input.id))
         .returning();
-      return result;
+      return result[0];
     }),
   }),
   delete: router({

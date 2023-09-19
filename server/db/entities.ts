@@ -98,7 +98,7 @@ export const contacts = pgTable(
     title: text('title'),
     phone: text('phone'),
     email: text('email').unique(),
-    address: text('address'),
+    adress: text('adress'),
     description: text('description').notNull().default(''),
     contactGroupId: integer('contact_group_id')
       .default(sql`null`)

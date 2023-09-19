@@ -11,7 +11,7 @@ const updateSchema = createSelectSchema(devices)
   .omit({ createdAt: true, updatedAt: true })
   .partial()
   .required({ id: true });
-const updatedAt = sql`now()`
+const updatedAt = sql`now()`;
 
 export const devicesRouter = router({
   select: router({
@@ -20,7 +20,7 @@ export const devicesRouter = router({
         .select({
           id: devices.id,
           name: devices.name,
-          comment: devices.comment,
+          comment: devices.description,
           qr: qrCodes,
           rack: racks,
           createdAt: devices.createdAt,
@@ -36,7 +36,7 @@ export const devicesRouter = router({
         .select({
           id: devices.id,
           name: devices.name,
-          comment: devices.comment,
+          comment: devices.description,
           createdAt: devices.createdAt,
           updatedAt: devices.updatedAt,
         })
@@ -56,16 +56,14 @@ export const devicesRouter = router({
     }),
   }),
   update: router({
-    one: publicProcedure
-      .input(updateSchema)
-      .mutation(async (opts) => {
-        const result = await db
-          .update(devices)
-          .set({ ...opts.input, updatedAt })
-          .where(eq(devices.id, opts.input.id))
-          .returning();
-        return result;
-      }),
+    one: publicProcedure.input(updateSchema).mutation(async (opts) => {
+      const result = await db
+        .update(devices)
+        .set({ ...opts.input, updatedAt })
+        .where(eq(devices.id, opts.input.id))
+        .returning();
+      return result[0];
+    }),
   }),
   delete: router({
     one: publicProcedure.input(z.string().uuid()).mutation(async (opts) => {

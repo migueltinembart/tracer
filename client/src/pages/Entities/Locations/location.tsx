@@ -5,10 +5,10 @@ import { useParams } from "react-router-dom";
 import QrReader from "react-qr-scanner";
 import { Button } from "@/components/ui/button";
 
-export function Site() {
+export function Location() {
   const params = useParams();
 
-  const siteUpdater = trpc.sites.update.one.useMutation({
+  const siteUpdater = trpc.entities.sites.update.one.useMutation({
     onSuccess: (data) => {
       return toast({
         title: `Site "${data.name}" created`,

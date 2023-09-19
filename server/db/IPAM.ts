@@ -2,13 +2,14 @@ import { pgEnum, pgTable, primaryKey, text, timestamp, uniqueIndex, serial, inte
 import { devices } from './deviceManagement';
 import { sites, tenants } from './entities';
 
-export const ipAddressRangeRolesEnum = pgEnum('ip_address_range_enum', ['dhcp', 'reserved', 'active', 'inactive']);
+export const ipAdressRangeRolesEnum = pgEnum('ip_adress_range_enum', ['dhcp', 'reserved', 'active', 'inactive']);
 
+// single ip adresses only
 export const ipAdresses = pgTable(
   'ip_adresses',
   {
     id: uuid('id').notNull(),
-    address: text('address').notNull(),
+    adress: text('adress').notNull(),
     deviceId: uuid('device_id').references(() => devices.id),
     dnsName: text('dns_name'),
     description: text('description'),
@@ -23,23 +24,24 @@ export const ipAdresses = pgTable(
   }
 );
 
+// ranges of ip ad
 export const ipAdressRanges = pgTable(
-  'ip_address_ranges',
+  'ip_adress_ranges',
   {
     id: serial('id').notNull(),
     name: text('name'),
     description: text('description'),
-    startAddress: text('start_address').notNull(),
-    endAddress: text('end_address').notNull(),
-    status: ipAddressRangeRolesEnum('status'),
+    startadress: text('start_adress').notNull(),
+    endadress: text('end_adress').notNull(),
+    status: ipAdressRangeRolesEnum('status'),
     roleId: integer('role_id').references(() => networkRoles.id),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
     createdAt: timestamp('created_at').defaultNow().notNull(),
   },
-  (addressRanges) => {
+  (adressRanges) => {
     return {
-      cpk: primaryKey(addressRanges.id),
-      nameIndex: uniqueIndex('ip_address_ranges_name_index').on(addressRanges.name),
+      cpk: primaryKey(adressRanges.id),
+      nameIndex: uniqueIndex('ip_adress_ranges_name_index').on(adressRanges.name),
     };
   }
 );

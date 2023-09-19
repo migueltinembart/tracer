@@ -70,7 +70,7 @@ export const interfacesRouter = router({
           .set({ ...opts.input, updatedAt })
           .where(eq(interfaces.id, opts.input.id))
           .returning();
-        return result;
+        return result[0];
       }),
   }),
   delete: router({

@@ -48,6 +48,15 @@ export const devices = pgTable(
   }
 );
 
+export const devicesToDeviceRoles = pgTable('devicesToDeviceRoles', {
+  deviceId: uuid('device_id')
+    .notNull()
+    .references(() => devices.id),
+  deviceRoleId: integer('device_role_id')
+    .notNull()
+    .references(() => deviceRoles.id),
+});
+
 export const deviceTypes = pgTable(
   'device_types',
   {

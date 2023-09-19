@@ -61,12 +61,13 @@ import { CreateButton } from "@/components/layout/navbar/createButton";
 import { LocationForm } from "@/components/form/createLocationForm";
 import { Link } from "react-router-dom";
 
-export type LocationOutput = RouterOutput["locations"]["select"]["one"];
+export type LocationOutput =
+  RouterOutput["entities"]["locations"]["select"]["one"];
 
 export function Locations() {
   const [deleteItem, setDeleteItem] = useState<number>(0);
-  const locationDeleter = trpc.locations.delete.one.useMutation();
-  const locationQuery = trpc.locations.select.all.useQuery();
+  const locationDeleter = trpc.entities.locations.delete.one.useMutation();
+  const locationQuery = trpc.entities.locations.select.all.useQuery();
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);

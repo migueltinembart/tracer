@@ -62,12 +62,12 @@ import { SiteForm } from "@/components/form/createSiteForm";
 import { Link } from "react-router-dom";
 import { TenantForm } from "@/components/form/createTenantForm";
 
-export type SiteOutput = RouterOutput["tenants"]["select"]["one"];
+export type SiteOutput = RouterOutput["entities"]["tenants"]["select"]["one"];
 
 export function Tenants() {
   const [deleteItem, setDeleteItem] = useState<number>(0);
-  const siteDeleter = trpc.tenants.delete.one.useMutation();
-  const siteQuery = trpc.tenants.select.all.useQuery();
+  const siteDeleter = trpc.entities.tenants.delete.one.useMutation();
+  const siteQuery = trpc.entities.tenants.select.all.useQuery();
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);

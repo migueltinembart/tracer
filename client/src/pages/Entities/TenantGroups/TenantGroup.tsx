@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 export function Site() {
   const params = useParams();
 
-  const siteUpdater = trpc.sites.update.one.useMutation({
+  const siteUpdater = trpc.entities.tenantGroups.update.one.useMutation({
     onSuccess: (data) => {
       return toast({
         title: `Site "${data.name}" created`,
@@ -61,8 +61,6 @@ export function Site() {
             id: 1,
             description: "Test",
             name: "Rebsamen",
-            status: "active",
-            siteGroupId: 1,
           })
         }
       ></Button>

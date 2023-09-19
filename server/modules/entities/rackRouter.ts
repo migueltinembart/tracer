@@ -22,7 +22,7 @@ export const racksRouter = router({
           tenant: tenants,
           location: locations,
           site: sites,
-          comment: racks.comment,
+          description: racks.description,
           updatedAt: racks.updatedAt,
           createdAt: racks.createdAt,
         })
@@ -42,7 +42,7 @@ export const racksRouter = router({
           tenant: tenants,
           site: sites,
           units: racks.units,
-          comment: racks.comment,
+          description: racks.description,
           updatedAt: racks.updatedAt,
           createdAt: racks.createdAt,
         })
@@ -71,7 +71,7 @@ export const racksRouter = router({
         .set({ ...opts.input, updatedAt })
         .where(eq(racks.id, opts.input.id))
         .returning();
-      return result;
+      return result[0];
     }),
   }),
   delete: router({

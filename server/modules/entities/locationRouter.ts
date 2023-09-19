@@ -20,7 +20,7 @@ export const locationsRouter = router({
           id: locations.id,
           name: locations.name,
           site: sites,
-          comment: locations.comment,
+          description: locations.description,
           updatedAt: locations.updatedAt,
           createdAt: locations.createdAt,
         })
@@ -35,7 +35,7 @@ export const locationsRouter = router({
           id: locations.id,
           name: locations.name,
           site: sites,
-          comment: locations.comment,
+          description: locations.description,
           updatedAt: locations.updatedAt,
           createdAt: locations.createdAt,
         })
@@ -62,7 +62,7 @@ export const locationsRouter = router({
         .set({ ...opts.input, updatedAt })
         .where(eq(locations.id, opts.input.id))
         .returning();
-      return result;
+      return result[0];
     }),
   }),
   delete: router({
