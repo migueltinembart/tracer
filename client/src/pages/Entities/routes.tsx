@@ -3,6 +3,7 @@ import { Sites } from "./Sites/sites";
 import { SiteGroups } from "./SiteGroups/siteGroups";
 import { Tenants } from "./Tenants/tenants";
 import { Locations } from "./Locations/locations";
+import { TenantGroups } from "./TenantGroups/TenantGroups";
 
 export const entityRoutes: RouteObject = {
   path: "entities",
@@ -21,6 +22,7 @@ export const entityRoutes: RouteObject = {
     },
     {
       path: "tenant-groups",
+      element: <TenantGroups />,
     },
     {
       path: "locations",
