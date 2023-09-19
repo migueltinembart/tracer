@@ -1,9 +1,9 @@
-import { publicProcedure, router } from 'utils/trpc/trpc';
-import { db } from 'utils/db';
-import { locations, sites, racks, tenants } from 'db/entities';
-import { z } from 'zod';
-import { eq, inArray, sql } from 'drizzle-orm';
-import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
+import { publicProcedure, router } from "@/server/trpc";
+import { db } from "@/server/db";
+import { locations, sites, racks, tenants } from "@/server/db/entities";
+import { z } from "zod";
+import { eq, inArray, sql } from "drizzle-orm";
+import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
 const insertSchema = createInsertSchema(racks);
 const updateSchema = createSelectSchema(racks)
@@ -59,10 +59,12 @@ export const racksRouter = router({
       const result = await db.insert(racks).values(opts.input).returning();
       return result[0];
     }),
-    many: publicProcedure.input(z.array(insertSchema)).mutation(async (opts) => {
-      const result = await db.insert(racks).values(opts.input).returning();
-      return result;
-    }),
+    many: publicProcedure
+      .input(z.array(insertSchema))
+      .mutation(async (opts) => {
+        const result = await db.insert(racks).values(opts.input).returning();
+        return result;
+      }),
   }),
   update: router({
     one: publicProcedure.input(updateSchema).mutation(async (opts) => {
@@ -79,9 +81,13 @@ export const racksRouter = router({
       const result = await db.delete(racks).where(eq(racks.id, opts.input));
       return result;
     }),
-    many: publicProcedure.input(z.array(z.string().uuid())).mutation(async (opts) => {
-      const result = await db.delete(racks).where(inArray(racks.id, opts.input));
-      return result;
-    }),
+    many: publicProcedure
+      .input(z.array(z.string().uuid()))
+      .mutation(async (opts) => {
+        const result = await db
+          .delete(racks)
+          .where(inArray(racks.id, opts.input));
+        return result;
+      }),
   }),
 });

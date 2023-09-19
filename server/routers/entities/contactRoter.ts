@@ -1,9 +1,9 @@
-import { publicProcedure, router } from 'utils/trpc/trpc';
-import { db } from 'utils/db';
-import { contacts, contactGroups } from 'db/entities';
-import { z } from 'zod';
-import { eq, inArray, sql } from 'drizzle-orm';
-import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
+import { publicProcedure, router } from "@/server/trpc";
+import { db } from "@/server/db";
+import { contacts, contactGroups } from "@/server/db/entities";
+import { z } from "zod";
+import { eq, inArray, sql } from "drizzle-orm";
+import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
 const insertSchema = createInsertSchema(contacts);
 const updateSchema = createSelectSchema(contacts)
@@ -56,10 +56,12 @@ export const contactsRouter = router({
       const result = await db.insert(contacts).values(opts.input).returning();
       return result[0];
     }),
-    many: publicProcedure.input(z.array(insertSchema)).mutation(async (opts) => {
-      const result = await db.insert(contacts).values(opts.input).returning();
-      return result;
-    }),
+    many: publicProcedure
+      .input(z.array(insertSchema))
+      .mutation(async (opts) => {
+        const result = await db.insert(contacts).values(opts.input).returning();
+        return result;
+      }),
   }),
   update: router({
     one: publicProcedure.input(updateSchema).mutation(async (opts) => {
@@ -73,11 +75,15 @@ export const contactsRouter = router({
   }),
   delete: router({
     one: publicProcedure.input(z.number()).mutation(async (opts) => {
-      const result = await db.delete(contacts).where(eq(contacts.id, opts.input));
+      const result = await db
+        .delete(contacts)
+        .where(eq(contacts.id, opts.input));
       return result;
     }),
     many: publicProcedure.input(z.array(z.number())).mutation(async (opts) => {
-      const result = await db.delete(contacts).where(inArray(contacts.id, opts.input));
+      const result = await db
+        .delete(contacts)
+        .where(inArray(contacts.id, opts.input));
       return result;
     }),
   }),

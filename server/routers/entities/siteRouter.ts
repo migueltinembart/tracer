@@ -1,9 +1,9 @@
-import { publicProcedure, router } from 'utils/trpc/trpc';
-import { db } from 'utils/db';
-import { siteGroups, sites, tenants } from 'db/entities';
-import { z } from 'zod';
-import { eq, inArray, sql } from 'drizzle-orm';
-import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
+import { publicProcedure, router } from "@/server/trpc";
+import { db } from "@/server/db";
+import { siteGroups, sites, tenants } from "@/server/db/entities";
+import { z } from "zod";
+import { eq, inArray, sql } from "drizzle-orm";
+import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
 const insertSchema = createInsertSchema(sites);
 const updateSchema = createSelectSchema(sites)
@@ -54,10 +54,12 @@ export const sitesRouter = router({
       const result = await db.insert(sites).values(opts.input).returning();
       return result[0];
     }),
-    many: publicProcedure.input(z.array(insertSchema)).mutation(async (opts) => {
-      const result = await db.insert(sites).values(opts.input).returning();
-      return result;
-    }),
+    many: publicProcedure
+      .input(z.array(insertSchema))
+      .mutation(async (opts) => {
+        const result = await db.insert(sites).values(opts.input).returning();
+        return result;
+      }),
   }),
   update: router({
     one: publicProcedure.input(updateSchema).mutation(async (opts) => {
@@ -75,7 +77,9 @@ export const sitesRouter = router({
       return result;
     }),
     many: publicProcedure.input(z.array(z.number())).mutation(async (opts) => {
-      const result = await db.delete(sites).where(inArray(sites.id, opts.input));
+      const result = await db
+        .delete(sites)
+        .where(inArray(sites.id, opts.input));
       return result;
     }),
   }),

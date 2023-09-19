@@ -1,10 +1,10 @@
-import { publicProcedure, router } from 'utils/trpc/trpc';
-import { db } from 'utils/db';
-import { devices, qrCodes } from 'db/deviceManagement';
-import { z } from 'zod';
-import { eq, inArray, sql } from 'drizzle-orm';
-import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
-import { racks } from '@server/db/entities';
+import { publicProcedure, router } from "@/server/trpc";
+import { db } from "@/server/db";
+import { devices, qrCodes } from "@/server/db/deviceManagement";
+import { z } from "zod";
+import { eq, inArray, sql } from "drizzle-orm";
+import { createInsertSchema, createSelectSchema } from "drizzle-zod";
+import { racks } from "@/server/db/entities";
 
 const insertSchema = createInsertSchema(devices);
 const updateSchema = createSelectSchema(devices)
@@ -50,10 +50,12 @@ export const devicesRouter = router({
       const result = await db.insert(devices).values(opts.input).returning();
       return result[0];
     }),
-    many: publicProcedure.input(z.array(insertSchema)).mutation(async (opts) => {
-      const result = await db.insert(devices).values(opts.input).returning();
-      return result;
-    }),
+    many: publicProcedure
+      .input(z.array(insertSchema))
+      .mutation(async (opts) => {
+        const result = await db.insert(devices).values(opts.input).returning();
+        return result;
+      }),
   }),
   update: router({
     one: publicProcedure.input(updateSchema).mutation(async (opts) => {
@@ -70,9 +72,13 @@ export const devicesRouter = router({
       const result = await db.delete(devices).where(eq(devices.id, opts.input));
       return result;
     }),
-    many: publicProcedure.input(z.array(z.string().uuid())).mutation(async (opts) => {
-      const result = await db.delete(devices).where(inArray(devices.id, opts.input));
-      return result;
-    }),
+    many: publicProcedure
+      .input(z.array(z.string().uuid()))
+      .mutation(async (opts) => {
+        const result = await db
+          .delete(devices)
+          .where(inArray(devices.id, opts.input));
+        return result;
+      }),
   }),
 });

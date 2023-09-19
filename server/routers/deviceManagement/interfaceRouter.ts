@@ -1,11 +1,11 @@
-import { publicProcedure, router } from 'utils/trpc/trpc';
-import { db } from 'utils/db';
-import { devices, interfaces, qrCodes } from 'db/deviceManagement';
-import { z } from 'zod';
-import { eq, inArray, sql } from 'drizzle-orm';
-import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
-import { racks } from '@server/db/entities';
-import { alias } from 'drizzle-orm/pg-core';
+import { publicProcedure, router } from "@/server/trpc";
+import { db } from "@/server/db";
+import { devices, interfaces, qrCodes } from "@/server/db/deviceManagement";
+import { z } from "zod";
+import { eq, inArray, sql } from "drizzle-orm";
+import { createInsertSchema, createSelectSchema } from "drizzle-zod";
+
+import { alias } from "drizzle-orm/pg-core";
 
 const insertSchema = createInsertSchema(interfaces);
 const updateSchema = createSelectSchema(interfaces)
@@ -17,7 +17,7 @@ const updatedAt = sql`now()`;
 export const interfacesRouter = router({
   select: router({
     all: publicProcedure.query(async () => {
-      const bridgeInterface = alias(interfaces, 'bridgeInterface');
+      const bridgeInterface = alias(interfaces, "bridgeInterface");
       const result = await db
         .select({
           id: interfaces.id,
@@ -34,7 +34,7 @@ export const interfacesRouter = router({
       return result;
     }),
     one: publicProcedure.input(z.string().uuid()).query(async (opts) => {
-      const bridgeInterface = alias(interfaces, 'bridgeInterface');
+      const bridgeInterface = alias(interfaces, "bridgeInterface");
       const result = await db
         .select({
           id: interfaces.id,
@@ -56,31 +56,40 @@ export const interfacesRouter = router({
       const result = await db.insert(interfaces).values(opts.input).returning();
       return result[0];
     }),
-    many: publicProcedure.input(z.array(insertSchema)).mutation(async (opts) => {
-      const result = await db.insert(interfaces).values(opts.input).returning();
-      return result;
-    }),
-  }),
-  update: router({
-    one: publicProcedure
-      .input(updateSchema)
+    many: publicProcedure
+      .input(z.array(insertSchema))
       .mutation(async (opts) => {
         const result = await db
-          .update(interfaces)
-          .set({ ...opts.input, updatedAt })
-          .where(eq(interfaces.id, opts.input.id))
+          .insert(interfaces)
+          .values(opts.input)
           .returning();
-        return result[0];
+        return result;
       }),
+  }),
+  update: router({
+    one: publicProcedure.input(updateSchema).mutation(async (opts) => {
+      const result = await db
+        .update(interfaces)
+        .set({ ...opts.input, updatedAt })
+        .where(eq(interfaces.id, opts.input.id))
+        .returning();
+      return result[0];
+    }),
   }),
   delete: router({
     one: publicProcedure.input(z.string().uuid()).mutation(async (opts) => {
-      const result = await db.delete(interfaces).where(eq(interfaces.id, opts.input));
+      const result = await db
+        .delete(interfaces)
+        .where(eq(interfaces.id, opts.input));
       return result;
     }),
-    many: publicProcedure.input(z.array(z.string().uuid())).mutation(async (opts) => {
-      const result = await db.delete(interfaces).where(inArray(interfaces.id, opts.input));
-      return result;
-    }),
+    many: publicProcedure
+      .input(z.array(z.string().uuid()))
+      .mutation(async (opts) => {
+        const result = await db
+          .delete(interfaces)
+          .where(inArray(interfaces.id, opts.input));
+        return result;
+      }),
   }),
 });
