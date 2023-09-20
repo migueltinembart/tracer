@@ -6,9 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "generate": "drizzle-kit generate:pg"
   },
   "dependencies": {
+    "@tanstack/react-query": "^4.35.3",
+    "@trpc/react-query": "^10.38.3",
     "@trpc/server": "^10.38.3",
     "@types/node": "20.6.2",
     "@types/react": "18.2.22",
@@ -16,6 +19,7 @@
     "autoprefixer": "10.4.15",
     "client": "link:@/trpc/client",
     "dotenv": "^16.3.1",
+    "drizzle-kit": "^0.19.13",
     "drizzle-orm": "^0.28.6",
     "drizzle-zod": "^0.5.1",
     "eslint": "8.49.0",
