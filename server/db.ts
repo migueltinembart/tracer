@@ -7,4 +7,6 @@ const client = new Pool({
   ssl: true,
 });
 
+client.connect();
+
 export const db = drizzle(client);
