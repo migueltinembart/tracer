@@ -1,10 +1,12 @@
 import Image from "next/image";
-import Test from "./_components/Test";
+import NavBar from "./_components/NavBar";
+import { NavMenuLarge } from "./_components/NavMenus";
+import { Sheet } from "@/components/ui/sheet";
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <Test></Test>
-    </main>
+    <>
+      <div className="border flex-1 w-full rounded-md"></div>
+    </>
   );
 }

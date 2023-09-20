@@ -2,8 +2,19 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Provider from "./_trpc/Provider";
+import clsx from "clsx";
+import NavBar from "./_components/NavBar";
+import { NavMenuLarge } from "./_components/NavMenus";
+import Footer from "./_components/Footer";
+import Main from "./_components/Main";
 
 const inter = Inter({ subsets: ["latin"] });
+const bodyClassName = clsx([
+  inter.className,
+  "flex",
+  "flex-col",
+  "min-h-screen",
+]);
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -18,7 +29,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <Provider>
-        <body className={inter.className}>{children}</body>
+        <body className={bodyClassName}>
+          <NavBar>
+            <NavMenuLarge></NavMenuLarge>
+          </NavBar>
+
+          <Main>{children}</Main>
+          <Footer></Footer>
+        </body>
       </Provider>
     </html>
   );
