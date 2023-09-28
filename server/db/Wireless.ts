@@ -12,13 +12,13 @@ import {
 import { vlans } from "./IPAM";
 import { siteGroups, sites, tenants } from "./entities";
 
-const authTypeEnum = pgEnum("auth_type", [
+export const authTypeEnum = pgEnum("auth_type_enum", [
   "Open",
   "WEP",
   "WPA Personal",
   "WPA Enterprise",
 ]);
-const authCyperEnum = pgEnum("auth_cypher", ["Auto", "TKIP", "AES"]);
+export const authCyperEnum = pgEnum("auth_cypher_enum", ["Auto", "TKIP", "AES"]);
 
 export const wirelessLans = pgTable(
   "wireless_lans",
@@ -34,8 +34,8 @@ export const wirelessLans = pgTable(
     wlanGroupId: integer("wireless_lan_group_id").references(
       () => wirelessLanGroups.id
     ),
-    authType: authTypeEnum("auth_type").notNull(),
-    authCypher: authCyperEnum("auth_cypher").notNull(),
+    authType: authTypeEnum("auth_type_enum").notNull(),
+    authCypher: authCyperEnum("auth_cypher_enum").notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },

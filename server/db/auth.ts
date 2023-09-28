@@ -1,52 +1,60 @@
 import {
-  char,
-  integer,
-  pgTable,
-  primaryKey,
-  text,
   timestamp,
+  pgTable,
+  text,
+  primaryKey,
+  integer,
 } from "drizzle-orm/pg-core";
+import type { AdapterAccount } from "@auth/core/adapters";
 
-const accounts = pgTable(
-  "accounts",
-  {
-    id: char("id", { length: 32 }),
-    userId: text("user_id"),
-    type: text("type"),
-    provider: text("provider"),
-    providerAccountId: text("provider_account_id"),
-    refreshToken: text("refresh_token"),
-    accessToken: text("access_token"),
-    expiresAt: integer("expires_at"),
-    tokenType: text("token_type"),
-    scope: text("scope"),
-    idToken: text("id_token"),
-    sessionState: text("session_state"),
-    oAuthTokenSecret: text("oauth_token_secret"),
-    oauthToken: text("oauth_token"),
-  },
-  (accounts) => {
-    return { cpk: primaryKey(accounts.id) };
-  }
-);
-
-const sessions = pgTable("sessions", {
-  id: char("id", { length: 32 }),
-  sessionToken: text("session_token").unique(),
-  userId: text("user_id"),
-  expires: timestamp("expires"),
-});
-
-const users = pgTable("users", {
-  id: char("id", { length: 32 }),
+export const users = pgTable("user", {
+  id: text("id").notNull().primaryKey(),
   name: text("name"),
-  email: text("email"),
-  emailVerified: timestamp("email_verified"),
+  email: text("email").notNull(),
+  emailVerified: timestamp("emailVerified", { mode: "date" }),
   image: text("image"),
 });
 
-const verificationTokens = pgTable("verification_tokens", {
-  identifier: text("identifier"),
-  token: text("token"),
-  expires: timestamp("expires"),
+export const accounts = pgTable(
+  "account",
+  {
+    userId: text("userId")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    type: text("type").$type<AdapterAccount["type"]>().notNull(),
+    provider: text("provider").notNull(),
+    providerAccountId: text("providerAccountId").notNull(),
+    expires_in: integer("expires_in"),
+    ext_expires_in: integer("ext_expires_in"),
+    refresh_token: text("refresh_token"),
+    access_token: text("access_token"),
+    expires_at: integer("expires_at"),
+    token_type: text("token_type"),
+    scope: text("scope"),
+    id_token: text("id_token"),
+    session_state: text("session_state"),
+  },
+  (account) => ({
+    compoundKey: primaryKey(account.provider, account.providerAccountId),
+  })
+);
+
+export const sessions = pgTable("session", {
+  sessionToken: text("sessionToken").notNull().primaryKey(),
+  userId: text("userId")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  expires: timestamp("expires", { mode: "date" }).notNull(),
 });
+
+export const verificationTokens = pgTable(
+  "verificationToken",
+  {
+    identifier: text("identifier").notNull(),
+    token: text("token").notNull(),
+    expires: timestamp("expires", { mode: "date" }).notNull(),
+  },
+  (vt) => ({
+    compoundKey: primaryKey(vt.identifier, vt.token),
+  })
+);

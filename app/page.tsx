@@ -1,12 +1,11 @@
-import Image from "next/image";
-import NavBar from "./_components/NavBar";
-import { NavMenuLarge } from "./_components/NavMenus";
-import { Sheet } from "@/components/ui/sheet";
+"use client";
+import { getServerSession } from "next-auth";
+import { trpc } from "./_trpc/client";
+import { useSession } from "next-auth/react";
+import { authOptions } from "./api/auth/[...nextauth]/route";
 
 export default function Home() {
-  return (
-    <>
-      <div className="border flex-1 w-full rounded-md"></div>
-    </>
-  );
+  const result = trpc.auth.getSession.useSuspenseQuery();
+
+  return <div>{result[0].user?.name}</div>;
 }
