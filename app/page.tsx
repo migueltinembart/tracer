@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react";
 import { authOptions } from "./api/auth/[...nextauth]/route";
 
 export default function Home() {
-  const result = trpc.auth.getSession.useSuspenseQuery();
+  const result = trpc.auth.getSession.useQuery();
 
-  return <div>{result[0].user?.name}</div>;
+  return <div></div>;
 }

@@ -7,7 +7,11 @@ import { getServerSession } from "next-auth";
 import { inferAsyncReturnType } from "@trpc/server";
 import { type Session } from "next-auth";
 
-interface CreateInnerContextOptions extends Partial<CreateNextContextOptions> {
+interface FetchOptions {
+  req: Request;
+  res: Response;
+}
+interface CreateInnerContextOptions extends Partial<FetchOptions> {
   session: Session | null;
 }
 
@@ -17,7 +21,7 @@ export async function createContextInner(opts?: CreateInnerContextOptions) {
   };
 }
 
-export async function createContext(opts: CreateNextContextOptions) {
+export async function createContext(opts: FetchOptions) {
   const session = await getServerSession(NextAuthOptions);
 
   const contextInner = await createContextInner({ session });
