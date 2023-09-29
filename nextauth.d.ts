@@ -18,6 +18,7 @@ declare module "next-auth/jwt" {
     iat: number;
     exp: number;
     jti: string;
+    accessToken: string | undefined;
   }
 }
 

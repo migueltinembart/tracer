@@ -8,6 +8,7 @@ import { sharedPadding } from "./Shared";
 import { AvatarIcon } from "./Avatar";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/route";
+import { getToken } from "next-auth/jwt";
 
 const headerClass = clsx([
   "h-14 flex justify-between items-center shadow-md",
@@ -15,7 +16,7 @@ const headerClass = clsx([
 ]);
 
 export default async function NavBar({ children }: { children?: ReactNode }) {
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession();
 
   return (
     <header className={headerClass}>
@@ -24,7 +25,7 @@ export default async function NavBar({ children }: { children?: ReactNode }) {
         <Link href={"/"}>Tracer</Link>
       </div>
       <div className="max-sm:hidden">{children}</div>
-      <AvatarIcon imageSrc={session?.user?.image}></AvatarIcon>
+      <AvatarIcon imageSrc={session?.user.image}></AvatarIcon>
     </header>
   );
 }

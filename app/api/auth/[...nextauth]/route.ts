@@ -5,7 +5,6 @@ import { env } from "@/server/config/env";
 import { db } from "@/server/db";
 
 export const authOptions: AuthOptions = {
-  adapter: DrizzleAdapter(db),
   providers: [
     AzureADProvider({
       clientId: env.AZURE_AD_CLIENT_ID,
@@ -19,20 +18,10 @@ export const authOptions: AuthOptions = {
       },
     }),
   ],
-  session: {
-    strategy: "jwt",
-  },
+
   callbacks: {
-    async session({ session, token, user }) {
-      return {
-        ...session,
-        user: {
-          id: token.sub,
-        },
-      };
-    },
     async jwt({ token, user, account, session }) {
-      return token;
+      return { ...token, accessToken: account?.access_token };
     },
   },
 };
