@@ -4,20 +4,22 @@ import { Context } from "./routers/context";
 // You can use any variable name you like.
 // We use t to keep things simple.
 export const t = initTRPC.context<Context>().create();
+export const publicProcedure = t.procedure;
 
-const isAuthorized = t.middleware(async ({ ctx, next }) => {
-  if (!ctx.session) {
-    throw new TRPCError({
-      code: "UNAUTHORIZED",
-    });
+const isAuthorized = t.middleware(async (opts) => {
+  const { ctx } = opts;
+  if (!ctx.token) {
+    throw new Error("UNAUTHORIZED");
   }
-  return next({
+  return opts.next({
     ctx: {
-      session: ctx.session,
+      token: ctx.token,
+      req: ctx.req,
+      res: ctx.res,
     },
   });
 });
 export const router = t.router;
 export const middleware = t.middleware;
-export const publicProcedure = t.procedure;
+
 export const privateProcedure = t.procedure.use(isAuthorized);

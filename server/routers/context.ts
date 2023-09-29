@@ -1,35 +1,40 @@
-import { CreateNextContextOptions } from "@trpc/server/adapters/next";
-import {
-  authOptions as NextAuthOptions,
-  authOptions,
-} from "@/app/api/auth/[...nextauth]/route";
-import { getServerSession } from "next-auth";
 import { inferAsyncReturnType } from "@trpc/server";
-import { type Session } from "next-auth";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { Session } from "next-auth";
+import { NextRequest, NextResponse } from "next/server";
+import { NextApiRequest, NextApiResponse } from "next";
+import { JWT, getToken } from "next-auth/jwt";
+import { db } from "../db";
 
-interface FetchOptions {
-  req: Request;
-  res: Response;
-}
-interface CreateInnerContextOptions extends Partial<FetchOptions> {
-  session: Session | null;
+interface CreateInnerContextOptions
+  extends Partial<{ req: NextRequest; res?: NextResponse }> {
+  token: JWT | null;
 }
 
 export async function createContextInner(opts?: CreateInnerContextOptions) {
   return {
-    session: opts?.session,
+    token: opts?.token,
+    db: db,
   };
 }
 
-export async function createContext(opts: FetchOptions) {
-  const session = await getServerSession(NextAuthOptions);
+interface CreateOuterContextOptions {
+  req: NextRequest;
+  res?: NextResponse;
+}
 
-  const contextInner = await createContextInner({ session });
+export async function createContext(opts: CreateOuterContextOptions) {
+  const token = await getToken({ req: opts.req });
+  const innerContext = await createContextInner({
+    req: opts.req,
+    token: token,
+  });
   return {
-    ...contextInner,
     req: opts.req,
     res: opts.res,
+    ...innerContext,
   };
 }
 
-export type Context = inferAsyncReturnType<typeof createContext>;
+export type Context = Awaited<inferAsyncReturnType<typeof createContext>>;

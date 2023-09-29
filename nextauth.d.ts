@@ -4,11 +4,20 @@ import { AzureADProfile } from "next-auth/providers/azure-ad";
 
 declare module "next-auth" {
   interface Session {
-    user?: {
-      id?: string;
-    } & DefaultSession["user"];
+    user: { id: JWT["sub"] } & DefaultSession["user"];
     expires: DefaultSession["expires"];
+  }
+}
 
+declare module "next-auth/jwt" {
+  interface JWT {
+    name: string;
+    email: strng;
+    picture: string;
+    sub: string;
+    iat: number;
+    exp: number;
+    jti: string;
   }
 }
 

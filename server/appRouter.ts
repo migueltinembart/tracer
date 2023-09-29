@@ -7,7 +7,12 @@ import { authRouter } from "./routers/auth";
 export const appRouter = router({
   sites: sitesRouter,
   tenants: tenantsRouter,
-  auth: authRouter,
+  authorized: router({
+    getInfo: privateProcedure.query((opts) => {
+      console.log(opts.ctx.token);
+      return opts.ctx.token;
+    }),
+  }),
 });
 
 export type AppRouter = typeof appRouter;

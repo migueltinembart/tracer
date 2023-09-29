@@ -11,7 +11,7 @@ export const authOptions: AuthOptions = {
       clientId: env.AZURE_AD_CLIENT_ID,
       clientSecret: env.AZURE_AD_CLIENT_SECRET,
       tenantId: env.AZURE_AD_TENANT_ID,
-      
+
       authorization: {
         params: {
           scope: "openid profile email offline_access User.Read",
@@ -19,19 +19,20 @@ export const authOptions: AuthOptions = {
       },
     }),
   ],
-  session: { strategy: "jwt" },
+  session: {
+    strategy: "jwt",
+  },
   callbacks: {
-    async jwt({ token, user, account, profile }) {
-      return token;
-    },
     async session({ session, token, user }) {
-      if (token) {
-        session.user = {
+      return {
+        ...session,
+        user: {
           id: token.sub,
-          ...session.user,
-        };
-      }
-      return session;
+        },
+      };
+    },
+    async jwt({ token, user, account, session }) {
+      return token;
     },
   },
 };
