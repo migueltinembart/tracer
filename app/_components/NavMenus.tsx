@@ -19,16 +19,27 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { AlignLeft } from "lucide-react";
+import { AlignLeft, Building2 } from "lucide-react";
+import clsx from "clsx";
+
+const NavMenuLink = clsx([""]);
 
 export function NavMenuLarge() {
   return (
     <NavigationMenu>
       <NavigationMenuList>
         <NavigationMenuItem>
-          <NavigationMenuTrigger>Item One</NavigationMenuTrigger>
-          <NavigationMenuContent>
-            <NavigationMenuLink>Link</NavigationMenuLink>
+          <NavigationMenuTrigger className="flex gap-2 items-center">
+            <Building2 size={20} strokeWidth={"1.5px"}></Building2>
+            <div>Entities</div>
+          </NavigationMenuTrigger>
+          <NavigationMenuContent className="p-2">
+            <NavigationMenuLink className="w-40">
+              <div className="bg-gray-100 p-1 flex flex-col rounded-sm w-40">
+                <div className="font-bold flex-1">Sites</div>
+                <div className="text-xs">Create sites like a pro</div>
+              </div>
+            </NavigationMenuLink>
           </NavigationMenuContent>
         </NavigationMenuItem>
       </NavigationMenuList>

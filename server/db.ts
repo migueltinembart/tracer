@@ -2,12 +2,20 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool, Client } from "pg";
 import { env } from "./config/env";
 
-const client = new Client({
-  connectionString: env.CONNECTION_STRING,
-  ssl: true,
-  host: "0.0.0.0",
-});
+export async function dbInit() {
+  const pool = new Pool({
+    connectionString: env.CONNECTION_STRING,
+    ssl: true,
+    host: "0.0.0.0",
+    keepAlive: true,
+    max: 5,
+  });
 
-await client.connect();
+  const client = pool.connect();
 
-export const db = drizzle(client);
+  return client;
+}
+
+const pool = await dbInit();
+
+export const db = drizzle(pool);

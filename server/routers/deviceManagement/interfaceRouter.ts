@@ -1,4 +1,4 @@
-import { publicProcedure, router } from "@/server/trpc";
+import { privateProcedure, router } from "@/server/trpc";
 import { db } from "@/server/db";
 import { devices, interfaces, qrCodes } from "@/server/db/deviceManagement";
 import { z } from "zod";
@@ -16,7 +16,7 @@ const updatedAt = sql`now()`;
 
 export const interfacesRouter = router({
   select: router({
-    all: publicProcedure.query(async () => {
+    all: privateProcedure.query(async () => {
       const bridgeInterface = alias(interfaces, "bridgeInterface");
       const result = await db
         .select({
@@ -33,7 +33,7 @@ export const interfacesRouter = router({
 
       return result;
     }),
-    one: publicProcedure.input(z.string().uuid()).query(async (opts) => {
+    one: privateProcedure.input(z.string().uuid()).query(async (opts) => {
       const bridgeInterface = alias(interfaces, "bridgeInterface");
       const result = await db
         .select({
@@ -52,11 +52,11 @@ export const interfacesRouter = router({
     }),
   }),
   create: router({
-    one: publicProcedure.input(insertSchema).mutation(async (opts) => {
+    one: privateProcedure.input(insertSchema).mutation(async (opts) => {
       const result = await db.insert(interfaces).values(opts.input).returning();
       return result[0];
     }),
-    many: publicProcedure
+    many: privateProcedure
       .input(z.array(insertSchema))
       .mutation(async (opts) => {
         const result = await db
@@ -67,7 +67,7 @@ export const interfacesRouter = router({
       }),
   }),
   update: router({
-    one: publicProcedure.input(updateSchema).mutation(async (opts) => {
+    one: privateProcedure.input(updateSchema).mutation(async (opts) => {
       const result = await db
         .update(interfaces)
         .set({ ...opts.input, updatedAt })
@@ -77,13 +77,13 @@ export const interfacesRouter = router({
     }),
   }),
   delete: router({
-    one: publicProcedure.input(z.string().uuid()).mutation(async (opts) => {
+    one: privateProcedure.input(z.string().uuid()).mutation(async (opts) => {
       const result = await db
         .delete(interfaces)
         .where(eq(interfaces.id, opts.input));
       return result;
     }),
-    many: publicProcedure
+    many: privateProcedure
       .input(z.array(z.string().uuid()))
       .mutation(async (opts) => {
         const result = await db

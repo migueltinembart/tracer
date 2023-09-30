@@ -15,7 +15,6 @@ interface CreateInnerContextOptions
 export async function createContextInner(opts?: CreateInnerContextOptions) {
   return {
     token: opts?.token,
-    db: db,
   };
 }
 

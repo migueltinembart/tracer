@@ -1,4 +1,4 @@
-import { publicProcedure, router } from "@/server/trpc";
+import { privateProcedure, router } from "@/server/trpc";
 import { db } from "@/server/db";
 import { siteGroups, sites, tenants } from "@/server/db/entities";
 import { z } from "zod";
@@ -15,7 +15,7 @@ const updatedAt = sql`now()`;
 
 export const sitesRouter = router({
   select: router({
-    all: publicProcedure.query(async () => {
+    all: privateProcedure.query(async () => {
       const result = await db
         .select({
           id: sites.id,
@@ -31,7 +31,7 @@ export const sitesRouter = router({
         .leftJoin(tenants, eq(sites.tenantId, tenants.id));
       return result;
     }),
-    one: publicProcedure.input(z.number()).query(async (opts) => {
+    one: privateProcedure.input(z.number()).query(async (opts) => {
       const result = await db
         .select({
           id: sites.id,
@@ -50,11 +50,11 @@ export const sitesRouter = router({
     }),
   }),
   create: router({
-    one: publicProcedure.input(insertSchema).mutation(async (opts) => {
+    one: privateProcedure.input(insertSchema).mutation(async (opts) => {
       const result = await db.insert(sites).values(opts.input).returning();
       return result[0];
     }),
-    many: publicProcedure
+    many: privateProcedure
       .input(z.array(insertSchema))
       .mutation(async (opts) => {
         const result = await db.insert(sites).values(opts.input).returning();
@@ -62,7 +62,7 @@ export const sitesRouter = router({
       }),
   }),
   update: router({
-    one: publicProcedure.input(updateSchema).mutation(async (opts) => {
+    one: privateProcedure.input(updateSchema).mutation(async (opts) => {
       const result = await db
         .update(sites)
         .set({ ...opts.input, updatedAt })
@@ -72,11 +72,11 @@ export const sitesRouter = router({
     }),
   }),
   delete: router({
-    one: publicProcedure.input(z.number()).mutation(async (opts) => {
+    one: privateProcedure.input(z.number()).mutation(async (opts) => {
       const result = await db.delete(sites).where(eq(sites.id, opts.input));
       return result;
     }),
-    many: publicProcedure.input(z.array(z.number())).mutation(async (opts) => {
+    many: privateProcedure.input(z.array(z.number())).mutation(async (opts) => {
       const result = await db
         .delete(sites)
         .where(inArray(sites.id, opts.input));

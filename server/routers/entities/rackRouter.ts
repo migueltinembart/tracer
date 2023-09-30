@@ -1,4 +1,4 @@
-import { publicProcedure, router } from "@/server/trpc";
+import { privateProcedure, router } from "@/server/trpc";
 import { db } from "@/server/db";
 import { locations, sites, racks, tenants } from "@/server/db/entities";
 import { z } from "zod";
@@ -14,7 +14,7 @@ const updatedAt = sql`now()`;
 
 export const racksRouter = router({
   select: router({
-    all: publicProcedure.query(async () => {
+    all: privateProcedure.query(async () => {
       const result = await db
         .select({
           id: racks.id,
@@ -33,7 +33,7 @@ export const racksRouter = router({
 
       return result;
     }),
-    one: publicProcedure.input(z.string().uuid()).query(async (opts) => {
+    one: privateProcedure.input(z.string().uuid()).query(async (opts) => {
       const result = await db
         .select({
           id: racks.id,
@@ -55,11 +55,11 @@ export const racksRouter = router({
     }),
   }),
   create: router({
-    one: publicProcedure.input(insertSchema).mutation(async (opts) => {
+    one: privateProcedure.input(insertSchema).mutation(async (opts) => {
       const result = await db.insert(racks).values(opts.input).returning();
       return result[0];
     }),
-    many: publicProcedure
+    many: privateProcedure
       .input(z.array(insertSchema))
       .mutation(async (opts) => {
         const result = await db.insert(racks).values(opts.input).returning();
@@ -67,7 +67,7 @@ export const racksRouter = router({
       }),
   }),
   update: router({
-    one: publicProcedure.input(updateSchema).mutation(async (opts) => {
+    one: privateProcedure.input(updateSchema).mutation(async (opts) => {
       const result = await db
         .update(racks)
         .set({ ...opts.input, updatedAt })
@@ -77,11 +77,11 @@ export const racksRouter = router({
     }),
   }),
   delete: router({
-    one: publicProcedure.input(z.string().uuid()).mutation(async (opts) => {
+    one: privateProcedure.input(z.string().uuid()).mutation(async (opts) => {
       const result = await db.delete(racks).where(eq(racks.id, opts.input));
       return result;
     }),
-    many: publicProcedure
+    many: privateProcedure
       .input(z.array(z.string().uuid()))
       .mutation(async (opts) => {
         const result = await db

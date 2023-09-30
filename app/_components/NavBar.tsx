@@ -1,14 +1,11 @@
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import { ReactNode } from "react";
-import { AlignLeft } from "lucide-react";
 import { NavMenuSmall } from "./NavMenus";
 import clsx from "clsx";
 import { sharedPadding } from "./Shared";
 import { AvatarIcon } from "./Avatar";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../api/auth/[...nextauth]/route";
-import { getToken } from "next-auth/jwt";
+import { useSession } from "next-auth/react";
 
 const headerClass = clsx([
   "h-14 flex justify-between items-center shadow-md",

@@ -9,7 +9,10 @@ export const publicProcedure = t.procedure;
 const isAuthorized = t.middleware(async (opts) => {
   const { ctx } = opts;
   if (!ctx.token) {
-    throw new TRPCError({code: "UNAUTHORIZED", message: "You are not authorized to access this resource"});
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+      message: "You are not authorized to access this resource",
+    });
   }
   return opts.next({
     ctx: {

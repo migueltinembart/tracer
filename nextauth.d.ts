@@ -6,6 +6,7 @@ declare module "next-auth" {
   interface Session {
     user: { id: JWT["sub"] } & DefaultSession["user"];
     expires: DefaultSession["expires"];
+    access_token?: string;
   }
 }
 
@@ -18,7 +19,9 @@ declare module "next-auth/jwt" {
     iat: number;
     exp: number;
     jti: string;
-    accessToken: string | undefined;
+    access_token?: string;
+    refresh_token?: string;
+    expires_in: number;
   }
 }
 

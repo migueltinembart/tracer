@@ -1,4 +1,4 @@
-import { publicProcedure, router } from "@/server/trpc";
+import { privateProcedure, router } from "@/server/trpc";
 import { db } from "@/server/db";
 import { contactGroups } from "@/server/db/entities";
 import { z } from "zod";
@@ -14,12 +14,12 @@ const updatedAt = sql`now()`;
 
 export const contactGroupsRouter = router({
   select: router({
-    all: publicProcedure.query(async () => {
+    all: privateProcedure.query(async () => {
       const result = await db.select().from(contactGroups);
 
       return result;
     }),
-    one: publicProcedure.input(z.number()).query(async (opts) => {
+    one: privateProcedure.input(z.number()).query(async (opts) => {
       const result = await db
         .select()
         .from(contactGroups)
@@ -28,14 +28,14 @@ export const contactGroupsRouter = router({
     }),
   }),
   create: router({
-    one: publicProcedure.input(insertSchema).mutation(async (opts) => {
+    one: privateProcedure.input(insertSchema).mutation(async (opts) => {
       const result = await db
         .insert(contactGroups)
         .values(opts.input)
         .returning();
       return result[0];
     }),
-    many: publicProcedure
+    many: privateProcedure
       .input(z.array(insertSchema))
       .mutation(async (opts) => {
         const result = await db
@@ -46,7 +46,7 @@ export const contactGroupsRouter = router({
       }),
   }),
   update: router({
-    one: publicProcedure.input(updateSchema).mutation(async (opts) => {
+    one: privateProcedure.input(updateSchema).mutation(async (opts) => {
       const result = await db
         .update(contactGroups)
         .set({ ...opts.input, updatedAt })
@@ -56,13 +56,13 @@ export const contactGroupsRouter = router({
     }),
   }),
   delete: router({
-    one: publicProcedure.input(z.coerce.number()).mutation(async (opts) => {
+    one: privateProcedure.input(z.coerce.number()).mutation(async (opts) => {
       const result = await db
         .delete(contactGroups)
         .where(eq(contactGroups.id, opts.input));
       return result;
     }),
-    many: publicProcedure.input(z.array(z.number())).mutation(async (opts) => {
+    many: privateProcedure.input(z.array(z.number())).mutation(async (opts) => {
       const result = await db
         .delete(contactGroups)
         .where(inArray(contactGroups.id, opts.input));

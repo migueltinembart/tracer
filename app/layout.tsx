@@ -6,11 +6,11 @@ import Provider from "./_trpc/Provider";
 import clsx from "clsx";
 import NavBar from "./_components/NavBar";
 import { NavMenuLarge } from "./_components/NavMenus";
-import Footer from "./_components/Footer";
 import Main from "./_components/Main";
 import { getServerSession } from "next-auth";
 import SessionProvider from "@/app/_components/SessionProvider";
 import { authOptions } from "./api/auth/[...nextauth]/route";
+import { redirect } from "next/navigation";
 
 const inter = Inter({ subsets: ["latin"] });
 const bodyClassName = clsx([
@@ -26,9 +26,9 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const session = await getServerSession(authOptions);
-  
+
   if (!session) {
-    return <div>no session</div>;
+    redirect("/api/auth/signin");
   }
 
   return (
@@ -41,7 +41,6 @@ export default async function RootLayout({
             </NavBar>
 
             <Main>{children}</Main>
-            <Footer></Footer>
           </SessionProvider>
         </body>
       </Provider>

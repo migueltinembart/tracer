@@ -31,6 +31,7 @@ export const accounts = pgTable(
     expires_at: integer("expires_at"),
     token_type: text("token_type"),
     scope: text("scope"),
+    role: text("role"),
     id_token: text("id_token"),
     session_state: text("session_state"),
   },

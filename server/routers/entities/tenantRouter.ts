@@ -1,4 +1,4 @@
-import { publicProcedure, router } from "@/server/trpc";
+import { privateProcedure, router } from "@/server/trpc";
 import { db } from "@/server/db";
 import { tenantGroups, tenants } from "@/server/db/entities";
 import { z } from "zod";
@@ -14,7 +14,7 @@ const updatedAt = sql`now()`;
 
 export const tenantsRouter = router({
   select: router({
-    all: publicProcedure.query(async () => {
+    all: privateProcedure.query(async () => {
       const result = await db
         .select({
           id: tenants.id,
@@ -27,7 +27,7 @@ export const tenantsRouter = router({
         .leftJoin(tenantGroups, eq(tenants.tenantGroupId, tenantGroups.id));
       return result;
     }),
-    one: publicProcedure.input(z.number()).query(async (opts) => {
+    one: privateProcedure.input(z.number()).query(async (opts) => {
       const result = await db
         .select({
           id: tenants.id,
@@ -43,11 +43,11 @@ export const tenantsRouter = router({
     }),
   }),
   create: router({
-    one: publicProcedure.input(insertSchema).mutation(async (opts) => {
+    one: privateProcedure.input(insertSchema).mutation(async (opts) => {
       const result = await db.insert(tenants).values(opts.input).returning();
       return result[0];
     }),
-    many: publicProcedure
+    many: privateProcedure
       .input(z.array(insertSchema))
       .mutation(async (opts) => {
         const result = await db.insert(tenants).values(opts.input).returning();
@@ -55,7 +55,7 @@ export const tenantsRouter = router({
       }),
   }),
   update: router({
-    one: publicProcedure.input(updateSchema).mutation(async (opts) => {
+    one: privateProcedure.input(updateSchema).mutation(async (opts) => {
       const result = await db
         .update(tenants)
         .set({ ...opts.input, updatedAt })
@@ -65,11 +65,11 @@ export const tenantsRouter = router({
     }),
   }),
   delete: router({
-    one: publicProcedure.input(z.coerce.number()).mutation(async (opts) => {
+    one: privateProcedure.input(z.coerce.number()).mutation(async (opts) => {
       const result = await db.delete(tenants).where(eq(tenants.id, opts.input));
       return result;
     }),
-    many: publicProcedure.input(z.array(z.number())).mutation(async (opts) => {
+    many: privateProcedure.input(z.array(z.number())).mutation(async (opts) => {
       const result = await db
         .delete(tenants)
         .where(inArray(tenants.id, opts.input));
