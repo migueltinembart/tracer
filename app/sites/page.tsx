@@ -113,7 +113,7 @@ export default function Sites() {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             Name
-            <CaretSortIcon className="ml-2 h-4 w-4" />
+            <CaretSortIcon className="w-4 h-4 ml-2" />
           </Button>
         );
       },
@@ -128,7 +128,7 @@ export default function Sites() {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             Status
-            <CaretSortIcon className="ml-2 h-4 w-4" />
+            <CaretSortIcon className="w-4 h-4 ml-2" />
           </Button>
         );
       },
@@ -169,9 +169,9 @@ export default function Sites() {
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
+              <Button variant="ghost" className="w-8 h-8 p-0">
                 <span className="sr-only">Open menu</span>
-                <DotsHorizontalIcon className="h-4 w-4" />
+                <DotsHorizontalIcon className="w-4 h-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -224,7 +224,7 @@ export default function Sites() {
     <>
       <AlertDialog>
         <Dialog>
-          <h1 className="scroll-m-20 text-3xl font-extrabold tracking-tight lg:text-3xl">
+          <h1 className="text-3xl font-extrabold tracking-tight scroll-m-20 lg:text-3xl">
             Sites
           </h1>
           <div className="w-full">
@@ -247,7 +247,7 @@ export default function Sites() {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="outline">
-                      Columns <ChevronDownIcon className="ml-2 h-4 w-4" />
+                      Columns <ChevronDownIcon className="w-4 h-4 ml-2" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
@@ -272,7 +272,7 @@ export default function Sites() {
                 </DropdownMenu>
               </div>
             </div>
-            <div className="rounded-md border">
+            <div className="border rounded-md">
               <Table>
                 <TableHeader>
                   {table.getHeaderGroups().map((headerGroup) => (
@@ -322,7 +322,7 @@ export default function Sites() {
                 </TableBody>
               </Table>
             </div>
-            <div className="flex items-center justify-end space-x-2 py-4">
+            <div className="flex items-center justify-end py-4 space-x-2">
               <div className="flex-1 text-sm text-muted-foreground">
                 {table.getFilteredSelectedRowModel().rows.length} of{" "}
                 {table.getFilteredRowModel().rows.length} row(s) selected.

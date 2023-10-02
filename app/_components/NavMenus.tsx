@@ -29,14 +29,14 @@ export function NavMenuLarge() {
     <NavigationMenu>
       <NavigationMenuList>
         <NavigationMenuItem>
-          <NavigationMenuTrigger className="flex gap-2 items-center">
+          <NavigationMenuTrigger className="flex items-center gap-2">
             <Building2 size={20} strokeWidth={"1.5px"}></Building2>
             <div>Entities</div>
           </NavigationMenuTrigger>
           <NavigationMenuContent className="p-2">
             <NavigationMenuLink className="w-40">
-              <div className="bg-gray-100 p-1 flex flex-col rounded-sm w-40">
-                <div className="font-bold flex-1">Sites</div>
+              <div className="flex flex-col w-40 p-1 bg-gray-100 rounded-sm">
+                <div className="flex-1 font-bold">Sites</div>
                 <div className="text-xs">Create sites like a pro</div>
               </div>
             </NavigationMenuLink>

@@ -131,7 +131,7 @@ export default function SiteGroupForm() {
           )}
         />
 
-        <div className="flex pt-3 justify-end w-full">
+        <div className="flex justify-end w-full pt-3">
           <FormField
             name={"submit"}
             render={({ field }) => (

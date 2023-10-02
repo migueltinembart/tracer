@@ -214,7 +214,7 @@ export default function SiteForm() {
                               (sitegroup) => sitegroup.id === field.value
                             )?.name
                           : "Select site group"}
-                        <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        <CaretSortIcon className="w-4 h-4 ml-2 opacity-50 shrink-0" />
                       </Button>
                     </FormControl>
                   </PopoverTrigger>
@@ -227,7 +227,7 @@ export default function SiteForm() {
                       <Command className="w-full">
                         <CommandInput
                           placeholder="Search site groups"
-                          className="h-9 pt-1"
+                          className="pt-1 h-9"
                         />
                         {siteGroupsQuery.data?.length === 0 && (
                           <div className="flex flex-col text-center">
@@ -240,7 +240,7 @@ export default function SiteForm() {
                         )}
                         <ScrollArea
                           className="
-                        max-h-40"
+  max-h-40"
                         >
                           <CommandEmpty>
                             <p className="pb-2">Group not found?</p>
@@ -281,7 +281,7 @@ export default function SiteForm() {
               </FormItem>
             )}
           />
-          <div className="flex pt-3 justify-end w-full">
+          <div className="flex justify-end w-full pt-3">
             <FormField
               name={"submit"}
               render={({ field }) => (
