@@ -40,10 +40,9 @@ export default async function RootLayout({
             <NavBar>
               <NavMenuLarge></NavMenuLarge>
             </NavBar>
-
             <Main>{children}</Main>
-            <Toaster></Toaster>
           </SessionProvider>
+          <Toaster></Toaster>
         </body>
       </Provider>
     </html>
