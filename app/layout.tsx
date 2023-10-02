@@ -11,6 +11,7 @@ import { getServerSession } from "next-auth";
 import SessionProvider from "@/app/_components/SessionProvider";
 import { authOptions } from "./api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
+import { Toaster } from "@/components/ui/toaster";
 
 const inter = Inter({ subsets: ["latin"] });
 const bodyClassName = clsx([
@@ -41,6 +42,7 @@ export default async function RootLayout({
             </NavBar>
 
             <Main>{children}</Main>
+            <Toaster></Toaster>
           </SessionProvider>
         </body>
       </Provider>

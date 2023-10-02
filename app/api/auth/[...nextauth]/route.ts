@@ -32,8 +32,6 @@ async function refreshAccessToken(token: JWT): Promise<JWT> {
         `&client_id=${env.AZURE_AD_CLIENT_ID}`,
     });
     const res: RefreshAccessToken = await result.json();
-    console.log("refresh");
-    console.log(res.expires_in);
     return {
       ...token,
       access_token: res.access_token,
