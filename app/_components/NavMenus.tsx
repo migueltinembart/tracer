@@ -1,16 +1,4 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuIndicator,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-  NavigationMenuViewport,
-  navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu";
 import {
   Sheet,
   SheetContent,
@@ -19,31 +7,96 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { AlignLeft, Building2 } from "lucide-react";
 import clsx from "clsx";
+import { HamburgerMenuIcon } from "@radix-ui/react-icons";
+import { Button } from "@/components/ui/button";
+import {
+  Menubar,
+  MenubarContent,
+  MenubarItem,
+  MenubarMenu,
+  MenubarSeparator,
+  MenubarShortcut,
+  MenubarTrigger,
+} from "@/components/ui/menubar";
+import Link from "next/link";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
-const NavMenuLink = clsx([""]);
+export type MenubarItem = {
+  title: string;
+  items: Array<MenubarCard>;
+  image: any;
+};
 
-export function NavMenuLarge() {
+export type MenubarCard = {
+  name: string;
+  description?: string;
+  listItems: Array<MenubarCardItem>;
+};
+
+export type MenubarCardItem = {
+  label: string;
+  href: string;
+};
+
+export function NavMenuLarge({
+  className,
+  menuItems,
+}: {
+  className?: string;
+  menuItems: MenubarItem[];
+}) {
   return (
-    <NavigationMenu>
-      <NavigationMenuList>
-        <NavigationMenuItem>
-          <NavigationMenuTrigger className="flex items-center gap-2">
-            <Building2 size={20} strokeWidth={"1.5px"}></Building2>
-            <div>Entities</div>
-          </NavigationMenuTrigger>
-          <NavigationMenuContent className="p-2">
-            <NavigationMenuLink className="w-40">
-              <div className="flex flex-col w-40 p-1 bg-gray-100 rounded-sm">
-                <div className="flex-1 font-bold">Sites</div>
-                <div className="text-xs">Create sites like a pro</div>
-              </div>
-            </NavigationMenuLink>
-          </NavigationMenuContent>
-        </NavigationMenuItem>
-      </NavigationMenuList>
-    </NavigationMenu>
+    <Menubar className={className}>
+      {menuItems.map((item, index) => (
+        <MenubarMenu key={index}>
+          <MenubarTrigger asChild>
+            <Button
+              variant={"link"}
+              className="flex justify-between gap-1 text-xs h-6 text-left  hover:cursor-pointer border-none target:border-none"
+            >
+              {item.image}
+              {item.title}
+            </Button>
+          </MenubarTrigger>
+          <MenubarContent
+            className="flex gap-1 mt-3 p-2 items-stretch"
+            align="center"
+          >
+            {item.items.map((menuItem, index) => (
+              <MenubarItem key={index} className="items-stretch flex ">
+                <Card className="rounded-md w-40 overflow-hidden">
+                  <CardHeader className="p-3 pb-1 bg-gray-50 border-b overflow-hidden">
+                    <CardTitle>{menuItem.name}</CardTitle>
+                    <CardDescription>{menuItem.description}</CardDescription>
+                  </CardHeader>
+                  <CardContent className="px-1 py-2">
+                    <ul className="list-none gap-2 flex flex-col">
+                      {menuItem.listItems.map((listItem, index) => (
+                        <Link key={index} href={listItem.href}>
+                          <li className="flex flex-col">
+                            <Button variant={"ghost"} className="justify-start">
+                              {listItem.label}
+                            </Button>
+                          </li>
+                        </Link>
+                      ))}
+                      <li></li>
+                    </ul>
+                  </CardContent>
+                </Card>
+              </MenubarItem>
+            ))}
+          </MenubarContent>
+        </MenubarMenu>
+      ))}
+    </Menubar>
   );
 }
 
@@ -53,7 +106,7 @@ export function NavMenuSmall() {
       <Sheet>
         <SheetTrigger asChild>
           <Button variant={"ghost"} className="box-content md:hidden">
-            <AlignLeft />
+            <HamburgerMenuIcon />
           </Button>
         </SheetTrigger>
         <SheetContent className="w-[400px] sm:w-[540px]" side={"left"}>
