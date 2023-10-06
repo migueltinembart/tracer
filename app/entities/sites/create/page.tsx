@@ -38,7 +38,7 @@ import { CheckIcon, RefreshCw, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CaretSortIcon } from "@radix-ui/react-icons";
 import { useToast } from "@/components/ui/use-toast";
-import SiteGroupForm from "@/app/site-groups/create/page";
+import SiteGroupForm from "@/app/entities/site-groups/create/page";
 import type { RouterInput } from "@/app/_trpc/client";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { capitalize, UnionTuple } from "@/lib/helpers";

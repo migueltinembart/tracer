@@ -59,7 +59,7 @@ import {
   Dialog,
 } from "@/components/ui/dialog";
 import { CreateButton } from "@/app/_components/createButton";
-import SiteForm from "@/app/sites/create/page";
+import SiteForm from "@/app/entities/sites/create/page";
 import Link from "next/link";
 
 export type SiteOutput = RouterOutput["entities"]["sites"]["select"]["one"];
