@@ -19,19 +19,20 @@ import ReactFlow, {
 import "reactflow/dist/style.css";
 
 export default function FlowView() {
-  const sites = trpc.deviceManagement.devices.select.all.useQuery();
-  console.log(sites.data);
-  const myNodes = sites.data;
+  const [interfaces, interfacesQuery] = trpc.deviceManagement.interfaces.select.all.useSuspenseQuery();
+  console.log(interfaces)
+  console.log(interfacesQuery)
+  const myNodes = interfacesQuery.data;
 
   const initNode = myNodes?.map((node, index) => {
     return {
-      id: `${node.id}`,
+      id: node.id,
       position: {
         x: 0,
-        y: index * 10,
+        y: index * 100,
       },
       data: {
-        label: node.name,
+        label: `${node.device?.name}: ${node.name}`,
       },
     };
   });
@@ -43,6 +44,7 @@ export default function FlowView() {
   const initialEdges: Edge[] = [];
 
   const [nodes, setNodes] = useState(initNode ?? []);
+  
   const [edges, setEdges] = useState(initialEdges ?? []);
 
   const onNodesChange = useCallback(
