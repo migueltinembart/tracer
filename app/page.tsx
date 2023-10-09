@@ -15,7 +15,7 @@ const cardClasses = clsx(["overflow-hidden"]);
 export default async function Home() {
   const session = await getServerSession(authOptions);
   return (
-    <div className=" p-6 flex-1 flex flex-col border lg:shadow-sm rounded-xl max-md:border-hidden">
+    <>
       <div className="text-xl p-3 pb-8">
         <p>Welcome, </p>
         <p className="text-3xl font-bold">{session?.user.name}</p>
@@ -62,6 +62,6 @@ export default async function Home() {
           <CardContent className="grid items-stretch flex-1 grid-cols-6 grid-rows-1 gap-3 pt-6"></CardContent>
         </Card>
       </div>
-    </div>
+    </>
   );
 }

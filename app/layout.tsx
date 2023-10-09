@@ -39,7 +39,12 @@ export default async function RootLayout({
         <body className={bodyClassName}>
           <SessionProvider session={session}>
             <NavBar></NavBar>
-            <Main>{children}</Main>
+
+            <Main>
+              <div className="flex flex-col flex-1 p-6 border  lg:shadow-sm rounded-xl max-md:border-hidden">
+                {children}
+              </div>
+            </Main>
           </SessionProvider>
           <Toaster></Toaster>
         </body>
