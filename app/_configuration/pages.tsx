@@ -1,12 +1,82 @@
-import { type MenubarItem } from "../_components/NavMenus";
+import { type MenubarItem } from "../_components/nav-menu";
 import { CubeIcon, Component1Icon, RocketIcon } from "@radix-ui/react-icons";
 
 const iconSize = 15;
 export const list: MenubarItem[] = [
   {
     title: "Entities",
-    image: <CubeIcon height={iconSize} width={iconSize} />,
-    items: [
+    image: <CubeIcon />,
+    cards: [
+      {
+        name: "Tenants",
+        description: "description",
+        listItems: [
+          {
+            label: "Tenants",
+            href: "/entities/tenants",
+          },
+          {
+            label: "Tenant Groups",
+            href: "/entities/tenant-groups",
+          },
+        ],
+      },
+      {
+        name: "Tenants",
+        description: "description",
+        listItems: [
+          {
+            label: "Tenants",
+            href: "/entities/tenants",
+          },
+          {
+            label: "Tenant Groups",
+            href: "/entities/tenant-groups",
+          },
+        ],
+      },
+      {
+        name: "Tenants",
+        description: "description",
+        listItems: [
+          {
+            label: "Tenants",
+            href: "/entities/tenants",
+          },
+          {
+            label: "Tenant Groups",
+            href: "/entities/tenant-groups",
+          },
+        ],
+      },
+      {
+        name: "Tenants",
+        description: "description",
+        listItems: [
+          {
+            label: "Tenants",
+            href: "/entities/tenants",
+          },
+          {
+            label: "Tenant Groups",
+            href: "/entities/tenant-groups",
+          },
+        ],
+      },
+      {
+        name: "Tenants",
+        description: "description",
+        listItems: [
+          {
+            label: "Tenants",
+            href: "/entities/tenants",
+          },
+          {
+            label: "Tenant Groups",
+            href: "/entities/tenant-groups",
+          },
+        ],
+      },
       {
         name: "Tenants",
         description: "description",
@@ -27,11 +97,11 @@ export const list: MenubarItem[] = [
         listItems: [
           {
             label: "Sites",
-            href: "//entities/sites",
+            href: "/entities/sites",
           },
           {
             label: "Site Groups",
-            href: "//entities/site-groups",
+            href: "/entities/site-groups",
           },
         ],
       },
@@ -68,8 +138,8 @@ export const list: MenubarItem[] = [
   },
   {
     title: "Device Management",
-    image: <Component1Icon height={iconSize} width={iconSize} />,
-    items: [
+    image: <Component1Icon strokeWidth={"5px"} />,
+    cards: [
       {
         name: "Configurator",
         description:
@@ -119,6 +189,12 @@ export const list: MenubarItem[] = [
   {
     title: "Project Management",
     image: <RocketIcon height={iconSize} width={iconSize} />,
-    items: [],
+    cards: [
+      {
+        name: "Flows",
+        description: "Description",
+        listItems: [],
+      },
+    ],
   },
 ];

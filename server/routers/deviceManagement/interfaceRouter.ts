@@ -28,7 +28,7 @@ export const interfacesRouter = router({
           updatedAt: interfaces.updatedAt,
         })
         .from(interfaces)
-        .leftJoin(devices, eq(interfaces.deviceId, devices.id))
+        .fullJoin(devices, eq(interfaces.deviceId, devices.id))
         .leftJoin(bridgeInterface, eq(interfaces.bridgeId, bridgeInterface.id));
 
       return result;

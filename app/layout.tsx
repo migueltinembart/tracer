@@ -4,23 +4,18 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Provider from "./_trpc/Provider";
 import clsx from "clsx";
-import NavBar from "./_components/NavBar";
-import { NavMenuLarge } from "./_components/NavMenus";
+import NavBar from "./_components/nav-bar";
+
 import Main from "./_components/Main";
 import { getServerSession } from "next-auth";
 import SessionProvider from "@/app/_components/SessionProvider";
 import { authOptions } from "./api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
 import { Toaster } from "@/components/ui/toaster";
-import { Command } from "@/components/ui/command";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const inter = Inter({ subsets: ["latin"] });
-const bodyClassName = clsx([
-  inter.className,
-  "flex",
-  "flex-col",
-  "min-h-screen",
-]);
+const bodyClassName = clsx([inter.className, "min-h-screen"]);
 
 export default async function RootLayout({
   children,
@@ -38,15 +33,18 @@ export default async function RootLayout({
       <Provider>
         <body className={bodyClassName}>
           <SessionProvider session={session}>
-            <NavBar></NavBar>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              <NavBar></NavBar>
 
-            <Main>
-              <div className="flex flex-col flex-1 p-6 border  lg:shadow-sm rounded-xl max-md:border-hidden">
-                {children}
-              </div>
-            </Main>
+              <Main padding={false}>{children}</Main>
+              <Toaster></Toaster>
+            </ThemeProvider>
           </SessionProvider>
-          <Toaster></Toaster>
         </body>
       </Provider>
     </html>
