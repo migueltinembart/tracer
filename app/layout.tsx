@@ -5,21 +5,14 @@ import { Inter } from "next/font/google";
 import Provider from "./_trpc/Provider";
 import clsx from "clsx";
 import NavBar from "./_components/nav-bar";
-
-import Main from "./_components/main";
 import { getServerSession } from "next-auth";
 import SessionProvider from "@/app/_components/SessionProvider";
 import { authOptions } from "./api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/components/theme-provider";
-import { useState } from "react";
-
 
 const inter = Inter({ subsets: ["latin"] });
-
-
-
 
 export default async function RootLayout({
   children,
@@ -32,9 +25,7 @@ export default async function RootLayout({
     redirect("/api/auth/signin");
   }
 
-
   const bodyClassName = clsx([inter.className, "min-h-screen flex flex-col"]);
-
 
   return (
     <html lang="en">

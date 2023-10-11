@@ -10,7 +10,7 @@ import clsx from "clsx";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]/route";
 import Main from "./_components/main";
-
+import { mainCardClasses } from "./_components/shared";
 
 
 export default async function Home() {
@@ -18,7 +18,7 @@ export default async function Home() {
   return (
     <>
       <Main padding={true}>
-      <div className="flex flex-col flex-1 p-6 border  lg:shadow-sm rounded-xl max-md:border-hidden">
+      <div className={mainCardClasses}>
         <div className="text-xl p-3 pb-8">
           <p>Welcome, </p>
           <p className="text-3xl font-bold">{session?.user.name}</p>
