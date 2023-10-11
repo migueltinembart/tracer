@@ -39,8 +39,8 @@ export const wireless_lans = pgTable(
     authCypher: authCyperEnum("auth_cypher_enum").notNull(),
     updated_at: timestamp("updated_at").defaultNow().notNull(),
     created_at: timestamp("created_at").defaultNow().notNull(),
-    created_by: text("created_by").notNull().references(() => users.id),
-    updated_by: text("created_by").notNull().references(() => users.id)
+    created_by: text("created_by").references(() => users.id),
+    updated_by: text("updated_by").references(() => users.id)
   },
   (wireless_lans) => {
     return {
@@ -58,8 +58,8 @@ export const wireless_lan_groups = pgTable(
     description: text("description"),
     updated_at: timestamp("updated_at").defaultNow().notNull(),
     created_at: timestamp("created_at").defaultNow().notNull(),
-    created_by: text("created_by").notNull().references(() => users.id),
-    updated_by: text("created_by").notNull().references(() => users.id)
+    created_by: text("created_by").references(() => users.id),
+    updated_by: text("updated_by").references(() => users.id)
   },
   (wireless_lan_groups) => {
     return {

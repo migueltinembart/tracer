@@ -28,7 +28,7 @@ export default async function Home() {
           <Card
             className={clsx("overflow-hidden", ["col-span-4 row-start-1 row-span-1"])}
           >
-            <CardHeader className="pb-2 border-b bg-gray-50">
+            <CardHeader>
               <CardTitle>Projects</CardTitle>
               <CardDescription>
                 Jump right in to your last projects

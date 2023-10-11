@@ -24,7 +24,7 @@ export default async function NavBar({ children }: { children?: ReactNode }) {
         sharedPadding,
       ])}
     >
-      <h1 className="tracking-tighter text-xl font-semibold text-gray-600">
+      <h1 className="tracking-tighter text-xl font-semibold text-gray-600 dark:text-gray-200">
         Tracer
       </h1>
       <NavMenuLarge></NavMenuLarge>

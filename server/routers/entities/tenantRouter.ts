@@ -22,6 +22,8 @@ export const tenants_router = router({
           tenant_group: tenant_groups,
           created_at: tenants.created_at,
           updated_at: tenants.updated_at,
+          created_by: tenants.created_by,
+          updated_by: tenants.updated_by
         })
         .from(tenants)
         .leftJoin(tenant_groups, eq(tenants.tenant_group_id, tenant_groups.id));

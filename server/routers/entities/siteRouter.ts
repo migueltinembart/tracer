@@ -25,6 +25,8 @@ export const sites_router = router({
           tenant: tenants,
           created_at: sites.created_at,
           updated_at: sites.updated_at,
+          created_by: sites.created_by,
+          updated_by: sites.updated_by
         })
         .from(sites)
         .leftJoin(site_groups, eq(sites.site_group_id, site_groups.id))
@@ -41,6 +43,8 @@ export const sites_router = router({
           tenant: tenants,
           created_at: sites.created_at,
           updated_at: sites.updated_at,
+          created_by: sites.created_by,
+          updated_by: sites.updated_by
         })
         .from(sites)
         .leftJoin(site_groups, eq(sites.site_group_id, site_groups.id))
@@ -51,7 +55,12 @@ export const sites_router = router({
   }),
   create: router({
     one: privateProcedure.input(insertSchema).mutation(async (opts) => {
-      const result = await db.insert(sites).values(opts.input).returning();
+      const values = opts.input
+
+      values.created_by = opts.ctx.token.sub
+      values.updated_by = opts.ctx.token.sub
+      const result = await db.insert(sites).values(values).returning();
+      console.log(result)
       return result[0];
     }),
     many: privateProcedure

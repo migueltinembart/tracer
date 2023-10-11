@@ -48,7 +48,7 @@ export function NavMenuLarge({ className }: { className?: string }) {
           <NavigationMenuItem key={index}>
             <NavigationMenuTrigger className="flex gap-1">
               {item.image}
-              {`${item.title}`}
+              {item.title}
             </NavigationMenuTrigger>
             <NavigationMenuContent>
               <ul
@@ -71,9 +71,9 @@ export function NavMenuLarge({ className }: { className?: string }) {
                   >
                     
                     <div className="flex flex-col justify-end h-full p-6 no-underline transition-all duration-300 ease-in-out delay-150 rounded-md outline-none bg-gradient-to-b from-muted/50 to-muted focus:shadow-md">
-                      <div className="mt-4 mb-2 text-lg font-medium">
+                      <span className="mt-4 mb-2 text-lg font-semibold">
                         {card.name}
-                      </div>
+                      </span>
                       <p className="text-sm leading-tight text-muted-foreground pb-4">
                         {card.description}
                       </p>

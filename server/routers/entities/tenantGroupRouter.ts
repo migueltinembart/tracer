@@ -21,6 +21,8 @@ export const tenant_groups_router = router({
           name: tenant_groups.name,
           created_at: tenant_groups.created_at,
           updated_at: tenant_groups.updated_at,
+          created_by: tenant_groups.created_by,
+          updated_by: tenant_groups.updated_by
         })
         .from(tenant_groups);
       return result;

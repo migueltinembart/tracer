@@ -22,8 +22,7 @@ export default function Site() {
       </div>
       <Tabs defaultValue="account" className="flex flex-1 flex-col items-stretch">
         <TabsList>
-          <TabsTrigger value="account">Account</TabsTrigger>
-          <TabsTrigger value="password">Password</TabsTrigger>
+          
         </TabsList>
         <TabsContent value="account" className="grid grid-cols-[.5fr_1fr] flex-1">test</TabsContent>
       </Tabs>

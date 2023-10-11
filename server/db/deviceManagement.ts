@@ -40,8 +40,8 @@ export const devices = pgTable(
     qrCodeId: uuid("qr_code_id"), // Reference defined inside deviceToQrCodeRelations
     updated_at: timestamp("updated_at").defaultNow().notNull(),
     created_at: timestamp("created_at").defaultNow().notNull(),
-    created_by: text("created_by").notNull().references(() => users.id),
-    updated_by: text("created_by").notNull().references(() => users.id)
+    created_by: text("created_by").references(() => users.id),
+    updated_by: text("updated_by").references(() => users.id)
   },
   (devices) => {
     return {
@@ -72,8 +72,8 @@ export const device_types = pgTable(
     back_image: text("back_image"),
     updated_at: timestamp("updated_at").defaultNow().notNull(),
     created_at: timestamp("created_at").defaultNow().notNull(),
-    created_by: text("created_by").notNull().references(() => users.id),
-    updated_by: text("created_by").notNull().references(() => users.id)
+    created_by: text("created_by").references(() => users.id),
+    updated_by: text("updated_by").references(() => users.id)
   },
   (device_types) => {
     return {
@@ -95,8 +95,8 @@ export const deviceRoles = pgTable(
     description: text("description"),
     updated_at: timestamp("updated_at").defaultNow().notNull(),
     created_at: timestamp("created_at").defaultNow().notNull(),
-    created_by: text("created_by").notNull().references(() => users.id),
-    updated_by: text("created_by").notNull().references(() => users.id)
+    created_by: text("created_by").references(() => users.id),
+    updated_by: text("updated_by").references(() => users.id)
   },
   (deviceRoles) => {
     return {
@@ -114,8 +114,8 @@ export const manufacturer = pgTable(
     description: text("description"),
     updated_at: timestamp("updated_at").defaultNow().notNull(),
     created_at: timestamp("created_at").defaultNow().notNull(),
-    created_by: text("created_by").notNull().references(() => users.id),
-    updated_by: text("created_by").notNull().references(() => users.id)
+    created_by: text("created_by").references(() => users.id),
+    updated_by: text("updated_by").references(() => users.id)
   },
   (manufacturer) => {
     return {
@@ -133,8 +133,8 @@ export const plattforms = pgTable(
     description: text("description"),
     updated_at: timestamp("updated_at").defaultNow().notNull(),
     created_at: timestamp("created_at").defaultNow().notNull(),
-    created_by: text("created_by").notNull().references(() => users.id),
-    updated_by: text("created_by").notNull().references(() => users.id)
+    created_by: text("created_by").references(() => users.id),
+    updated_by: text("updated_by").references(() => users.id)
   },
   (plattforms) => {
     return {
@@ -152,8 +152,8 @@ export const qr_codes = pgTable(
     value: text("value").notNull(),
     updated_at: timestamp("updated_at").defaultNow().notNull(),
     created_at: timestamp("created_at").defaultNow().notNull(),
-    created_by: text("created_by").notNull().references(() => users.id),
-    updated_by: text("created_by").notNull().references(() => users.id)
+    created_by: text("created_by").references(() => users.id),
+    updated_by: text("updated_by").references(() => users.id)
   },
   (qr_codes) => {
     return {
@@ -182,8 +182,8 @@ export const interfaces = pgTable(
     bridge_id: uuid("bridge_id").unique(),
     updated_at: timestamp("updated_at").defaultNow().notNull(),
     created_at: timestamp("created_at").defaultNow().notNull(),
-    created_by: text("created_by").notNull().references(() => users.id),
-    updated_by: text("created_by").notNull().references(() => users.id)
+    created_by: text("created_by").references(() => users.id),
+    updated_by: text("updated_by").references(() => users.id)
   },
   (interfaces) => {
     return {
@@ -207,8 +207,8 @@ export const services = pgTable(
     description: text("description"),
     updated_at: timestamp("updated_at").defaultNow().notNull(),
     created_at: timestamp("created_at").defaultNow().notNull(),
-    created_by: text("created_by").notNull().references(() => users.id),
-    updated_by: text("created_by").notNull().references(() => users.id)
+    created_by: text("created_by").references(() => users.id),
+    updated_by: text("updated_by").references(() => users.id)
   },
   (services) => {
     return {
