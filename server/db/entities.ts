@@ -11,6 +11,7 @@ import {
   uuid,
   numeric,
 } from "drizzle-orm/pg-core";
+import { users } from "./auth";
 
 export const status_enum = pgEnum("status_enum", [
   "active",
@@ -30,6 +31,8 @@ export const tenants = pgTable(
     description: text("description").notNull().default(""),
     updated_at: timestamp("updated_at").defaultNow().notNull(),
     created_at: timestamp("created_at").defaultNow().notNull(),
+    created_by: text("created_by").notNull().references(() => users.id),
+    updated_by: text("created_by").notNull().references(() => users.id)
   },
   (tenants) => {
     return {
@@ -47,6 +50,8 @@ export const tenant_groups = pgTable(
     description: text("description").notNull().default(""),
     updated_at: timestamp("updated_at").defaultNow().notNull(),
     created_at: timestamp("created_at").defaultNow().notNull(),
+    created_by: text("created_by").notNull().references(() => users.id),
+    updated_by: text("created_by").notNull().references(() => users.id)
   },
   (tenant_groups) => {
     return {
@@ -71,6 +76,8 @@ export const sites = pgTable(
     }),
     updated_at: timestamp("updated_at").defaultNow().notNull(),
     created_at: timestamp("created_at").defaultNow().notNull(),
+    created_by: text("created_by").notNull().references(() => users.id),
+    updated_by: text("created_by").notNull().references(() => users.id)
   },
   (sites) => {
     return {
@@ -88,6 +95,8 @@ export const site_groups = pgTable(
     description: text("description").notNull().default(""),
     updated_at: timestamp("updated_at").defaultNow().notNull(),
     created_at: timestamp("created_at").defaultNow().notNull(),
+    created_by: text("created_by").notNull().references(() => users.id),
+    updated_by: text("created_by").notNull().references(() => users.id)
   },
   (site_groups) => {
     return {
@@ -112,6 +121,8 @@ export const contacts = pgTable(
       .references(() => contact_groups.id, { onDelete: "set null" }),
     updated_at: timestamp("updated_at").defaultNow().notNull(),
     created_at: timestamp("created_at").defaultNow().notNull(),
+    created_by: text("created_by").notNull().references(() => users.id),
+    updated_by: text("created_by").notNull().references(() => users.id)
   },
   (contacts) => {
     return {
@@ -129,6 +140,8 @@ export const contact_groups = pgTable(
     description: text("description").notNull().default(""),
     updated_at: timestamp("updated_at").defaultNow().notNull(),
     created_at: timestamp("created_at").defaultNow().notNull(),
+    created_by: text("created_by").notNull().references(() => users.id),
+    updated_by: text("created_by").notNull().references(() => users.id)
   },
   (contact_groups) => {
     return {
@@ -151,6 +164,8 @@ export const locations = pgTable(
     description: text("description").notNull().default(""),
     updated_at: timestamp("updated_at").defaultNow().notNull(),
     created_at: timestamp("created_at").defaultNow().notNull(),
+    created_by: text("created_by").notNull().references(() => users.id),
+    updated_by: text("created_by").notNull().references(() => users.id)
   },
   (locations) => {
     return {
@@ -169,6 +184,8 @@ export const rack_roles = pgTable(
     description: text("description"),
     updated_at: timestamp("updated_at").defaultNow().notNull(),
     created_at: timestamp("created_at").defaultNow().notNull(),
+    created_by: text("created_by").notNull().references(() => users.id),
+    updated_by: text("created_by").notNull().references(() => users.id)
   },
   (rack_roles) => {
     return {

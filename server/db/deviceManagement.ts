@@ -13,6 +13,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { sites, racks } from "./entities";
 import { colors } from "./configurations";
+import { users } from "./auth";
 
 export const protocolEnum = pgEnum("procotolEnum", ["tpc", "udp"]);
 
@@ -39,6 +40,8 @@ export const devices = pgTable(
     qrCodeId: uuid("qr_code_id"), // Reference defined inside deviceToQrCodeRelations
     updated_at: timestamp("updated_at").defaultNow().notNull(),
     created_at: timestamp("created_at").defaultNow().notNull(),
+    created_by: text("created_by").notNull().references(() => users.id),
+    updated_by: text("created_by").notNull().references(() => users.id)
   },
   (devices) => {
     return {
@@ -69,6 +72,8 @@ export const device_types = pgTable(
     back_image: text("back_image"),
     updated_at: timestamp("updated_at").defaultNow().notNull(),
     created_at: timestamp("created_at").defaultNow().notNull(),
+    created_by: text("created_by").notNull().references(() => users.id),
+    updated_by: text("created_by").notNull().references(() => users.id)
   },
   (device_types) => {
     return {
@@ -88,6 +93,10 @@ export const deviceRoles = pgTable(
       .notNull()
       .references(() => colors.name),
     description: text("description"),
+    updated_at: timestamp("updated_at").defaultNow().notNull(),
+    created_at: timestamp("created_at").defaultNow().notNull(),
+    created_by: text("created_by").notNull().references(() => users.id),
+    updated_by: text("created_by").notNull().references(() => users.id)
   },
   (deviceRoles) => {
     return {
@@ -103,6 +112,10 @@ export const manufacturer = pgTable(
     id: serial("id").notNull(),
     name: text("name").notNull(),
     description: text("description"),
+    updated_at: timestamp("updated_at").defaultNow().notNull(),
+    created_at: timestamp("created_at").defaultNow().notNull(),
+    created_by: text("created_by").notNull().references(() => users.id),
+    updated_by: text("created_by").notNull().references(() => users.id)
   },
   (manufacturer) => {
     return {
@@ -120,6 +133,8 @@ export const plattforms = pgTable(
     description: text("description"),
     updated_at: timestamp("updated_at").defaultNow().notNull(),
     created_at: timestamp("created_at").defaultNow().notNull(),
+    created_by: text("created_by").notNull().references(() => users.id),
+    updated_by: text("created_by").notNull().references(() => users.id)
   },
   (plattforms) => {
     return {
@@ -137,6 +152,8 @@ export const qr_codes = pgTable(
     value: text("value").notNull(),
     updated_at: timestamp("updated_at").defaultNow().notNull(),
     created_at: timestamp("created_at").defaultNow().notNull(),
+    created_by: text("created_by").notNull().references(() => users.id),
+    updated_by: text("created_by").notNull().references(() => users.id)
   },
   (qr_codes) => {
     return {
@@ -165,6 +182,8 @@ export const interfaces = pgTable(
     bridge_id: uuid("bridge_id").unique(),
     updated_at: timestamp("updated_at").defaultNow().notNull(),
     created_at: timestamp("created_at").defaultNow().notNull(),
+    created_by: text("created_by").notNull().references(() => users.id),
+    updated_by: text("created_by").notNull().references(() => users.id)
   },
   (interfaces) => {
     return {
@@ -186,6 +205,10 @@ export const services = pgTable(
     protocol: protocolEnum("protocol"),
     port: integer("port"),
     description: text("description"),
+    updated_at: timestamp("updated_at").defaultNow().notNull(),
+    created_at: timestamp("created_at").defaultNow().notNull(),
+    created_by: text("created_by").notNull().references(() => users.id),
+    updated_by: text("created_by").notNull().references(() => users.id)
   },
   (services) => {
     return {

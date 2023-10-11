@@ -11,6 +11,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { vlans } from "./IPAM";
 import { site_groups, sites, tenants } from "./entities";
+import { users } from "./auth";
 
 export const authTypeEnum = pgEnum("auth_type_enum", [
   "Open",
@@ -20,47 +21,51 @@ export const authTypeEnum = pgEnum("auth_type_enum", [
 ]);
 export const authCyperEnum = pgEnum("auth_cypher_enum", ["Auto", "TKIP", "AES"]);
 
-export const wirelessLans = pgTable(
+export const wireless_lans = pgTable(
   "wireless_lans",
   {
     id: serial("id").notNull(),
     ssid: text("ssid").notNull(),
     hidden: boolean("hidden"),
-    vlanId: integer("vlan_id").references(() => vlans.id),
+    vlan_id: integer("vlan_id").references(() => vlans.id),
     description: text("description"),
-    tenantId: integer("tenant_id").references(() => tenants.id),
-    siteId: integer("site_id").references(() => sites.id),
-    siteGroupId: integer("site_group_id").references(() => site_groups.id),
+    tenant_id: integer("tenant_id").references(() => tenants.id),
+    site_id: integer("site_id").references(() => sites.id),
+    site_group_id: integer("site_group_id").references(() => site_groups.id),
     wlanGroupId: integer("wireless_lan_group_id").references(
-      () => wirelessLanGroups.id
+      () => wireless_lan_groups.id
     ),
     authType: authTypeEnum("auth_type_enum").notNull(),
     authCypher: authCyperEnum("auth_cypher_enum").notNull(),
-    updatedAt: timestamp("updated_at").defaultNow().notNull(),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updated_at: timestamp("updated_at").defaultNow().notNull(),
+    created_at: timestamp("created_at").defaultNow().notNull(),
+    created_by: text("created_by").notNull().references(() => users.id),
+    updated_by: text("created_by").notNull().references(() => users.id)
   },
-  (wirelessLans) => {
+  (wireless_lans) => {
     return {
-      cpk: primaryKey(wirelessLans.id),
-      nameIndex: uniqueIndex("wireless_lans_ssid_index").on(wirelessLans.ssid),
+      cpk: primaryKey(wireless_lans.id),
+      nameIndex: uniqueIndex("wireless_lans_ssid_index").on(wireless_lans.ssid),
     };
   }
 );
 
-export const wirelessLanGroups = pgTable(
+export const wireless_lan_groups = pgTable(
   "wireless_lan_groups",
   {
     id: serial("id").notNull(),
     name: text("name").notNull(),
     description: text("description"),
-    updatedAt: timestamp("updated_at").defaultNow().notNull(),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updated_at: timestamp("updated_at").defaultNow().notNull(),
+    created_at: timestamp("created_at").defaultNow().notNull(),
+    created_by: text("created_by").notNull().references(() => users.id),
+    updated_by: text("created_by").notNull().references(() => users.id)
   },
-  (wirelessLanGroups) => {
+  (wireless_lan_groups) => {
     return {
-      cpk: primaryKey(wirelessLanGroups.id),
+      cpk: primaryKey(wireless_lan_groups.id),
       nameIndex: uniqueIndex("wireless_lan_groups_name_index").on(
-        wirelessLanGroups.name
+        wireless_lan_groups.name
       ),
     };
   }

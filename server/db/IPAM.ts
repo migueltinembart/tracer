@@ -11,6 +11,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { devices } from "./deviceManagement";
 import { sites, tenants } from "./entities";
+import { users } from "./auth";
 
 export const ip_adress_range_roles_enum = pgEnum("ip_adress_range_enum", [
   "dhcp",
@@ -31,6 +32,8 @@ export const ip_adresses = pgTable(
     tenant_id: integer("tenant_id").references(() => tenants.id),
     updated_at: timestamp("updated_at").defaultNow().notNull(),
     created_at: timestamp("created_at").defaultNow().notNull(),
+    created_by: text("created_by").notNull().references(() => users.id),
+    updated_by: text("created_by").notNull().references(() => users.id)
   },
   (ip_adresses) => {
     return {
@@ -52,6 +55,8 @@ export const ip_address_ranges = pgTable(
     role_id: integer("role_id").references(() => network_roles.id),
     updated_at: timestamp("updated_at").defaultNow().notNull(),
     created_at: timestamp("created_at").defaultNow().notNull(),
+    created_by: text("created_by").notNull().references(() => users.id),
+    updated_by: text("created_by").notNull().references(() => users.id)
   },
   (adressRanges) => {
     return {
@@ -72,6 +77,8 @@ export const subnets = pgTable(
     role_id: integer("role_id").references(() => network_roles.id),
     updated_at: timestamp("updated_at").defaultNow().notNull(),
     created_at: timestamp("created_at").defaultNow().notNull(),
+    created_by: text("created_by").notNull().references(() => users.id),
+    updated_by: text("created_by").notNull().references(() => users.id)
   },
   (subnets) => {
     return {
@@ -87,12 +94,14 @@ export const vlans = pgTable(
     id: serial("id").notNull(),
     name: text("name").notNull(),
     description: text("description"),
-    vlan_id: integer("vlan_id").notNull(),
+    vlan_id: integer("vlan_id").notNull(), // value of a vlan => vlan id (1 - 65535)
     site_id: integer("site_id").references(() => sites.id),
     role_id: integer("role_id").references(() => network_roles.id),
     subnet_id: integer("subnet_id").references(() => subnets.id),
     updated_at: timestamp("updated_at").defaultNow().notNull(),
     created_at: timestamp("created_at").defaultNow().notNull(),
+    created_by: text("created_by").notNull().references(() => users.id),
+    updated_by: text("created_by").notNull().references(() => users.id)
   },
   (vlans) => {
     return {
@@ -110,6 +119,8 @@ export const network_roles = pgTable(
     description: text("description"),
     updated_at: timestamp("updated_at").defaultNow().notNull(),
     created_at: timestamp("created_at").defaultNow().notNull(),
+    created_by: text("created_by").notNull().references(() => users.id),
+    updated_by: text("created_by").notNull().references(() => users.id)
   },
   (roles) => {
     return {
