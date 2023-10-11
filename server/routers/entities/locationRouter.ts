@@ -7,12 +7,12 @@ import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
 const insertSchema = createInsertSchema(locations);
 const updateSchema = createSelectSchema(locations)
-  .omit({ createdAt: true, updatedAt: true })
+  .omit({ created_at: true, updated_at: true })
   .partial()
   .required({ id: true });
-const updatedAt = sql`now()`;
+const updated_at = sql`now()`;
 
-export const locationsRouter = router({
+export const locations_router = router({
   select: router({
     all: privateProcedure.query(async () => {
       const result = await db
@@ -21,11 +21,11 @@ export const locationsRouter = router({
           name: locations.name,
           site: sites,
           description: locations.description,
-          updatedAt: locations.updatedAt,
-          createdAt: locations.createdAt,
+          updated_at: locations.updated_at,
+          created_at: locations.created_at,
         })
         .from(locations)
-        .leftJoin(sites, eq(locations.siteId, sites.id));
+        .leftJoin(sites, eq(locations.site_id, sites.id));
 
       return result;
     }),
@@ -36,11 +36,11 @@ export const locationsRouter = router({
           name: locations.name,
           site: sites,
           description: locations.description,
-          updatedAt: locations.updatedAt,
-          createdAt: locations.createdAt,
+          updated_at: locations.updated_at,
+          created_at: locations.created_at,
         })
         .from(locations)
-        .leftJoin(sites, eq(locations.siteId, sites.id))
+        .leftJoin(sites, eq(locations.site_id, sites.id))
         .where(eq(locations.id, opts.input));
       return result[0];
     }),
@@ -64,7 +64,7 @@ export const locationsRouter = router({
     one: privateProcedure.input(updateSchema).mutation(async (opts) => {
       const result = await db
         .update(locations)
-        .set({ ...opts.input, updatedAt })
+        .set({ ...opts.input, updated_at })
         .where(eq(locations.id, opts.input.id))
         .returning();
       return result[0];

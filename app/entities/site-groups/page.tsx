@@ -64,19 +64,19 @@ import Link from "next/link";
 
 
 export type SiteOutput =
-  RouterOutput["entities"]["siteGroups"]["select"]["one"];
+  RouterOutput["entities"]["site_groups"]["select"]["one"];
 
 export default function Sites() {
   const [deleteItem, setDeleteItem] = useState<number>(0);
-  const siteGroupDeleter = trpc.entities.siteGroups.delete.one.useMutation();
-  const siteGroupQuery = trpc.entities.siteGroups.select.all.useQuery();
+  const siteGroupDeleter = trpc.entities.site_groups.delete.one.useMutation();
+  const siteGroupQuery = trpc.entities.site_groups.select.all.useQuery();
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
-    updatedAt: false,
-    createdAt: false,
+    updated_at: false,
+    created_at: false,
   });
   const [rowSelection, setRowSelection] = useState({});
 
@@ -121,21 +121,21 @@ export default function Sites() {
       },
     },
     {
-      id: "createdAt",
-      accessorFn: (row) => row.createdAt,
+      id: "created_at",
+      accessorFn: (row) => row.created_at,
       enableHiding: true,
       header: () => <div>Created at</div>,
       cell: ({ row }) => (
-        <div>{moment(row.original.createdAt).format("DD.MM.YYYY")}</div>
+        <div>{moment(row.original.created_at).format("DD.MM.YYYY")}</div>
       ),
     },
     {
-      id: "updatedAt",
-      accessorFn: (row) => row.updatedAt,
+      id: "updated_at",
+      accessorFn: (row) => row.updated_at,
       enableHiding: true,
       header: () => <div>Updated at</div>,
       cell: ({ row }) => (
-        <div>{moment(row.original.updatedAt).format("DD.MM.YYYY")}</div>
+        <div>{moment(row.original.updated_at).format("DD.MM.YYYY")}</div>
       ),
     },
     {

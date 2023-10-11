@@ -60,12 +60,12 @@ const siteFormSchema = z.object({
     .max(64, { message: "Name cannot be longer than 64 characters" }),
   status: z.enum(["active", "planned", "staging", "retired"]),
   description: z.string({ description: "Add a description" }).optional(),
-  siteGroupId: z.optional(z.number().nullable()),
+  site_group_id: z.optional(z.number().nullable()),
 });
 
 export default function SiteForm() {
   const { toast } = useToast();
-  const siteGroupsQuery = trpc.entities.siteGroups.select.all.useQuery();
+  const siteGroupsQuery = trpc.entities.site_groups.select.all.useQuery();
   const context = trpc.useContext();
   const siteCreator = trpc.entities.sites.create.one.useMutation({
     onSuccess: (data) => {
@@ -88,7 +88,7 @@ export default function SiteForm() {
       name: "",
       status: "active",
       description: undefined,
-      siteGroupId: undefined,
+      site_group_id: undefined,
     },
   });
 
@@ -194,7 +194,7 @@ export default function SiteForm() {
           />
           <FormField
             control={form.control}
-            name="siteGroupId"
+            name="site_group_id"
             render={({ field }) => (
               <FormItem className="flex flex-col">
                 <FormLabel>Site group</FormLabel>
@@ -256,7 +256,7 @@ export default function SiteForm() {
                                 value={sitegroup.name}
                                 key={sitegroup.id}
                                 onSelect={() => {
-                                  form.setValue("siteGroupId", sitegroup.id);
+                                  form.setValue("site_group_id", sitegroup.id);
                                 }}
                               >
                                 {sitegroup.name}

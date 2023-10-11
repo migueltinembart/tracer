@@ -1,36 +1,36 @@
 import { privateProcedure, router } from "@/server/trpc";
 import { db } from "@/server/db";
-import { contactGroups } from "@/server/db/entities";
+import { contact_groups } from "@/server/db/entities";
 import { z } from "zod";
 import { eq, inArray, sql } from "drizzle-orm";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
-const insertSchema = createInsertSchema(contactGroups);
-const updateSchema = createSelectSchema(contactGroups)
-  .omit({ createdAt: true, updatedAt: true })
+const insertSchema = createInsertSchema(contact_groups);
+const updateSchema = createSelectSchema(contact_groups)
+  .omit({ created_at: true, updated_at: true })
   .partial()
   .required({ id: true });
-const updatedAt = sql`now()`;
+const updated_at = sql`now()`;
 
-export const contactGroupsRouter = router({
+export const contact_groups_router = router({
   select: router({
     all: privateProcedure.query(async () => {
-      const result = await db.select().from(contactGroups);
+      const result = await db.select().from(contact_groups);
 
       return result;
     }),
     one: privateProcedure.input(z.number()).query(async (opts) => {
       const result = await db
         .select()
-        .from(contactGroups)
-        .where(eq(contactGroups, opts.input));
+        .from(contact_groups)
+        .where(eq(contact_groups, opts.input));
       return result[0];
     }),
   }),
   create: router({
     one: privateProcedure.input(insertSchema).mutation(async (opts) => {
       const result = await db
-        .insert(contactGroups)
+        .insert(contact_groups)
         .values(opts.input)
         .returning();
       return result[0];
@@ -39,7 +39,7 @@ export const contactGroupsRouter = router({
       .input(z.array(insertSchema))
       .mutation(async (opts) => {
         const result = await db
-          .insert(contactGroups)
+          .insert(contact_groups)
           .values(opts.input)
           .returning();
         return result;
@@ -48,9 +48,9 @@ export const contactGroupsRouter = router({
   update: router({
     one: privateProcedure.input(updateSchema).mutation(async (opts) => {
       const result = await db
-        .update(contactGroups)
-        .set({ ...opts.input, updatedAt })
-        .where(eq(contactGroups.id, opts.input.id))
+        .update(contact_groups)
+        .set({ ...opts.input, updated_at })
+        .where(eq(contact_groups.id, opts.input.id))
         .returning();
       return result[0];
     }),
@@ -58,14 +58,14 @@ export const contactGroupsRouter = router({
   delete: router({
     one: privateProcedure.input(z.coerce.number()).mutation(async (opts) => {
       const result = await db
-        .delete(contactGroups)
-        .where(eq(contactGroups.id, opts.input));
+        .delete(contact_groups)
+        .where(eq(contact_groups.id, opts.input));
       return result;
     }),
     many: privateProcedure.input(z.array(z.number())).mutation(async (opts) => {
       const result = await db
-        .delete(contactGroups)
-        .where(inArray(contactGroups.id, opts.input));
+        .delete(contact_groups)
+        .where(inArray(contact_groups.id, opts.input));
       return result;
     }),
   }),

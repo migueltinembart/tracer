@@ -1,30 +1,30 @@
 import { privateProcedure, router } from "@/server/trpc";
 import { db } from "@/server/db";
-import { tenantGroups, tenants } from "@/server/db/entities";
+import { tenant_groups, tenants } from "@/server/db/entities";
 import { z } from "zod";
 import { eq, inArray, sql } from "drizzle-orm";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
 const insertSchema = createInsertSchema(tenants);
 const updateSchema = createSelectSchema(tenants)
-  .omit({ createdAt: true, updatedAt: true })
+  .omit({ created_at: true, updated_at: true })
   .partial()
   .required({ id: true });
-const updatedAt = sql`now()`;
+const updated_at = sql`now()`;
 
-export const tenantsRouter = router({
+export const tenants_router = router({
   select: router({
     all: privateProcedure.query(async () => {
       const result = await db
         .select({
           id: tenants.id,
           name: tenants.name,
-          tenantGroup: tenantGroups,
-          createdAt: tenants.createdAt,
-          updatedAt: tenants.updatedAt,
+          tenant_group: tenant_groups,
+          created_at: tenants.created_at,
+          updated_at: tenants.updated_at,
         })
         .from(tenants)
-        .leftJoin(tenantGroups, eq(tenants.tenantGroupId, tenantGroups.id));
+        .leftJoin(tenant_groups, eq(tenants.tenant_group_id, tenant_groups.id));
       return result;
     }),
     one: privateProcedure.input(z.number()).query(async (opts) => {
@@ -32,12 +32,12 @@ export const tenantsRouter = router({
         .select({
           id: tenants.id,
           name: tenants.name,
-          tenantGroup: tenantGroups,
-          createdAt: tenants.createdAt,
-          updatedAt: tenants.updatedAt,
+          tenant_group: tenant_groups,
+          created_at: tenants.created_at,
+          updated_at: tenants.updated_at,
         })
         .from(tenants)
-        .leftJoin(tenantGroups, eq(tenants.tenantGroupId, tenantGroups.id))
+        .leftJoin(tenant_groups, eq(tenants.tenant_group_id, tenant_groups.id))
         .where(eq(tenants.id, opts.input));
       return result[0];
     }),
@@ -58,7 +58,7 @@ export const tenantsRouter = router({
     one: privateProcedure.input(updateSchema).mutation(async (opts) => {
       const result = await db
         .update(tenants)
-        .set({ ...opts.input, updatedAt })
+        .set({ ...opts.input, updated_at })
         .where(eq(tenants.id, opts.input.id))
         .returning();
       return result[0];

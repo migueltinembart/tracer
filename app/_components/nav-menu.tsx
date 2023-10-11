@@ -65,17 +65,27 @@ export function NavMenuLarge({ className }: { className?: string }) {
                   <li
                     className={clsx([
                       "col-span-1",
-                      index % 3 ? "row-span-3" : "row-span-1",
+                      
                     ])}
                     key={index}
                   >
-                    <div className="flex flex-col justify-end w-full h-full p-6 no-underline transition ease-in-out delay-150 rounded-md outline-none select-none bg-gradient-to-b from-muted/50 to-muted focus:shadow-md hover:bg-gradient-to-b hover:from-slate-100 ">
+                    
+                    <div className="flex flex-col justify-end h-full p-6 no-underline transition-all duration-300 ease-in-out delay-150 rounded-md outline-none bg-gradient-to-b from-muted/50 to-muted focus:shadow-md">
                       <div className="mt-4 mb-2 text-lg font-medium">
                         {card.name}
                       </div>
-                      <p className="text-sm leading-tight text-muted-foreground">
+                      <p className="text-sm leading-tight text-muted-foreground pb-4">
                         {card.description}
                       </p>
+                      <div className="flex-1 flex flex-col gap-2">
+                        {card.listItems.map((cardItem) => (
+                          <Link href={cardItem.href} passHref>
+                            <NavigationMenuLink asChild>
+                              <Button variant={"link"} className="px-0">{cardItem.label}</Button>
+                            </NavigationMenuLink>
+                          </Link>
+                        ))}
+                      </div>
                     </div>
                   </li>
                 ))}

@@ -18,10 +18,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { RefreshCw, X } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import type { RouterInput } from "@/app/_trpc/client";
-import { FormEvent } from "react";
 
 type SiteGroupFormInput =
-  RouterInput["entities"]["siteGroups"]["create"]["one"];
+  RouterInput["entities"]["site_groups"]["create"]["one"];
 
 const siteGroupFormSchema = z.object({
   name: z
@@ -35,9 +34,9 @@ export default function SiteGroupForm() {
   // load hooks so they become available from the beginning
   const context = trpc.useContext();
   const { toast } = useToast();
-  const siteGroupCreator = trpc.entities.siteGroups.create.one.useMutation({
+  const siteGroupCreator = trpc.entities.site_groups.create.one.useMutation({
     onSuccess: (data) => {
-      context.entities.siteGroups.select.all.invalidate();
+      context.entities.site_groups.select.all.invalidate();
       return toast({
         title: `Site "${data.name}" created`,
       });

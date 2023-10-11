@@ -73,8 +73,8 @@ export default function Sites() {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
-    updatedAt: false,
-    createdAt: false,
+    updated_at: false,
+    created_at: false,
   });
   const [rowSelection, setRowSelection] = useState({});
 
@@ -102,7 +102,7 @@ export default function Sites() {
       id: "name",
       accessorFn: (row) => row.name,
       cell: ({ row }) => (
-        <Link href={`/sites/${row.original.id}`}>
+        <Link href={`/entities/sites/${row.original.id}`}>
           <Button variant={"link"}>{row.original.name}</Button>
         </Link>
       ),
@@ -121,50 +121,77 @@ export default function Sites() {
     {
       id: "status",
       accessorFn: (row) => row.status,
-      header: ({ column }) => {
+      header: ({column}) => {
         return (
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Status
+            <span className="capitalize">{column.id.split("_").join(" ")}</span>
             <CaretSortIcon className="w-4 h-4 ml-2" />
           </Button>
-        );
-      },
+        )},
       cell: ({ row }) => (
-        <div className="lowercase">{row.getValue("status")}</div>
+        <div className="capitalize pl-4">{row.getValue("status")}</div>
       ),
     },
     {
-      id: "SiteGroup",
-      accessorFn: (row) => row.siteGroup?.name,
-      header: () => <div>Site Group</div>,
+      id: "site_group",
+      accessorFn: (row) => row.site_group?.name,
+      header: ({column}) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            <span className="capitalize">{column.id.split("_").join(" ")}</span>
+            <CaretSortIcon className="w-4 h-4 ml-2" />
+          </Button>
+        )},
       cell: ({ row }) => (
-        <div className="lowercase">{row?.original.siteGroup?.name}</div>
+        <div className="pl-4">{row.getValue("site_group")}</div>
       ),
     },
     {
-      id: "createdAt",
-      accessorFn: (row) => row.createdAt,
+      id: "created_at",
+      accessorFn: (row) => row.created_at,
       enableHiding: true,
-      header: () => <div>Created at</div>,
+      header: ({column}) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            <span className="capitalize">{column.id.split("_").join(" ")}</span>
+            <CaretSortIcon className="w-4 h-4 ml-2" />
+          </Button>
+        )},
       cell: ({ row }) => (
-        <div>{moment(row.original.createdAt).format("DD.MM.YYYY")}</div>
+        <div className="pl-4">{moment(row.getValue("created_at")).format("DD.MM.YYYY")}</div>
       ),
     },
     {
-      id: "updatedAt",
-      accessorFn: (row) => row.updatedAt,
+      id: "updated_at",
+      accessorFn: (row) => row.updated_at,
       enableHiding: true,
-      header: () => <div>Updated at</div>,
+      header: ({column}) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            <span className="capitalize">{column.id.split("_").join(" ")}</span>
+            <CaretSortIcon className="w-4 h-4 ml-2" />
+          </Button>
+        )},
       cell: ({ row }) => (
-        <div>{moment(row.original.updatedAt).format("DD.MM.YYYY")}</div>
+        <div className="pl-4">{moment(row.getValue("updated_at")).format("DD.MM.YYYY")}</div>
       ),
     },
     {
       id: "actions",
       enableHiding: false,
+      header: () => <div>Action</div>,
       cell: ({ row }) => {
         return (
           <DropdownMenu>

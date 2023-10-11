@@ -21,43 +21,43 @@ export const devices = pgTable(
   {
     id: uuid("id").notNull().defaultRandom(),
     name: text("name").notNull(),
-    siteId: integer("site_id")
+    site_id: integer("site_id")
       .notNull()
       .references(() => sites.id),
-    rackId: uuid("rack_id").references(() => racks.id),
-    deviceTypeId: integer("device_type_id")
+    rack_id: uuid("rack_id").references(() => racks.id),
+    device_type_id: integer("device_type_id")
       .notNull()
-      .references(() => deviceTypes.id),
-    plattformId: integer("plattform_id").references(() => plattforms.id),
+      .references(() => device_types.id),
+    plattform_id: integer("plattform_id").references(() => plattforms.id),
     height: integer("height"),
-    frontImage: text("front_image"),
-    backImage: text("back_image"),
+    front_image: text("front_image"),
+    back_image: text("back_image"),
     position: integer("position"),
     description: text("description"),
-    serialNumber: text("serial_number"),
+    serial_number: text("serial_number"),
     color: text("color").references(() => colors.name),
     qrCodeId: uuid("qr_code_id"), // Reference defined inside deviceToQrCodeRelations
-    updatedAt: timestamp("updated_at").defaultNow().notNull(),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updated_at: timestamp("updated_at").defaultNow().notNull(),
+    created_at: timestamp("created_at").defaultNow().notNull(),
   },
   (devices) => {
     return {
       cpk: primaryKey(devices.id),
-      nameIndex: uniqueIndex("devices_name_index").on(devices.name),
+      name_index: uniqueIndex("devices_name_index").on(devices.name),
     };
   }
 );
 
 export const devicesToDeviceRoles = pgTable("devicesToDeviceRoles", {
-  deviceId: uuid("device_id")
+  device_id: uuid("device_id")
     .notNull()
     .references(() => devices.id),
-  deviceRoleId: integer("device_role_id")
+  device_role_id: integer("device_role_id")
     .notNull()
     .references(() => deviceRoles.id),
 });
 
-export const deviceTypes = pgTable(
+export const device_types = pgTable(
   "device_types",
   {
     id: serial("id"),
@@ -65,16 +65,16 @@ export const deviceTypes = pgTable(
     description: text("description"),
     manufacturer: integer("manufacturer").references(() => manufacturer.id),
     height: integer("height"),
-    frontImage: text("front_image"),
-    backImage: text("back_image"),
-    updatedAt: timestamp("updated_at").defaultNow().notNull(),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
+    front_image: text("front_image"),
+    back_image: text("back_image"),
+    updated_at: timestamp("updated_at").defaultNow().notNull(),
+    created_at: timestamp("created_at").defaultNow().notNull(),
   },
-  (deviceTypes) => {
+  (device_types) => {
     return {
-      cpk: primaryKey(deviceTypes.id),
-      idIndex: uniqueIndex("device_types_id_index").on(deviceTypes.id),
-      nameIndex: uniqueIndex("device_types_name_index").on(deviceTypes.name),
+      cpk: primaryKey(device_types.id),
+      id_index: uniqueIndex("device_types_id_index").on(device_types.id),
+      name_index: uniqueIndex("device_types_name_index").on(device_types.name),
     };
   }
 );
@@ -92,7 +92,7 @@ export const deviceRoles = pgTable(
   (deviceRoles) => {
     return {
       cpk: primaryKey(deviceRoles.id),
-      idIndex: uniqueIndex("device_roles_id_index").on(deviceRoles.id),
+      id_index: uniqueIndex("device_roles_id_index").on(deviceRoles.id),
     };
   }
 );
@@ -107,7 +107,7 @@ export const manufacturer = pgTable(
   (manufacturer) => {
     return {
       cpk: primaryKey(manufacturer.id),
-      idIndex: uniqueIndex("manufacturer_id_index").on(manufacturer.id),
+      id_index: uniqueIndex("manufacturer_id_index").on(manufacturer.id),
     };
   }
 );
@@ -118,37 +118,37 @@ export const plattforms = pgTable(
     id: serial("id").notNull(),
     name: text("name").notNull(),
     description: text("description"),
-    updatedAt: timestamp("updated_at").defaultNow().notNull(),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updated_at: timestamp("updated_at").defaultNow().notNull(),
+    created_at: timestamp("created_at").defaultNow().notNull(),
   },
   (plattforms) => {
     return {
       cpk: primaryKey(plattforms.id),
-      idIndex: uniqueIndex("plattforms_id_index").on(plattforms.id),
+      id_index: uniqueIndex("plattforms_id_index").on(plattforms.id),
     };
   }
 );
 
-export const qrCodes = pgTable(
+export const qr_codes = pgTable(
   "qr_codes",
   {
     id: serial("id").notNull(),
-    deviceId: uuid("device_id"),
+    device_id: uuid("device_id"),
     value: text("value").notNull(),
-    updatedAt: timestamp("updated_at").defaultNow().notNull(),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updated_at: timestamp("updated_at").defaultNow().notNull(),
+    created_at: timestamp("created_at").defaultNow().notNull(),
   },
-  (qrCodes) => {
+  (qr_codes) => {
     return {
-      cpk: primaryKey(qrCodes.id),
-      idIndex: uniqueIndex("qr_codes_id_index").on(qrCodes.id),
+      cpk: primaryKey(qr_codes.id),
+      id_index: uniqueIndex("qr_codes_id_index").on(qr_codes.id),
     };
   }
 );
 
-export const deviceToQrCodeRelations = relations(qrCodes, ({ one }) => ({
+export const deviceToQrCodeRelations = relations(qr_codes, ({ one }) => ({
   uniqueQrCode: one(devices, {
-    fields: [qrCodes.deviceId],
+    fields: [qr_codes.device_id],
     references: [devices.id],
   }),
 }));
@@ -159,18 +159,18 @@ export const interfaces = pgTable(
     id: uuid("id").notNull().defaultRandom(),
     name: text("name").notNull(),
     label: text("label"),
-    deviceId: uuid("device_id")
+    device_id: uuid("device_id")
       .notNull()
       .references(() => devices.id),
-    bridgeId: uuid("bridge_id").unique(),
-    updatedAt: timestamp("updated_at").defaultNow().notNull(),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
+    bridge_id: uuid("bridge_id").unique(),
+    updated_at: timestamp("updated_at").defaultNow().notNull(),
+    created_at: timestamp("created_at").defaultNow().notNull(),
   },
   (interfaces) => {
     return {
       cpk: primaryKey(interfaces.id),
       reference: foreignKey({
-        columns: [interfaces.bridgeId],
+        columns: [interfaces.bridge_id],
         foreignColumns: [interfaces.id],
       }),
     };
@@ -182,7 +182,7 @@ export const services = pgTable(
   {
     id: uuid("id").notNull(),
     name: text("name").notNull(),
-    deviceId: uuid("device_id").notNull(),
+    device_id: uuid("device_id").notNull(),
     protocol: protocolEnum("protocol"),
     port: integer("port"),
     description: text("description"),
@@ -190,7 +190,7 @@ export const services = pgTable(
   (services) => {
     return {
       cpk: primaryKey(services.id),
-      nameIndex: uniqueIndex("services_name_index").on(services.name),
+      name_index: uniqueIndex("services_name_index").on(services.name),
     };
   }
 );

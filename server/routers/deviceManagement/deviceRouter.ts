@@ -1,6 +1,6 @@
 import { privateProcedure, router } from "@/server/trpc";
 import { db } from "@/server/db";
-import { devices, qrCodes } from "@/server/db/deviceManagement";
+import { devices, qr_codes } from "@/server/db/deviceManagement";
 import { z } from "zod";
 import { eq, inArray, sql } from "drizzle-orm";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
@@ -8,12 +8,12 @@ import { racks } from "@/server/db/entities";
 
 const insertSchema = createInsertSchema(devices);
 const updateSchema = createSelectSchema(devices)
-  .omit({ createdAt: true, updatedAt: true })
+  .omit({ created_at: true, updated_at: true })
   .partial()
   .required({ id: true });
-const updatedAt = sql`now()`;
+const updated_at = sql`now()`;
 
-export const devicesRouter = router({
+export const devices_router = router({
   select: router({
     all: privateProcedure.query(async () => {
       const result = await db
@@ -21,14 +21,14 @@ export const devicesRouter = router({
           id: devices.id,
           name: devices.name,
           comment: devices.description,
-          qr: qrCodes,
+          qr: qr_codes,
           rack: racks,
-          createdAt: devices.createdAt,
-          updatedAt: devices.updatedAt,
+          created_at: devices.created_at,
+          updated_at: devices.updated_at,
         })
         .from(devices)
-        .leftJoin(qrCodes, eq(devices.qrCodeId, qrCodes.id))
-        .leftJoin(racks, eq(devices.rackId, racks.id));
+        .leftJoin(qr_codes, eq(devices.qrCodeId, qr_codes.id))
+        .leftJoin(racks, eq(devices.rack_id, racks.id));
       return result;
     }),
     one: privateProcedure.input(z.string().uuid()).query(async (opts) => {
@@ -37,8 +37,8 @@ export const devicesRouter = router({
           id: devices.id,
           name: devices.name,
           comment: devices.description,
-          createdAt: devices.createdAt,
-          updatedAt: devices.updatedAt,
+          created_at: devices.created_at,
+          updated_at: devices.updated_at,
         })
         .from(devices)
         .where(eq(devices.id, opts.input));
@@ -61,7 +61,7 @@ export const devicesRouter = router({
     one: privateProcedure.input(updateSchema).mutation(async (opts) => {
       const result = await db
         .update(devices)
-        .set({ ...opts.input, updatedAt })
+        .set({ ...opts.input, updated_at })
         .where(eq(devices.id, opts.input.id))
         .returning();
       return result[0];

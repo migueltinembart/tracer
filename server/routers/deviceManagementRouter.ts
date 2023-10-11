@@ -1,8 +1,8 @@
 import { router } from "@/server/trpc";
-import { interfacesRouter } from "@/server/routers/deviceManagement/interfaceRouter";
-import { devicesRouter } from "@/server/routers/deviceManagement/deviceRouter";
+import { interfaces_router } from "@/server/routers/deviceManagement/interfaceRouter";
+import { devices_router } from "@/server/routers/deviceManagement/deviceRouter";
 
-export const deviceManagementRouter = router({
-  interfaces: interfacesRouter,
-  devices: devicesRouter,
+export const device_management_router = router({
+  interfaces: interfaces_router,
+  devices: devices_router,
 });

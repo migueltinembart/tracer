@@ -1,19 +1,19 @@
 import { privateProcedure, router } from "@/server/trpc";
 import { db } from "@/server/db";
-import { siteGroups, sites, tenants } from "@/server/db/entities";
+import { site_groups, sites, tenants } from "@/server/db/entities";
 import { z } from "zod";
 import { eq, inArray, sql } from "drizzle-orm";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
 const insertSchema = createInsertSchema(sites);
 const updateSchema = createSelectSchema(sites)
-  .omit({ createdAt: true, updatedAt: true })
+  .omit({ created_at: true, updated_at: true })
   .partial()
   .required({ id: true });
 
-const updatedAt = sql`now()`;
+const updated_at = sql`now()`;
 
-export const sitesRouter = router({
+export const sites_router = router({
   select: router({
     all: privateProcedure.query(async () => {
       const result = await db
@@ -21,14 +21,14 @@ export const sitesRouter = router({
           id: sites.id,
           name: sites.name,
           status: sites.status,
-          siteGroup: siteGroups,
+          site_group: site_groups,
           tenant: tenants,
-          createdAt: sites.createdAt,
-          updatedAt: sites.updatedAt,
+          created_at: sites.created_at,
+          updated_at: sites.updated_at,
         })
         .from(sites)
-        .leftJoin(siteGroups, eq(sites.siteGroupId, siteGroups.id))
-        .leftJoin(tenants, eq(sites.tenantId, tenants.id));
+        .leftJoin(site_groups, eq(sites.site_group_id, site_groups.id))
+        .leftJoin(tenants, eq(sites.tenant_id, tenants.id));
       return result;
     }),
     one: privateProcedure.input(z.number()).query(async (opts) => {
@@ -37,14 +37,14 @@ export const sitesRouter = router({
           id: sites.id,
           name: sites.name,
           status: sites.status,
-          siteGroup: siteGroups,
+          site_group: site_groups,
           tenant: tenants,
-          createdAt: sites.createdAt,
-          updatedAt: sites.updatedAt,
+          created_at: sites.created_at,
+          updated_at: sites.updated_at,
         })
         .from(sites)
-        .leftJoin(siteGroups, eq(sites.siteGroupId, siteGroups.id))
-        .leftJoin(tenants, eq(sites.tenantId, tenants.id))
+        .leftJoin(site_groups, eq(sites.site_group_id, site_groups.id))
+        .leftJoin(tenants, eq(sites.tenant_id, tenants.id))
         .where(eq(sites.id, opts.input));
       return result[0];
     }),
@@ -65,7 +65,7 @@ export const sitesRouter = router({
     one: privateProcedure.input(updateSchema).mutation(async (opts) => {
       const result = await db
         .update(sites)
-        .set({ ...opts.input, updatedAt })
+        .set({ ...opts.input, updated_at })
         .where(eq(sites.id, opts.input.id))
         .returning();
       return result[0];

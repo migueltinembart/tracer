@@ -16,6 +16,7 @@ export default async function NavBar({ children }: { children?: ReactNode }) {
         "py-2",
         "border",
         "border-t-8",
+        "h-14",
         "border-t-emerald-400",
         "flex",
         "justify-between",
@@ -24,7 +25,7 @@ export default async function NavBar({ children }: { children?: ReactNode }) {
       ])}
     >
       <h1 className="tracking-tighter text-xl font-semibold text-gray-600">
-        FlowFn
+        Tracer
       </h1>
       <NavMenuLarge></NavMenuLarge>
 

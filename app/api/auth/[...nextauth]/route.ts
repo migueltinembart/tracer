@@ -19,7 +19,7 @@ interface RefreshAccessToken {
 async function refreshAccessToken(token: JWT): Promise<JWT> {
   try {
     const url =
-      "https://login.microsoftonline.com/d9b95f80-f0ed-413b-a54d-5126536a96a9/oauth2/v2.0/token";
+      `https://login.microsoftonline.com/${env.AZURE_AD_TENANT_ID}/oauth2/v2.0/token`;
     const result = await fetch(url, {
       method: "POST",
       headers: {

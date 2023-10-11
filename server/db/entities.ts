@@ -12,7 +12,7 @@ import {
   numeric,
 } from "drizzle-orm/pg-core";
 
-export const statusEnum = pgEnum("status_enum", [
+export const status_enum = pgEnum("status_enum", [
   "active",
   "planned",
   "staging",
@@ -24,34 +24,34 @@ export const tenants = pgTable(
   {
     id: serial("id").notNull(),
     name: text("name").notNull(),
-    tenantGroupId: integer("tenant_group_id")
+    tenant_group_id: integer("tenant_group_id")
       .default(sql`null`)
-      .references(() => tenantGroups.id, { onDelete: "set null" }),
+      .references(() => tenant_groups.id, { onDelete: "set null" }),
     description: text("description").notNull().default(""),
-    updatedAt: timestamp("updated_at").defaultNow().notNull(),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updated_at: timestamp("updated_at").defaultNow().notNull(),
+    created_at: timestamp("created_at").defaultNow().notNull(),
   },
   (tenants) => {
     return {
       cpk: primaryKey(tenants.id),
-      idIndex: uniqueIndex("tenants_id_index").on(tenants.id),
+      id_index: uniqueIndex("tenants_id_index").on(tenants.id),
     };
   }
 );
 
-export const tenantGroups = pgTable(
+export const tenant_groups = pgTable(
   "tenant_groups",
   {
     id: serial("id").notNull(),
     name: text("name").notNull(),
     description: text("description").notNull().default(""),
-    updatedAt: timestamp("updated_at").defaultNow().notNull(),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updated_at: timestamp("updated_at").defaultNow().notNull(),
+    created_at: timestamp("created_at").defaultNow().notNull(),
   },
-  (tenantGroups) => {
+  (tenant_groups) => {
     return {
-      cpk: primaryKey(tenantGroups.id),
-      idIndex: uniqueIndex("site_groups_id_index").on(tenantGroups.id),
+      cpk: primaryKey(tenant_groups.id),
+      id_index: uniqueIndex("site_groups_id_index").on(tenant_groups.id),
     };
   }
 );
@@ -61,38 +61,38 @@ export const sites = pgTable(
   {
     id: serial("id").notNull(),
     name: text("name").notNull(),
-    status: statusEnum("status").notNull(),
+    status: status_enum("status").notNull(),
     description: text("description").notNull().default(""),
-    siteGroupId: integer("site_group_id")
+    site_group_id: integer("site_group_id")
       .default(sql`null`)
-      .references(() => siteGroups.id, { onDelete: "set null" }),
-    tenantId: integer("tenant_id").references(() => tenants.id, {
+      .references(() => site_groups.id, { onDelete: "set null" }),
+    tenant_id: integer("tenant_id").references(() => tenants.id, {
       onDelete: "set null",
     }),
-    updatedAt: timestamp("updated_at").defaultNow().notNull(),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updated_at: timestamp("updated_at").defaultNow().notNull(),
+    created_at: timestamp("created_at").defaultNow().notNull(),
   },
   (sites) => {
     return {
       cpk: primaryKey(sites.id),
-      idIndex: uniqueIndex("sites_id_index").on(sites.id),
+      id_index: uniqueIndex("sites_id_index").on(sites.id),
     };
   }
 );
 
-export const siteGroups = pgTable(
+export const site_groups = pgTable(
   "site_groups",
   {
     id: serial("id").notNull(),
     name: text("name").notNull(),
     description: text("description").notNull().default(""),
-    updatedAt: timestamp("updated_at").defaultNow().notNull(),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updated_at: timestamp("updated_at").defaultNow().notNull(),
+    created_at: timestamp("created_at").defaultNow().notNull(),
   },
-  (siteGroups) => {
+  (site_groups) => {
     return {
-      cpk: primaryKey(siteGroups.id),
-      idIndex: uniqueIndex("site_groups_id_index").on(siteGroups.id),
+      cpk: primaryKey(site_groups.id),
+      id_index: uniqueIndex("site_groups_id_index").on(site_groups.id),
     };
   }
 );
@@ -107,33 +107,33 @@ export const contacts = pgTable(
     email: text("email").unique(),
     adress: text("adress"),
     description: text("description").notNull().default(""),
-    contactGroupId: integer("contact_group_id")
+    contact_group_id: integer("contact_group_id")
       .default(sql`null`)
-      .references(() => contactGroups.id, { onDelete: "set null" }),
-    updatedAt: timestamp("updated_at").defaultNow().notNull(),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
+      .references(() => contact_groups.id, { onDelete: "set null" }),
+    updated_at: timestamp("updated_at").defaultNow().notNull(),
+    created_at: timestamp("created_at").defaultNow().notNull(),
   },
   (contacts) => {
     return {
       cpk: primaryKey(contacts.id),
-      idIndex: uniqueIndex("contacts_id_index").on(contacts.id),
+      id_index: uniqueIndex("contacts_id_index").on(contacts.id),
     };
   }
 );
 
-export const contactGroups = pgTable(
+export const contact_groups = pgTable(
   "contact_groups",
   {
     id: serial("id").notNull(),
     name: text("name").notNull(),
     description: text("description").notNull().default(""),
-    updatedAt: timestamp("updated_at").defaultNow().notNull(),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updated_at: timestamp("updated_at").defaultNow().notNull(),
+    created_at: timestamp("created_at").defaultNow().notNull(),
   },
-  (contactGroups) => {
+  (contact_groups) => {
     return {
-      cpk: primaryKey(contactGroups.id),
-      idIndex: uniqueIndex("contact_groups_id_index").on(contactGroups.id),
+      cpk: primaryKey(contact_groups.id),
+      id_index: uniqueIndex("contact_groups_id_index").on(contact_groups.id),
     };
   }
 );
@@ -143,37 +143,37 @@ export const locations = pgTable(
   {
     id: serial("id").notNull(),
     name: text("name").notNull(),
-    siteId: integer("site_id")
+    site_id: integer("site_id")
       .notNull()
       .default(sql`null`)
       .references(() => sites.id, { onDelete: "set null" }),
-    status: statusEnum("status").notNull(),
+    status: status_enum("status").notNull(),
     description: text("description").notNull().default(""),
-    updatedAt: timestamp("updated_at").defaultNow().notNull(),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updated_at: timestamp("updated_at").defaultNow().notNull(),
+    created_at: timestamp("created_at").defaultNow().notNull(),
   },
   (locations) => {
     return {
       cpk: primaryKey(locations.id),
-      idIndex: uniqueIndex("locations_id_index").on(locations.id),
+      id_index: uniqueIndex("locations_id_index").on(locations.id),
     };
   }
 );
 
-export const rackRoles = pgTable(
+export const rack_roles = pgTable(
   "rack_roles",
   {
     id: serial("id").notNull(),
     name: text("name").notNull().unique(),
-    colorName: text("color_name"),
+    color_name: text("color_name"),
     description: text("description"),
-    updatedAt: timestamp("updated_at").defaultNow().notNull(),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updated_at: timestamp("updated_at").defaultNow().notNull(),
+    created_at: timestamp("created_at").defaultNow().notNull(),
   },
-  (rackRoles) => {
+  (rack_roles) => {
     return {
-      cpk: primaryKey(rackRoles.id),
-      nameIndex: uniqueIndex("rack_roles_name_index").on(rackRoles.name),
+      cpk: primaryKey(rack_roles.id),
+      name_index: uniqueIndex("rack_roles_name_index").on(rack_roles.name),
     };
   }
 );
@@ -185,17 +185,17 @@ export const racks = pgTable(
     name: text("name").notNull(),
     units: numeric("units").notNull(),
     description: text("description"),
-    locationId: integer("location_id")
+    location_id: integer("location_id")
       .notNull()
       .references(() => locations.id, { onDelete: "set null" }),
-    roleId: integer("role_id").references(() => rackRoles.id),
-    updatedAt: timestamp("updated_at").defaultNow().notNull(),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
+    roleId: integer("role_id").references(() => rack_roles.id),
+    updated_at: timestamp("updated_at").defaultNow().notNull(),
+    created_at: timestamp("created_at").defaultNow().notNull(),
   },
   (racks) => {
     return {
       cpk: primaryKey(racks.id),
-      nameIndex: uniqueIndex("racks_name_index").on(racks.name),
+      name_index: uniqueIndex("racks_name_index").on(racks.name),
     };
   }
 );

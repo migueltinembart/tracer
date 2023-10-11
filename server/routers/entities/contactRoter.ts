@@ -1,18 +1,18 @@
 import { privateProcedure, router } from "@/server/trpc";
 import { db } from "@/server/db";
-import { contacts, contactGroups } from "@/server/db/entities";
+import { contacts, contact_groups } from "@/server/db/entities";
 import { z } from "zod";
 import { eq, inArray, sql } from "drizzle-orm";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
 const insertSchema = createInsertSchema(contacts);
 const updateSchema = createSelectSchema(contacts)
-  .omit({ createdAt: true, updatedAt: true })
+  .omit({ created_at: true, updated_at: true })
   .partial()
   .required({ id: true });
-const updatedAt = sql`now()`;
+const updated_at = sql`now()`;
 
-export const contactsRouter = router({
+export const contacts_router = router({
   select: router({
     all: privateProcedure.query(async () => {
       const result = await db
@@ -22,14 +22,14 @@ export const contactsRouter = router({
           phone: contacts.phone,
           email: contacts.email,
           address: contacts.adress,
-          contactGroup: contactGroups,
+          contactGroup: contact_groups,
           description: contacts.description,
           title: contacts.title,
-          createdAt: contacts.createdAt,
-          updatedAt: contacts.updatedAt,
+          created_at: contacts.created_at,
+          updated_at: contacts.updated_at,
         })
         .from(contacts)
-        .leftJoin(contactGroups, eq(contacts.contactGroupId, contactGroups.id));
+        .leftJoin(contact_groups, eq(contacts.contact_group_id, contact_groups.id));
       return result;
     }),
     one: privateProcedure.input(z.number()).query(async (opts) => {
@@ -40,11 +40,11 @@ export const contactsRouter = router({
           phone: contacts.phone,
           email: contacts.email,
           address: contacts.adress,
-          contactGroup: contactGroups,
+          contactGroup: contact_groups,
           description: contacts.description,
           title: contacts.title,
-          createdAt: contacts.createdAt,
-          updatedAt: contacts.updatedAt,
+          created_at: contacts.created_at,
+          updated_at: contacts.updated_at,
         })
         .from(contacts)
         .where(eq(contacts.id, opts.input));
@@ -67,7 +67,7 @@ export const contactsRouter = router({
     one: privateProcedure.input(updateSchema).mutation(async (opts) => {
       const result = await db
         .update(contacts)
-        .set({ ...opts.input, updatedAt })
+        .set({ ...opts.input, updated_at })
         .where(eq(contacts.id, opts.input.id))
         .returning();
       return result[0];

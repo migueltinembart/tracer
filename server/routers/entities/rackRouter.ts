@@ -7,12 +7,12 @@ import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
 const insertSchema = createInsertSchema(racks);
 const updateSchema = createSelectSchema(racks)
-  .omit({ createdAt: true, updatedAt: true })
+  .omit({ created_at: true, updated_at: true })
   .partial()
   .required({ id: true });
-const updatedAt = sql`now()`;
+const updated_at = sql`now()`;
 
-export const racksRouter = router({
+export const racks_router = router({
   select: router({
     all: privateProcedure.query(async () => {
       const result = await db
@@ -23,13 +23,13 @@ export const racksRouter = router({
           location: locations,
           site: sites,
           description: racks.description,
-          updatedAt: racks.updatedAt,
-          createdAt: racks.createdAt,
+          updated_at: racks.updated_at,
+          created_at: racks.created_at,
         })
         .from(racks)
-        .leftJoin(locations, eq(racks.locationId, locations.id))
-        .leftJoin(sites, eq(locations.siteId, sites.id))
-        .leftJoin(tenants, eq(sites.tenantId, tenants.id));
+        .leftJoin(locations, eq(racks.location_id, locations.id))
+        .leftJoin(sites, eq(locations.site_id, sites.id))
+        .leftJoin(tenants, eq(sites.tenant_id, tenants.id));
 
       return result;
     }),
@@ -43,13 +43,13 @@ export const racksRouter = router({
           site: sites,
           units: racks.units,
           description: racks.description,
-          updatedAt: racks.updatedAt,
-          createdAt: racks.createdAt,
+          updated_at: racks.updated_at,
+          created_at: racks.created_at,
         })
         .from(racks)
-        .leftJoin(locations, eq(racks.locationId, locations.id))
-        .leftJoin(sites, eq(locations.siteId, sites.id))
-        .leftJoin(tenants, eq(sites.tenantId, tenants.id))
+        .leftJoin(locations, eq(racks.location_id, locations.id))
+        .leftJoin(sites, eq(locations.site_id, sites.id))
+        .leftJoin(tenants, eq(sites.tenant_id, tenants.id))
         .where(eq(racks.id, opts.input));
       return result[0];
     }),
@@ -70,7 +70,7 @@ export const racksRouter = router({
     one: privateProcedure.input(updateSchema).mutation(async (opts) => {
       const result = await db
         .update(racks)
-        .set({ ...opts.input, updatedAt })
+        .set({ ...opts.input, updated_at })
         .where(eq(racks.id, opts.input.id))
         .returning();
       return result[0];

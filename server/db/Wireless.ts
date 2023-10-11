@@ -10,7 +10,7 @@ import {
   boolean,
 } from "drizzle-orm/pg-core";
 import { vlans } from "./IPAM";
-import { siteGroups, sites, tenants } from "./entities";
+import { site_groups, sites, tenants } from "./entities";
 
 export const authTypeEnum = pgEnum("auth_type_enum", [
   "Open",
@@ -30,7 +30,7 @@ export const wirelessLans = pgTable(
     description: text("description"),
     tenantId: integer("tenant_id").references(() => tenants.id),
     siteId: integer("site_id").references(() => sites.id),
-    siteGroupId: integer("site_group_id").references(() => siteGroups.id),
+    siteGroupId: integer("site_group_id").references(() => site_groups.id),
     wlanGroupId: integer("wireless_lan_group_id").references(
       () => wirelessLanGroups.id
     ),

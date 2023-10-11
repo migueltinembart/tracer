@@ -9,7 +9,7 @@ export const colors = pgTable(
   (colors) => {
     return {
       cpk: primaryKey(colors.name),
-      nameIndex: uniqueIndex("colors_name_index").on(colors.name),
+      name_index: uniqueIndex("colors_name_index").on(colors.name),
     };
   }
 );

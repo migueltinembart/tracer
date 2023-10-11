@@ -1,6 +1,6 @@
 import { privateProcedure, router } from "@/server/trpc";
 import { db } from "@/server/db";
-import { devices, interfaces, qrCodes } from "@/server/db/deviceManagement";
+import { devices, interfaces, qr_codes } from "@/server/db/deviceManagement";
 import { z } from "zod";
 import { eq, inArray, sql } from "drizzle-orm";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
@@ -9,12 +9,12 @@ import { alias } from "drizzle-orm/pg-core";
 
 const insertSchema = createInsertSchema(interfaces);
 const updateSchema = createSelectSchema(interfaces)
-  .omit({ createdAt: true, updatedAt: true })
+  .omit({ created_at: true, updated_at: true })
   .partial()
   .required({ id: true });
-const updatedAt = sql`now()`;
+const updated_at = sql`now()`;
 
-export const interfacesRouter = router({
+export const interfaces_router = router({
   select: router({
     all: privateProcedure.query(async () => {
       const bridgeInterface = alias(interfaces, "bridgeInterface");
@@ -24,12 +24,12 @@ export const interfacesRouter = router({
           name: interfaces.name,
           device: devices,
           bridge: bridgeInterface,
-          createdAt: interfaces.createdAt,
-          updatedAt: interfaces.updatedAt,
+          created_at: interfaces.created_at,
+          updated_at: interfaces.updated_at,
         })
         .from(interfaces)
-        .fullJoin(devices, eq(interfaces.deviceId, devices.id))
-        .leftJoin(bridgeInterface, eq(interfaces.bridgeId, bridgeInterface.id));
+        .fullJoin(devices, eq(interfaces.device_id, devices.id))
+        .leftJoin(bridgeInterface, eq(interfaces.bridge_id, bridgeInterface.id));
 
       return result;
     }),
@@ -41,12 +41,12 @@ export const interfacesRouter = router({
           name: interfaces.name,
           device: devices,
           bridge: bridgeInterface,
-          createdAt: interfaces.createdAt,
-          updatedAt: interfaces.updatedAt,
+          created_at: interfaces.created_at,
+          updated_at: interfaces.updated_at,
         })
         .from(interfaces)
-        .leftJoin(devices, eq(interfaces.deviceId, devices.id))
-        .leftJoin(bridgeInterface, eq(interfaces.bridgeId, bridgeInterface.id))
+        .leftJoin(devices, eq(interfaces.device_id, devices.id))
+        .leftJoin(bridgeInterface, eq(interfaces.bridge_id, bridgeInterface.id))
         .where(eq(interfaces.id, opts.input));
       return result[0];
     }),
@@ -70,7 +70,7 @@ export const interfacesRouter = router({
     one: privateProcedure.input(updateSchema).mutation(async (opts) => {
       const result = await db
         .update(interfaces)
-        .set({ ...opts.input, updatedAt })
+        .set({ ...opts.input, updated_at })
         .where(eq(interfaces.id, opts.input.id))
         .returning();
       return result[0];
