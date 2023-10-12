@@ -22,7 +22,7 @@ export default function Site() {
   const { id: paramId } = useParams();
 
   const { data, isLoading, isSuccess, isError } =
-    trpc.entities.sites.select.one.useQuery(Number(paramId));
+    trpc.entities.site_groups.select.one.useQuery(Number(paramId));
 
   if (isLoading) {
     return (
@@ -71,20 +71,6 @@ export default function Site() {
                 <TableRow>
                   <TableCell className="font-medium">Description</TableCell>
                   <TableCell>{data.description}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="font-medium">Site Group</TableCell>
-                  <TableCell>{data.site_group?.name}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="font-medium">Tenant</TableCell>
-                  <TableCell>{data.tenant?.name}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="font-medium">Status</TableCell>
-                  <TableCell>
-                    <Badge>{data.status}</Badge>
-                  </TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell className="font-medium">Created by</TableCell>

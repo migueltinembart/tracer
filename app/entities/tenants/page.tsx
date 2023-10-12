@@ -59,16 +59,16 @@ import {
   Dialog,
 } from "@/components/ui/dialog";
 import { CreateButton } from "@/app/_components/createButton";
-import SiteForm from "@/app/entities/sites/create/page";
+import TenantsForm from "@/app/entities/tenants/create/page";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 
-export type SiteOutput = RouterOutput["entities"]["sites"]["select"]["one"];
+export type SiteOutput = RouterOutput["entities"]["tenants"]["select"]["one"];
 
 export default function Sites() {
   const [deleteItem, setDeleteItem] = useState<number>(0);
-  const siteDeleter = trpc.entities.sites.delete.one.useMutation();
-  const siteQuery = trpc.entities.sites.select.all.useQuery();
+  const siteDeleter = trpc.entities.tenants.delete.one.useMutation();
+  const siteQuery = trpc.entities.tenants.select.all.useQuery();
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -106,7 +106,7 @@ export default function Sites() {
       id: "name",
       accessorFn: (row) => row.name,
       cell: ({ row }) => (
-        <Link href={`/entities/sites/${row.original.id}`}>
+        <Link href={`/entities/tenants/${row.original.id}`}>
           <Button variant={"link"}>{row.original.name}</Button>
         </Link>
       ),
@@ -121,24 +121,6 @@ export default function Sites() {
           </Button>
         );
       },
-    },
-    {
-      id: "status",
-      accessorFn: (row) => row.status,
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            <span className="capitalize">{column.id.split("_").join(" ")}</span>
-            <CaretSortIcon className="w-4 h-4 ml-2" />
-          </Button>
-        );
-      },
-      cell: ({ row }) => (
-        <div className="capitalize pl-4">{row.getValue("status")}</div>
-      ),
     },
     {
       id: "description",
@@ -159,24 +141,8 @@ export default function Sites() {
       ),
     },
     {
-      id: "tenant",
-      accessorFn: (row) => row.tenant?.name,
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            <span className="capitalize">{column.id.split("_").join(" ")}</span>
-            <CaretSortIcon className="w-4 h-4 ml-2" />
-          </Button>
-        );
-      },
-      cell: ({ row }) => <div className="pl-4">{row.getValue("tenant")}</div>,
-    },
-    {
-      id: "site_group",
-      accessorFn: (row) => row.site_group?.name,
+      id: "tenant_group",
+      accessorFn: (row) => row.tenant_group?.name,
       header: ({ column }) => {
         return (
           <Button
@@ -189,7 +155,7 @@ export default function Sites() {
         );
       },
       cell: ({ row }) => (
-        <div className="pl-4">{row.getValue("site_group")}</div>
+        <div className="pl-4">{row.getValue("tenant_group")}</div>
       ),
     },
     {
@@ -358,7 +324,7 @@ export default function Sites() {
               />
               <div className="flex gap-2">
                 <CreateButton
-                  goToElement={<SiteForm />}
+                  goToElement={<TenantsForm />}
                   title="Create Site"
                 ></CreateButton>
                 <DropdownMenu>

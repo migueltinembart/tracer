@@ -4,6 +4,7 @@ import { tenant_groups, tenants } from "@/server/db/entities";
 import { z } from "zod";
 import { eq, inArray, sql } from "drizzle-orm";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
+import { users } from "@/server/db/auth";
 
 const insertSchema = createInsertSchema(tenants);
 const updateSchema = createSelectSchema(tenants)
@@ -20,12 +21,14 @@ export const tenants_router = router({
           id: tenants.id,
           name: tenants.name,
           tenant_group: tenant_groups,
+          description: tenants.description,
           created_at: tenants.created_at,
           updated_at: tenants.updated_at,
-          created_by: tenants.created_by,
-          updated_by: tenants.updated_by
+          created_by: users,
+          updated_by: users,
         })
         .from(tenants)
+        .leftJoin(users, eq(tenants.created_by, users.id))
         .leftJoin(tenant_groups, eq(tenants.tenant_group_id, tenant_groups.id));
       return result;
     }),
@@ -34,11 +37,15 @@ export const tenants_router = router({
         .select({
           id: tenants.id,
           name: tenants.name,
+          description: tenants.description,
           tenant_group: tenant_groups,
           created_at: tenants.created_at,
           updated_at: tenants.updated_at,
+          created_by: users,
+          updated_by: users,
         })
         .from(tenants)
+        .leftJoin(users, eq(tenants.created_by, users.id))
         .leftJoin(tenant_groups, eq(tenants.tenant_group_id, tenant_groups.id))
         .where(eq(tenants.id, opts.input));
       return result[0];

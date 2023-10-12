@@ -4,6 +4,7 @@ import { site_groups, sites, tenants } from "@/server/db/entities";
 import { z } from "zod";
 import { eq, inArray, sql } from "drizzle-orm";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
+import { users } from "@/server/db/auth";
 
 const insertSchema = createInsertSchema(sites);
 const updateSchema = createSelectSchema(sites)
@@ -25,12 +26,13 @@ export const sites_router = router({
           tenant: tenants,
           created_at: sites.created_at,
           updated_at: sites.updated_at,
-          created_by: sites.created_by,
-          updated_by: sites.updated_by
+          created_by: users,
+          updated_by: users
         })
         .from(sites)
         .leftJoin(site_groups, eq(sites.site_group_id, site_groups.id))
-        .leftJoin(tenants, eq(sites.tenant_id, tenants.id));
+        .leftJoin(tenants, eq(sites.tenant_id, tenants.id))
+        .leftJoin(users, eq(sites.created_by, users.id))
       return result;
     }),
     one: privateProcedure.input(z.number()).query(async (opts) => {
@@ -39,16 +41,18 @@ export const sites_router = router({
           id: sites.id,
           name: sites.name,
           status: sites.status,
+          description: sites.description,
           site_group: site_groups,
           tenant: tenants,
           created_at: sites.created_at,
           updated_at: sites.updated_at,
-          created_by: sites.created_by,
-          updated_by: sites.updated_by
+          created_by: users,
+          updated_by: users,
         })
         .from(sites)
         .leftJoin(site_groups, eq(sites.site_group_id, site_groups.id))
         .leftJoin(tenants, eq(sites.tenant_id, tenants.id))
+        .leftJoin(users, eq(sites.created_by, users.id))
         .where(eq(sites.id, opts.input));
       return result[0];
     }),

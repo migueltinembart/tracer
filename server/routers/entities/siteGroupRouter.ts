@@ -4,6 +4,7 @@ import { site_groups } from "@/server/db/entities";
 import { z } from "zod";
 import { eq, inArray, sql } from "drizzle-orm";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
+import { users } from "@/server/db/auth";
 
 const insertSchema = createInsertSchema(site_groups);
 const updateSchema = createSelectSchema(site_groups)
@@ -15,21 +16,43 @@ const updated_at = sql`now()`;
 export const site_groups_router = router({
   select: router({
     all: privateProcedure.query(async () => {
-      const result = await db.select().from(site_groups);
-
+      const result = await db
+        .select({
+          id: site_groups.id,
+          name: site_groups.name,
+          description: site_groups.description,
+          created_by: users,
+          updated_by: users,
+          created_at: site_groups.created_at,
+          updated_at: site_groups.updated_at,
+        })
+        .from(site_groups)
+        .leftJoin(users, eq(site_groups.created_by, users.id));
       return result;
     }),
     one: privateProcedure.input(z.number()).query(async (opts) => {
       const result = await db
-        .select()
+        .select({
+          id: site_groups.id,
+          name: site_groups.name,
+          description: site_groups.description,
+          created_by: users,
+          updated_by: users,
+          created_at: site_groups.created_at,
+          updated_at: site_groups.updated_at,
+        })
         .from(site_groups)
+        .leftJoin(users, eq(site_groups.created_by, users.id))
         .where(eq(site_groups.id, opts.input));
       return result[0];
     }),
   }),
   create: router({
     one: privateProcedure.input(insertSchema).mutation(async (opts) => {
-      const result = await db.insert(site_groups).values(opts.input).returning();
+      const result = await db
+        .insert(site_groups)
+        .values(opts.input)
+        .returning();
       return result[0];
     }),
     many: privateProcedure
