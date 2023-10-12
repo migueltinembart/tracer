@@ -78,8 +78,8 @@ export function NavMenuLarge({ className }: { className?: string }) {
                         {card.description}
                       </p>
                       <div className="flex-1 flex flex-col gap-2">
-                        {card.listItems.map((cardItem) => (
-                          <Link href={cardItem.href} passHref>
+                        {card.listItems.map((cardItem, index) => (
+                          <Link href={cardItem.href} passHref key={index}>
                             <NavigationMenuLink asChild>
                               <Button variant={"link"} className="px-0">{cardItem.label}</Button>
                             </NavigationMenuLink>
