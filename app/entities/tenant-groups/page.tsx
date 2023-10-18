@@ -62,14 +62,14 @@ import { CreateButton } from "@/app/_components/createButton";
 import SiteGroupForm from "@/app/entities/site-groups/create/page";
 import Link from "next/link";
 
-
 export type SiteOutput =
-  RouterOutput["entities"]["site_groups"]["select"]["one"];
+  RouterOutput["entities"]["tenant_groups"]["select"]["one"];
 
 export default function Sites() {
   const [deleteItem, setDeleteItem] = useState<number>(0);
-  const siteGroupDeleter = trpc.entities.site_groups.delete.one.useMutation();
-  const siteGroupQuery = trpc.entities.site_groups.select.all.useQuery();
+  const tenantGroupDeleter =
+    trpc.entities.tenant_groups.delete.one.useMutation();
+  const tenantGroupQuery = trpc.entities.tenant_groups.select.all.useQuery();
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -77,6 +77,9 @@ export default function Sites() {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
     updated_at: false,
     created_at: false,
+    updated_by: false,
+    created_by: false,
+    description: false,
   });
   const [rowSelection, setRowSelection] = useState({});
 
@@ -172,7 +175,7 @@ export default function Sites() {
   ];
 
   const table = useReactTable({
-    data: siteGroupQuery.data ?? [],
+    data: tenantGroupQuery.data ?? [],
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -335,7 +338,7 @@ export default function Sites() {
               <AlertDialogCancel>Cancel</AlertDialogCancel>
               <AlertDialogAction
                 onClick={() => {
-                  siteGroupDeleter.mutate(deleteItem);
+                  tenantGroupDeleter.mutate(deleteItem);
                 }}
               >
                 Continue

@@ -61,15 +61,15 @@ import {
 import { CreateButton } from "@/app/_components/createButton";
 import SiteForm from "@/app/entities/site-groups/create/page";
 import Link from "next/link";
-import { Badge } from "@/components/ui/badge";
 
-export type SiteGroupOutput =
-  RouterOutput["entities"]["site_groups"]["select"]["one"];
+export type TenantGroupOutput =
+  RouterOutput["entities"]["tenant_groups"]["select"]["one"];
 
-export default function SiteGroups() {
+export default function TenantGroups() {
   const [deleteItem, setDeleteItem] = useState<number>(0);
-  const siteGroupDeleter = trpc.entities.site_groups.delete.one.useMutation();
-  const SiteGroupQuery = trpc.entities.site_groups.select.all.useQuery();
+  const tenantGroupDeleter =
+    trpc.entities.tenant_groups.delete.one.useMutation();
+  const tenantGroupQuery = trpc.entities.tenant_groups.select.all.useQuery();
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -83,7 +83,7 @@ export default function SiteGroups() {
   });
   const [rowSelection, setRowSelection] = useState({});
 
-  const columns: ColumnDef<SiteGroupOutput>[] = [
+  const columns: ColumnDef<TenantGroupOutput>[] = [
     {
       id: "select",
       header: ({ table }) => (
@@ -122,24 +122,6 @@ export default function SiteGroups() {
           </Button>
         );
       },
-    },
-    {
-      id: "description",
-      accessorFn: (row) => row.description,
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            <span className="capitalize">{column.id.split("_").join(" ")}</span>
-            <CaretSortIcon className="w-4 h-4 ml-2" />
-          </Button>
-        );
-      },
-      cell: ({ row }) => (
-        <div className="capitalize pl-4">{row.getValue("description")}</div>
-      ),
     },
     {
       id: "created_by",
@@ -254,7 +236,7 @@ export default function SiteGroups() {
   ];
 
   const table = useReactTable({
-    data: SiteGroupQuery.data ?? [],
+    data: tenantGroupQuery.data ?? [],
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -278,11 +260,11 @@ export default function SiteGroups() {
     },
   });
 
-  if (SiteGroupQuery.isLoading) {
+  if (tenantGroupQuery.isLoading) {
     return <div>Loading</div>;
   }
 
-  if (SiteGroupQuery.isError) {
+  if (tenantGroupQuery.isError) {
     return <div>Error</div>;
   }
 
@@ -425,7 +407,7 @@ export default function SiteGroups() {
               <AlertDialogCancel>Cancel</AlertDialogCancel>
               <AlertDialogAction
                 onClick={() => {
-                  siteGroupDeleter.mutate(deleteItem);
+                  tenantGroupDeleter.mutate(deleteItem);
                 }}
               >
                 Continue

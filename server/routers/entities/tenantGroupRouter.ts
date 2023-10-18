@@ -4,6 +4,7 @@ import { tenant_groups } from "@/server/db/entities";
 import { z } from "zod";
 import { eq, inArray, sql } from "drizzle-orm";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
+import { users } from "@/server/db/auth";
 
 const insertSchema = createInsertSchema(tenant_groups);
 const updateSchema = createSelectSchema(tenant_groups)
@@ -21,10 +22,11 @@ export const tenant_groups_router = router({
           name: tenant_groups.name,
           created_at: tenant_groups.created_at,
           updated_at: tenant_groups.updated_at,
-          created_by: tenant_groups.created_by,
-          updated_by: tenant_groups.updated_by
+          created_by: users,
+          updated_by: users,
         })
-        .from(tenant_groups);
+        .from(tenant_groups)
+        .leftJoin(users, eq(tenant_groups.created_by, users.id));
       return result;
     }),
     one: privateProcedure.input(z.number()).query(async (opts) => {
@@ -34,8 +36,11 @@ export const tenant_groups_router = router({
           name: tenant_groups.name,
           created_at: tenant_groups.created_at,
           updated_at: tenant_groups.updated_at,
+          created_by: users,
+          updated_by: users,
         })
         .from(tenant_groups)
+        .leftJoin(users, eq(tenant_groups.created_by, users.id))
         .where(eq(tenant_groups.id, opts.input));
       return result[0];
     }),

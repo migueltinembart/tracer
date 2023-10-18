@@ -59,9 +59,9 @@ import {
   Dialog,
 } from "@/components/ui/dialog";
 import { CreateButton } from "@/app/_components/createButton";
-import SiteForm from "@/app/entities/sites/create/page";
+import SiteGroupForm from "@/app/entities/site-groups/create/page";
 import Link from "next/link";
-import { Badge } from "@/components/ui/badge";
+
 
 export type SiteOutput = RouterOutput["entities"]["sites"]["select"]["one"];
 
@@ -194,7 +194,7 @@ export default function Sites() {
     },
     {
       id: "created_by",
-      accessorFn: (row) => row.created_by?.name,
+      accessorFn: (row) => row.created_by,
       header: ({ column }) => {
         return (
           <Button
@@ -212,7 +212,7 @@ export default function Sites() {
     },
     {
       id: "updated_by",
-      accessorFn: (row) => row.updated_by?.name,
+      accessorFn: (row) => row.updated_by,
       header: ({ column }) => {
         return (
           <Button
@@ -306,6 +306,7 @@ export default function Sites() {
 
   const table = useReactTable({
     data: siteQuery.data ?? [],
+    //@ts-ignore
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -358,7 +359,7 @@ export default function Sites() {
               />
               <div className="flex gap-2">
                 <CreateButton
-                  goToElement={<SiteForm />}
+                  goToElement={<SiteGroupForm />}
                   title="Create Site"
                 ></CreateButton>
                 <DropdownMenu>

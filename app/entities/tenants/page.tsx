@@ -49,26 +49,18 @@ import {
   AlertDialog,
 } from "@/components/ui/alert-dialog";
 import { useState } from "react";
-
-import {
-  DialogTitle,
-  DialogContent,
-  DialogTrigger,
-  DialogHeader,
-  DialogDescription,
-  Dialog,
-} from "@/components/ui/dialog";
+import { Dialog } from "@/components/ui/dialog";
 import { CreateButton } from "@/app/_components/createButton";
 import TenantsForm from "@/app/entities/tenants/create/page";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 
-export type SiteOutput = RouterOutput["entities"]["tenants"]["select"]["one"];
+export type TenantOutput = RouterOutput["entities"]["tenants"]["select"]["one"];
 
 export default function Sites() {
   const [deleteItem, setDeleteItem] = useState<number>(0);
-  const siteDeleter = trpc.entities.tenants.delete.one.useMutation();
-  const siteQuery = trpc.entities.tenants.select.all.useQuery();
+  const tenantDeleter = trpc.entities.tenants.delete.one.useMutation();
+  const tenantQuery = trpc.entities.tenants.select.all.useQuery();
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -82,7 +74,7 @@ export default function Sites() {
   });
   const [rowSelection, setRowSelection] = useState({});
 
-  const columns: ColumnDef<SiteOutput>[] = [
+  const columns: ColumnDef<TenantOutput>[] = [
     {
       id: "select",
       header: ({ table }) => (
@@ -271,7 +263,7 @@ export default function Sites() {
   ];
 
   const table = useReactTable({
-    data: siteQuery.data ?? [],
+    data: tenantQuery.data ?? [],
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -295,11 +287,11 @@ export default function Sites() {
     },
   });
 
-  if (siteQuery.isLoading) {
+  if (tenantQuery.isLoading) {
     return <div>Loading</div>;
   }
 
-  if (siteQuery.isError) {
+  if (tenantQuery.isError) {
     return <div>Error</div>;
   }
 
@@ -325,7 +317,7 @@ export default function Sites() {
               <div className="flex gap-2">
                 <CreateButton
                   goToElement={<TenantsForm />}
-                  title="Create Site"
+                  title="Create Tenant"
                 ></CreateButton>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -442,7 +434,7 @@ export default function Sites() {
               <AlertDialogCancel>Cancel</AlertDialogCancel>
               <AlertDialogAction
                 onClick={() => {
-                  siteDeleter.mutate(deleteItem);
+                  tenantDeleter.mutate(deleteItem);
                 }}
               >
                 Continue

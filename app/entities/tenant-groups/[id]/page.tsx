@@ -18,11 +18,11 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { AvatarImage } from "@radix-ui/react-avatar";
 import { UpdateIcon } from "@radix-ui/react-icons";
 
-export default function Site() {
+export default function TenantGroup() {
   const { id: paramId } = useParams();
 
   const { data, isLoading, isSuccess, isError } =
-    trpc.entities.site_groups.select.one.useQuery(Number(paramId));
+    trpc.entities.tenant_groups.select.one.useQuery(Number(paramId));
 
   if (isLoading) {
     return (
@@ -68,10 +68,7 @@ export default function Site() {
                   <TableCell className="font-medium">Name</TableCell>
                   <TableCell>{data.name}</TableCell>
                 </TableRow>
-                <TableRow>
-                  <TableCell className="font-medium">Description</TableCell>
-                  <TableCell>{data.description}</TableCell>
-                </TableRow>
+
                 <TableRow>
                   <TableCell className="font-medium">Created by</TableCell>
                   <TableCell>
@@ -83,7 +80,7 @@ export default function Site() {
                           //@ts-ignore
                           alt={data.created_by.name}
                         ></AvatarImage>
-                        <AvatarFallback></AvatarFallback>
+                        <AvatarFallback>CN</AvatarFallback>
                       </Avatar>
                       <span className="font-semibold">
                         {data.created_by?.name}

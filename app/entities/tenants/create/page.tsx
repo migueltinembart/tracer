@@ -13,13 +13,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { trpc } from "@/app/_trpc/client";
@@ -45,49 +39,47 @@ import { capitalize, UnionTuple } from "@/lib/helpers";
 import { CreateButton } from "@/app/_components/createButton";
 import { Dialog } from "@/components/ui/dialog";
 
-type SiteFormInput = RouterInput["entities"]["tenants"]["create"]["one"];
+type TenantFormInput = RouterInput["entities"]["tenants"]["create"]["one"];
 
-const TenantFormSchema = z.object({
+const tenantFormSchema = z.object({
   name: z
     .string()
     .min(2, { message: "Name must be atleast 2 characters" })
     .max(64, { message: "Name cannot be longer than 64 characters" }),
-  status: z.enum(["active", "planned", "staging", "retired"]),
   description: z.string({ description: "Add a description" }).optional(),
-  site_group_id: z.optional(z.number().nullable()),
+  tenant_group_id: z.optional(z.number().nullable()),
 });
 
 export default function TenantForm() {
   const { toast } = useToast();
-  const siteGroupsQuery = trpc.entities.tenant_groups.select.all.useQuery();
+  const tenantGroupCreator = trpc.entities.tenant_groups.select.all.useQuery();
   const context = trpc.useContext();
-  const siteCreator = trpc.entities.sites.create.one.useMutation({
+  const tenantCreator = trpc.entities.tenants.create.one.useMutation({
     onSuccess: (data) => {
-      context.entities.sites.select.all.invalidate();
+      context.entities.tenants.select.all.invalidate();
       return toast({
-        title: `Site "${data.name}" created`,
+        title: `Tenant "${data.name}" created`,
       });
     },
     onError: () => {
       return toast({
         variant: "destructive",
-        title: "Something with request went wrong! Trying again...",
+        title: "Something with request went wrong!",
       });
     },
   });
 
-  const form = useForm<SiteFormInput>({
-    resolver: zodResolver(siteFormSchema),
+  const form = useForm<TenantFormInput>({
+    resolver: zodResolver(tenantFormSchema),
     defaultValues: {
       name: "",
-      status: "active",
       description: undefined,
-      site_group_id: undefined,
+      tenant_group_id: undefined,
     },
   });
 
   function SubmitButton() {
-    if (siteCreator.status === "loading") {
+    if (tenantCreator.status === "loading") {
       return (
         <Button type="submit" className="bg-orange-500" disabled>
           Loading <RefreshCw className="animate-spin"></RefreshCw>
@@ -95,19 +87,19 @@ export default function TenantForm() {
       );
     }
 
-    if (siteCreator.status === "success") {
+    if (tenantCreator.status === "success") {
       return <Button type="submit">Deploy</Button>;
     }
 
-    if (siteCreator.status === "idle") {
+    if (tenantCreator.status === "idle") {
       return <Button type="submit">Deploy</Button>;
     } else {
       return null;
     }
   }
 
-  async function onSubmit(values: z.infer<typeof siteFormSchema>) {
-    siteCreator.mutate(values);
+  async function onSubmit(values: z.infer<typeof tenantFormSchema>) {
+    tenantCreator.mutate(values);
     form.reset();
   }
 
@@ -125,47 +117,13 @@ export default function TenantForm() {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Site Name</FormLabel>
+                <FormLabel>Tenant Name</FormLabel>
                 <FormControl>
                   <Input placeholder="Contoso" {...field} />
                 </FormControl>
                 <FormDescription>
                   Try to be as exact as possible
                 </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="status"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Status</FormLabel>
-                <FormControl>
-                  <Select onValueChange={field.onChange}>
-                    <SelectTrigger>
-                      <SelectValue
-                        className={"capitalize"}
-                        placeholder={capitalize(field.value)}
-                      />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {status.map((value) => {
-                        return (
-                          <SelectItem
-                            key={value}
-                            value={value}
-                            className="capitalize"
-                          >
-                            {capitalize(value)}
-                          </SelectItem>
-                        );
-                      })}
-                    </SelectContent>
-                  </Select>
-                </FormControl>
-                <FormDescription>Set the Status</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -180,7 +138,7 @@ export default function TenantForm() {
                   <Textarea value={field.value}></Textarea>
                 </FormControl>
                 <FormDescription>
-                  Add a description to the newly created site
+                  Add a description to the newly created tenant
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -188,10 +146,10 @@ export default function TenantForm() {
           />
           <FormField
             control={form.control}
-            name="site_group_id"
+            name="tenant_group_id"
             render={({ field }) => (
               <FormItem className="flex flex-col">
-                <FormLabel>Site group</FormLabel>
+                <FormLabel>Tenant group</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
                     <FormControl>
@@ -204,10 +162,10 @@ export default function TenantForm() {
                         )}
                       >
                         {field.value
-                          ? siteGroupsQuery.data?.find(
-                              (sitegroup) => sitegroup.id === field.value
+                          ? tenantGroupCreator.data?.find(
+                              (tenantgroup) => tenantgroup.id === field.value
                             )?.name
-                          : "Select site group"}
+                          : "Select tenant group"}
                         <CaretSortIcon className="w-4 h-4 ml-2 opacity-50 shrink-0" />
                       </Button>
                     </FormControl>
@@ -217,18 +175,18 @@ export default function TenantForm() {
                     align="center"
                     side="bottom"
                   >
-                    {siteGroupsQuery.isStale && (
+                    {tenantGroupCreator.isStale && (
                       <Command className="w-full">
                         <CommandInput
-                          placeholder="Search site groups"
+                          placeholder="Search tenant groups"
                           className="pt-1 h-9"
                         />
-                        {siteGroupsQuery.data?.length === 0 && (
+                        {tenantGroupCreator.data?.length === 0 && (
                           <div className="flex flex-col text-center">
-                            <p className="p-3">there are no site Groups...</p>
+                            <p className="p-3">there are no tenant Groups...</p>
                             <CreateButton
-                              goToElement={<SiteGroupForm />}
-                              title="create Site Group"
+                              goToElement={<TenantGroupForm />}
+                              title="create Tenant Group"
                             ></CreateButton>
                           </div>
                         )}
@@ -239,25 +197,28 @@ export default function TenantForm() {
                           <CommandEmpty>
                             <p className="pb-2">Group not found?</p>
                             <CreateButton
-                              goToElement={<SiteGroupForm />}
-                              title="Create Site Group"
+                              goToElement={<TenantGroupForm />}
+                              title="Create Tenant Group"
                             ></CreateButton>
                           </CommandEmpty>
 
                           <CommandGroup>
-                            {siteGroupsQuery.data?.map((sitegroup) => (
+                            {tenantGroupCreator.data?.map((tenantgroup) => (
                               <CommandItem
-                                value={sitegroup.name}
-                                key={sitegroup.id}
+                                value={tenantgroup.name}
+                                key={tenantgroup.id}
                                 onSelect={() => {
-                                  form.setValue("site_group_id", sitegroup.id);
+                                  form.setValue(
+                                    "tenant_group_id",
+                                    tenantgroup.id
+                                  );
                                 }}
                               >
-                                {sitegroup.name}
+                                {tenantgroup.name}
                                 <CheckIcon
                                   className={cn(
                                     "ml-auto h-4 w-4",
-                                    sitegroup.id === field.value
+                                    tenantgroup.id === field.value
                                       ? "opacity-100"
                                       : "opacity-0"
                                   )}

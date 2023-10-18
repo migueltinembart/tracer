@@ -18,7 +18,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { AvatarImage } from "@radix-ui/react-avatar";
 import { UpdateIcon } from "@radix-ui/react-icons";
 
-export default function Site() {
+export default function SiteGroup() {
   const { id: paramId } = useParams();
 
   const { data, isLoading, isSuccess, isError } =
