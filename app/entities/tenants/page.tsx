@@ -57,7 +57,7 @@ import { Badge } from "@/components/ui/badge";
 
 export type TenantOutput = RouterOutput["entities"]["tenants"]["select"]["one"];
 
-export default function Sites() {
+export default function Tenants() {
   const [deleteItem, setDeleteItem] = useState<number>(0);
   const tenantDeleter = trpc.entities.tenants.delete.one.useMutation();
   const tenantQuery = trpc.entities.tenants.select.all.useQuery();
@@ -300,12 +300,12 @@ export default function Sites() {
       <AlertDialog>
         <Dialog>
           <h1 className="text-3xl font-extrabold tracking-tight scroll-m-20 lg:text-3xl">
-            Sites
+            Tenants
           </h1>
           <div className="w-full">
             <div className="flex items-center justify-between py-4">
               <Input
-                placeholder="Filter by Site..."
+                placeholder="Filter by Tenant..."
                 value={
                   (table.getColumn("name")?.getFilterValue() as string) ?? ""
                 }
