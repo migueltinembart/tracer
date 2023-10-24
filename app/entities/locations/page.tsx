@@ -49,26 +49,18 @@ import {
   AlertDialog,
 } from "@/components/ui/alert-dialog";
 import { useState } from "react";
-
-import {
-  DialogTitle,
-  DialogContent,
-  DialogTrigger,
-  DialogHeader,
-  DialogDescription,
-  Dialog,
-} from "@/components/ui/dialog";
+import LocationForm from "@/app/entities/locations/create/page"
+import { Dialog } from "@/components/ui/dialog";
 import { CreateButton } from "@/app/_components/createButton";
-import SiteForm from "@/app/entities/sites/create/page";
 import Link from "next/link";
 
+export type LocationOutput =
+  RouterOutput["entities"]["locations"]["select"]["one"];
 
-export type SiteOutput = RouterOutput["entities"]["sites"]["select"]["one"];
-
-export default function Sites() {
+export default function Locations() {
   const [deleteItem, setDeleteItem] = useState<number>(0);
-  const siteDeleter = trpc.entities.sites.delete.one.useMutation();
-  const siteQuery = trpc.entities.sites.select.all.useQuery();
+  const locationDeleter = trpc.entities.locations.delete.one.useMutation();
+  const locationQuery = trpc.entities.locations.select.all.useQuery();
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -82,7 +74,7 @@ export default function Sites() {
   });
   const [rowSelection, setRowSelection] = useState({});
 
-  const columns: ColumnDef<SiteOutput>[] = [
+  const columns: ColumnDef<LocationOutput>[] = [
     {
       id: "select",
       header: ({ table }) => (
@@ -106,7 +98,7 @@ export default function Sites() {
       id: "name",
       accessorFn: (row) => row.name,
       cell: ({ row }) => (
-        <Link href={`/entities/sites/${row.original.id}`}>
+        <Link href={`/entities/locations/${row.original.id}`}>
           <Button variant={"link"}>{row.original.name}</Button>
         </Link>
       ),
@@ -122,24 +114,7 @@ export default function Sites() {
         );
       },
     },
-    {
-      id: "status",
-      accessorFn: (row) => row.status,
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            <span className="capitalize">{column.id.split("_").join(" ")}</span>
-            <CaretSortIcon className="w-4 h-4 ml-2" />
-          </Button>
-        );
-      },
-      cell: ({ row }) => (
-        <div className="capitalize pl-4">{row.getValue("status")}</div>
-      ),
-    },
+
     {
       id: "description",
       accessorFn: (row) => row.description,
@@ -156,40 +131,6 @@ export default function Sites() {
       },
       cell: ({ row }) => (
         <div className="capitalize pl-4">{row.getValue("description")}</div>
-      ),
-    },
-    {
-      id: "tenant",
-      accessorFn: (row) => row.tenant?.name,
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            <span className="capitalize">{column.id.split("_").join(" ")}</span>
-            <CaretSortIcon className="w-4 h-4 ml-2" />
-          </Button>
-        );
-      },
-      cell: ({ row }) => <div className="pl-4">{row.getValue("tenant")}</div>,
-    },
-    {
-      id: "site_group",
-      accessorFn: (row) => row.site_group?.name,
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            <span className="capitalize">{column.id.split("_").join(" ")}</span>
-            <CaretSortIcon className="w-4 h-4 ml-2" />
-          </Button>
-        );
-      },
-      cell: ({ row }) => (
-        <div className="pl-4">{row.getValue("site_group")}</div>
       ),
     },
     {
@@ -305,7 +246,7 @@ export default function Sites() {
   ];
 
   const table = useReactTable({
-    data: siteQuery.data ?? [],
+    data: locationQuery.data ?? [],
     //@ts-ignore
     columns,
     onSortingChange: setSorting,
@@ -330,11 +271,11 @@ export default function Sites() {
     },
   });
 
-  if (siteQuery.isLoading) {
+  if (locationQuery.isLoading) {
     return <div>Loading</div>;
   }
 
-  if (siteQuery.isError) {
+  if (locationQuery.isError) {
     return <div>Error</div>;
   }
 
@@ -343,12 +284,12 @@ export default function Sites() {
       <AlertDialog>
         <Dialog>
           <h1 className="text-3xl font-extrabold tracking-tight scroll-m-20 lg:text-3xl">
-            Sites
+            Locations
           </h1>
           <div className="w-full">
             <div className="flex items-center justify-between py-4">
               <Input
-                placeholder="Filter by Site..."
+                placeholder="Filter by Location..."
                 value={
                   (table.getColumn("name")?.getFilterValue() as string) ?? ""
                 }
@@ -359,8 +300,8 @@ export default function Sites() {
               />
               <div className="flex gap-2">
                 <CreateButton
-                  goToElement={<SiteForm />}
-                  title="Create Site"
+                  goToElement={<LocationForm />}
+                  title="Create Location"
                 ></CreateButton>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -477,7 +418,7 @@ export default function Sites() {
               <AlertDialogCancel>Cancel</AlertDialogCancel>
               <AlertDialogAction
                 onClick={() => {
-                  siteDeleter.mutate(deleteItem);
+                  locationDeleter.mutate(deleteItem);
                 }}
               >
                 Continue

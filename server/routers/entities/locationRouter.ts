@@ -4,6 +4,7 @@ import { locations, sites } from "@/server/db/entities";
 import { z } from "zod";
 import { eq, inArray, sql } from "drizzle-orm";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
+import { users } from "@/server/db/auth";
 
 const insertSchema = createInsertSchema(locations);
 const updateSchema = createSelectSchema(locations)
@@ -23,8 +24,11 @@ export const locations_router = router({
           description: locations.description,
           updated_at: locations.updated_at,
           created_at: locations.created_at,
+          created_by: users,
+          updated_by: users
         })
         .from(locations)
+        .leftJoin(users, eq(locations.created_by, users.id))
         .leftJoin(sites, eq(locations.site_id, sites.id));
 
       return result;
@@ -38,8 +42,11 @@ export const locations_router = router({
           description: locations.description,
           updated_at: locations.updated_at,
           created_at: locations.created_at,
+          created_by: users,
+          updated_by: users,
         })
         .from(locations)
+        .leftJoin(users, eq(locations.created_by, users.id))
         .leftJoin(sites, eq(locations.site_id, sites.id))
         .where(eq(locations.id, opts.input));
       return result[0];
