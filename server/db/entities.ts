@@ -181,7 +181,7 @@ export const rack_roles = pgTable(
     id: serial("id").notNull(),
     name: text("name").notNull().unique(),
     color_name: text("color_name"),
-    description: text("description"),
+    description: text("description").notNull().default(""),
     updated_at: timestamp("updated_at").defaultNow().notNull(),
     created_at: timestamp("created_at").defaultNow().notNull(),
     created_by: text("created_by").references(() => users.id),
@@ -201,11 +201,11 @@ export const racks = pgTable(
     id: uuid("id").notNull().defaultRandom(),
     name: text("name").notNull(),
     units: numeric("units").notNull(),
-    description: text("description"),
+    description: text("description").notNull().default(""),
     location_id: integer("location_id")
       .notNull()
       .references(() => locations.id, { onDelete: "set null" }),
-    roleId: integer("role_id").references(() => rack_roles.id),
+    role_id: integer("role_id").references(() => rack_roles.id),
     updated_at: timestamp("updated_at").defaultNow().notNull(),
     created_at: timestamp("created_at").defaultNow().notNull(),
     created_by: text("created_by").references(() => users.id),

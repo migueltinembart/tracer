@@ -4,6 +4,7 @@ import { locations, sites, racks, tenants } from "@/server/db/entities";
 import { z } from "zod";
 import { eq, inArray, sql } from "drizzle-orm";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
+import { users } from "@/server/db/auth";
 
 const insertSchema = createInsertSchema(racks);
 const updateSchema = createSelectSchema(racks)
@@ -25,8 +26,11 @@ export const racks_router = router({
           description: racks.description,
           updated_at: racks.updated_at,
           created_at: racks.created_at,
+          created_by: users,
+          updated_by: users
         })
         .from(racks)
+        .leftJoin(users, eq(racks.created_by, users.id))
         .leftJoin(locations, eq(racks.location_id, locations.id))
         .leftJoin(sites, eq(locations.site_id, sites.id))
         .leftJoin(tenants, eq(sites.tenant_id, tenants.id));
@@ -45,8 +49,11 @@ export const racks_router = router({
           description: racks.description,
           updated_at: racks.updated_at,
           created_at: racks.created_at,
+          created_by: users,
+          updated_by: users
         })
         .from(racks)
+        .leftJoin(users, eq(racks.created_by, users.id))
         .leftJoin(locations, eq(racks.location_id, locations.id))
         .leftJoin(sites, eq(locations.site_id, sites.id))
         .leftJoin(tenants, eq(sites.tenant_id, tenants.id))

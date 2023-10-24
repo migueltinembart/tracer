@@ -11,7 +11,7 @@ const updateSchema = createSelectSchema(sites)
   .omit({ created_at: true, updated_at: true })
   .partial()
   .required({ id: true });
-
+  
 const updated_at = sql`now()`;
 
 export const sites_router = router({
