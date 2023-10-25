@@ -65,7 +65,7 @@ import Link from "next/link";
 
 export type RackOutput = RouterOutput["entities"]["racks"]["select"]["one"];
 
-export default function racks() {
+export default function Racks() {
   const [deleteItem, setDeleteItem] = useState<string>("");
   const rackDeleter = trpc.entities.racks.delete.one.useMutation();
   const rackQuery = trpc.entities.racks.select.all.useQuery();
