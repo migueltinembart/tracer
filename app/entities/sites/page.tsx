@@ -62,13 +62,15 @@ import { CreateButton } from "@/app/_components/createButton";
 import SiteForm from "@/app/entities/sites/create/page";
 import Link from "next/link";
 
-
 export type SiteOutput = RouterOutput["entities"]["sites"]["select"]["one"];
 
 export default function Sites() {
   const [deleteItem, setDeleteItem] = useState<number>(0);
-  const siteDeleter = trpc.entities.sites.delete.one.useMutation();
-  const siteQuery = trpc.entities.sites.select.all.useQuery();
+  const context = trpc.useContext();
+  const siteDeleter = trpc.entities.sites.delete.one.useMutation({
+    onSuccess: () => siteQuery.refetch(),
+  });
+  const siteQuery = trpc.entities.sites.select.all.useQuery(undefined);
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -475,11 +477,7 @@ export default function Sites() {
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction
-                onClick={() => {
-                  siteDeleter.mutate(deleteItem);
-                }}
-              >
+              <AlertDialogAction onClick={() => siteDeleter.mutate(deleteItem)}>
                 Continue
               </AlertDialogAction>
             </AlertDialogFooter>

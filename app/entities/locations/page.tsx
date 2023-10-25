@@ -114,7 +114,24 @@ export default function Locations() {
         );
       },
     },
-
+    {
+      id: "site",
+      accessorFn: (row) => row.site?.name,
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            <span className="capitalize">{column.id.split("_").join(" ")}</span>
+            <CaretSortIcon className="w-4 h-4 ml-2" />
+          </Button>
+        );
+      },
+      cell: ({ row }) => (
+        <div className="capitalize pl-4">{row.getValue("site")}</div>
+      ),
+    },
     {
       id: "description",
       accessorFn: (row) => row.description,

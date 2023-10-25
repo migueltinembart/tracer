@@ -44,6 +44,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { capitalize, UnionTuple } from "@/lib/helpers";
 import { CreateButton } from "@/app/_components/createButton";
 import { Dialog } from "@/components/ui/dialog";
+import TenantGroupForm from "../../tenant-groups/create/page";
 
 type SiteFormInput = RouterInput["entities"]["sites"]["create"]["one"];
 const status: UnionTuple<SiteFormInput["status"]> = [
@@ -61,10 +62,12 @@ const siteFormSchema = z.object({
   status: z.enum(["active", "planned", "staging", "retired"]),
   description: z.string({ description: "Add a description" }).optional(),
   site_group_id: z.optional(z.number().nullable()),
+  tenant_id: z.number().optional().nullable()
 });
 
 export default function SiteForm() {
   const { toast } = useToast();
+  const tenantsQuery = trpc.entities.tenants.select.all.useQuery();
   const siteGroupsQuery = trpc.entities.site_groups.select.all.useQuery();
   const context = trpc.useContext();
   const siteCreator = trpc.entities.sites.create.one.useMutation({
@@ -89,6 +92,7 @@ export default function SiteForm() {
       status: "active",
       description: undefined,
       site_group_id: undefined,
+      tenant_id: undefined
     },
   });
 
@@ -264,6 +268,94 @@ export default function SiteForm() {
                                   className={cn(
                                     "ml-auto h-4 w-4",
                                     sitegroup.id === field.value
+                                      ? "opacity-100"
+                                      : "opacity-0"
+                                  )}
+                                />
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </ScrollArea>
+                      </Command>
+                    )}
+                  </PopoverContent>
+                </Popover>
+
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="tenant_id"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel>Tenant</FormLabel>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        className={cn(
+                          "w-full justify-between",
+                          !field.value && "text-muted-foreground"
+                        )}
+                      >
+                        {field.value
+                          ? tenantsQuery.data?.find(
+                              (tenant) => tenant.id === field.value
+                            )?.name
+                          : "Select Tenant"}
+                        <CaretSortIcon className="w-4 h-4 ml-2 opacity-50 shrink-0" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent
+                    className="w-[200px] p-0"
+                    align="center"
+                    side="bottom"
+                  >
+                    {tenantsQuery.isStale && (
+                      <Command className="w-full">
+                        <CommandInput
+                          placeholder="Search site groups"
+                          className="pt-1 h-9"
+                        />
+                        {tenantsQuery.data?.length === 0 && (
+                          <div className="flex flex-col text-center">
+                            <p className="p-3">there are no site Groups...</p>
+                            <CreateButton
+                              goToElement={<TenantGroupForm />}
+                              title="create Site Group"
+                            ></CreateButton>
+                          </div>
+                        )}
+                        <ScrollArea
+                          className="
+  max-h-40"
+                        >
+                          <CommandEmpty>
+                            <p className="pb-2">Group not found?</p>
+                            <CreateButton
+                              goToElement={<TenantGroupForm />}                             title="Create Site Group"
+                            ></CreateButton>
+                          </CommandEmpty>
+
+                          <CommandGroup>
+                            {tenantsQuery.data?.map((tenant) => (
+                              <CommandItem
+                                value={tenant.name}
+                                key={tenant.id}
+                                onSelect={() => {
+                                  form.setValue("tenant_id", tenant.id);
+                                }}
+                              >
+                                {tenant.name}
+                                <CheckIcon
+                                  className={cn(
+                                    "ml-auto h-4 w-4",
+                                    tenant.id === field.value
                                       ? "opacity-100"
                                       : "opacity-0"
                                   )}

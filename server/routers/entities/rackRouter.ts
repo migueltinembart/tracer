@@ -15,28 +15,36 @@ const updated_at = sql`now()`;
 
 export const racks_router = router({
   select: router({
-    all: privateProcedure.query(async () => {
-      const result = await db
-        .select({
-          id: racks.id,
-          name: racks.name,
-          tenant: tenants,
-          location: locations,
-          site: sites,
-          description: racks.description,
-          updated_at: racks.updated_at,
-          created_at: racks.created_at,
-          created_by: users,
-          updated_by: users
-        })
-        .from(racks)
-        .leftJoin(users, eq(racks.created_by, users.id))
-        .leftJoin(locations, eq(racks.location_id, locations.id))
-        .leftJoin(sites, eq(locations.site_id, sites.id))
-        .leftJoin(tenants, eq(sites.tenant_id, tenants.id));
-
-      return result;
-    }),
+    all: privateProcedure
+      .input(
+        z
+          .object({
+            location_id: z.number().optional(),
+          })
+          .optional()
+      )
+      .query(async ({ input }) => {
+        const result = await db
+          .select({
+            id: racks.id,
+            name: racks.name,
+            tenant: tenants,
+            location: locations,
+            site: sites,
+            description: racks.description,
+            updated_at: racks.updated_at,
+            created_at: racks.created_at,
+            created_by: users,
+            updated_by: users,
+          })
+          .from(racks)
+          .leftJoin(users, eq(racks.created_by, users.id))
+          .leftJoin(locations, eq(racks.location_id, locations.id))
+          .leftJoin(sites, eq(locations.site_id, sites.id))
+          .leftJoin(tenants, eq(sites.tenant_id, tenants.id))
+          .where(input ? eq(racks, input) : undefined);
+        return result;
+      }),
     one: privateProcedure.input(z.string().uuid()).query(async (opts) => {
       const result = await db
         .select({
@@ -50,7 +58,7 @@ export const racks_router = router({
           updated_at: racks.updated_at,
           created_at: racks.created_at,
           created_by: users,
-          updated_by: users
+          updated_by: users,
         })
         .from(racks)
         .leftJoin(users, eq(racks.created_by, users.id))

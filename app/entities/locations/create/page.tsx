@@ -59,14 +59,13 @@ const locationFormSchema = z.object({
     .min(2, { message: "Name must be atleast 2 characters" })
     .max(64, { message: "Name cannot be longer than 64 characters" }),
   status: z.enum(["active", "planned", "staging", "retired"]),
-  description: z.string({ description: "Add a description" }).optional(),
-  location_group_id: z.optional(z.number().nullable()),
+  description: z.string({ description: "Add a description"}).optional(),
+  site_id: z.number().optional(),
 });
 
 export default function LocationForm() {
   const { toast } = useToast();
-  const sitesQuery =
-    trpc.entities.sites.select.all.useQuery();
+  const sitesQuery = trpc.entities.sites.select.all.useQuery();
   const context = trpc.useContext();
   const locationCreator = trpc.entities.locations.create.one.useMutation({
     onSuccess: (data) => {
@@ -198,7 +197,7 @@ export default function LocationForm() {
             name="site_id"
             render={({ field }) => (
               <FormItem className="flex flex-col">
-                <FormLabel>Location group</FormLabel>
+                <FormLabel>Site</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
                     <FormControl>
@@ -212,10 +211,9 @@ export default function LocationForm() {
                       >
                         {field.value
                           ? sitesQuery.data?.find(
-                              (site) =>
-                                site.id === field.value
+                              (site) => site.id === field.value
                             )?.name
-                          : "Select location group"}
+                          : "Select Site"}
                         <CaretSortIcon className="w-4 h-4 ml-2 opacity-50 shrink-0" />
                       </Button>
                     </FormControl>
@@ -238,19 +236,16 @@ export default function LocationForm() {
                             </p>
                             <CreateButton
                               goToElement={<SiteForm />}
-                              title="create Location Group"
+                              title="create Site"
                             ></CreateButton>
                           </div>
                         )}
-                        <ScrollArea
-                          className="
-  max-h-40"
-                        >
+                        <ScrollArea className="max-h-40">
                           <CommandEmpty>
-                            <p className="pb-2">Group not found?</p>
+                            <p className="pb-2">Site not found?</p>
                             <CreateButton
                               goToElement={<SiteForm />}
-                              title="Create Location Group"
+                              title="Create Site"
                             ></CreateButton>
                           </CommandEmpty>
 
@@ -260,10 +255,7 @@ export default function LocationForm() {
                                 value={site.name}
                                 key={site.id}
                                 onSelect={() => {
-                                  form.setValue(
-                                    "site_id",
-                                    site.id
-                                  );
+                                  form.setValue("site_id", site.id);
                                 }}
                               >
                                 {site.name}

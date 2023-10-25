@@ -15,24 +15,34 @@ const updated_at = sql`now()`;
 
 export const locations_router = router({
   select: router({
-    all: privateProcedure.query(async () => {
-      const result = await db
-        .select({
-          id: locations.id,
-          name: locations.name,
-          site: sites,
-          description: locations.description,
-          updated_at: locations.updated_at,
-          created_at: locations.created_at,
-          created_by: users,
-          updated_by: users
-        })
-        .from(locations)
-        .leftJoin(users, eq(locations.created_by, users.id))
-        .leftJoin(sites, eq(locations.site_id, sites.id));
-
-      return result;
-    }),
+    all: privateProcedure
+      .input(
+        z
+          .object({
+            site_id: z.number().optional(),
+          })
+          .optional()
+      )
+      .query(async ({ input }) => {
+        const result = await db
+          .select({
+            id: locations.id,
+            name: locations.name,
+            site: sites,
+            description: locations.description,
+            updated_at: locations.updated_at,
+            created_at: locations.created_at,
+            created_by: users,
+            updated_by: users,
+          })
+          .from(locations)
+          .leftJoin(users, eq(locations.created_by, users.id))
+          .leftJoin(sites, eq(locations.site_id, sites.id))
+          .where(
+            input?.site_id ? eq(locations.site_id, input.site_id) : undefined
+          );
+        return result;
+      }),
     one: privateProcedure.input(z.number()).query(async (opts) => {
       const result = await db
         .select({
@@ -54,6 +64,7 @@ export const locations_router = router({
   }),
   create: router({
     one: privateProcedure.input(insertSchema).mutation(async (opts) => {
+      console.log(opts.input)
       const result = await db.insert(locations).values(opts.input).returning();
       return result[0];
     }),

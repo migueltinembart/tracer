@@ -41,7 +41,6 @@ import { useToast } from "@/components/ui/use-toast";
 
 import type { RouterInput } from "@/app/_trpc/client";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { capitalize, UnionTuple } from "@/lib/helpers";
 import { CreateButton } from "@/app/_components/createButton";
 import { Dialog } from "@/components/ui/dialog";
 import LocationForm from "../../locations/create/page";
@@ -57,20 +56,27 @@ const rackFormSchema = z.object({
     .min(2, { message: "Name must be atleast 2 characters" })
     .max(64, { message: "Name cannot be longer than 64 characters" }),
   description: z.string({ description: "Add a description" }).optional(),
-  location: z.string(),
-  units: z.number(),
+  location_id: z.number(),
+  units: z.number()
 });
 
+const unitsArray: number[] = Array.from(
+  { length: 58 - 4 + 1 },
+  (_, index) => 4 + index
+);
+
 export default function RackForm() {
-  const [siteSelectOpen, setSiteSelectOpen] = useState(false);
-  const [tenantSelectOpen, setTenantSelectOpen] = useState(false);
   const [siteValue, setSiteValue] = useState(0);
   const [tenantValue, setTenantValue] = useState(0);
 
   const { toast } = useToast();
-  const locationQuery = trpc.entities.locations.select.all.useQuery();
+  const locationQuery = trpc.entities.locations.select.all.useQuery({
+    site_id: siteValue !== 0 ? siteValue : undefined,
+  });
   const tenantQuery = trpc.entities.tenants.select.all.useQuery();
-  const siteQuery = trpc.entities.sites.select.all.useQuery();
+  const siteQuery = trpc.entities.sites.select.all.useQuery({
+    tenant_id: tenantValue !== 0 ? tenantValue : undefined,
+  });
   const context = trpc.useContext();
   const rackCreator = trpc.entities.racks.create.one.useMutation({
     onSuccess: (data) => {
@@ -93,8 +99,8 @@ export default function RackForm() {
       name: "",
       description: undefined,
       location_id: undefined,
-      units: undefined,
-      role_id: undefined,
+      units: 4,
+      
     },
   });
 
@@ -118,8 +124,8 @@ export default function RackForm() {
     }
   }
 
-  async function onSubmit(values: z.infer<typeof rackFormSchema>) {
-    //@ts-ignore
+  function onSubmit(values: z.infer<typeof rackFormSchema>) {
+    
     rackCreator.mutate(values);
     form.reset();
   }
@@ -130,7 +136,6 @@ export default function RackForm() {
         <form
           onSubmit={(e) => {
             e.stopPropagation();
-            //@ts-ignore
             form.handleSubmit(onSubmit)(e);
           }}
         >
@@ -166,157 +171,39 @@ export default function RackForm() {
               </FormItem>
             )}
           />
-          <FormItem className="flex flex-col">
-            <FormLabel>Tenant</FormLabel>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  role="combobox"
-                  aria-expanded={tenantSelectOpen}
-                  className="w-full justify-between"
-                >
-                  {tenantValue
-                    ? tenantQuery.data?.find(
-                        (tenant) => tenant.id === tenantValue
-                      )?.name
-                    : "Select tenant..."}
-                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-[200px] p-0">
-                {tenantQuery.isStale && (
-                  <Command className="w-full">
-                    <CommandInput
-                      placeholder="Search site groups"
-                      className="pt-1 h-9"
-                    />
-                    {tenantQuery.data?.length === 0 && (
-                      <div className="text-center">
-                        <p className="p-3">there are no Tenants...</p>
-                        <CreateButton
-                          goToElement={<TenantForm />}
-                          title="Create"
-                        ></CreateButton>
-                      </div>
-                    )}
-                    <ScrollArea
-                      className="
-  max-h-40"
-                    >
-                      <CommandEmpty>
-                        <p className="pb-2">Tenant not found?</p>
-                        <CreateButton
-                          goToElement={<TenantForm />}
-                          title="Create"
-                        ></CreateButton>
-                      </CommandEmpty>
-
-                      <CommandGroup>
-                        {tenantQuery.data?.map((tenant) => (
-                          <CommandItem
-                            value={tenant.name}
-                            key={tenant.id}
-                            onSelect={() => {
-                              setTenantValue(tenant.id)
-                            }}
+          <FormField
+            control={form.control}
+            name="units"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Units</FormLabel>
+                <FormControl>
+                  <Select>
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue
+                        placeholder={field.value ? field.value : "units"}
+                      />
+                    </SelectTrigger>
+                    <ScrollArea>
+                      <SelectContent>
+                        {unitsArray.map((unit) => (
+                          <SelectItem
+                            onSelect={() =>
+                              form.setValue("units", unit)
+                            }
+                            key={unit}
+                            value={unit}
                           >
-                            {tenant.name}
-                            <CheckIcon
-                              className={cn(
-                                "ml-auto h-4 w-4",
-                                tenant.id === tenantValue
-                                  ? "opacity-100"
-                                  : "opacity-0"
-                              )}
-                            />
-                          </CommandItem>
+                            {unit.toString()}
+                          </SelectItem>
                         ))}
-                      </CommandGroup>
+                      </SelectContent>
                     </ScrollArea>
-                  </Command>
-                )}
-              </PopoverContent>
-            </Popover>
-            <FormDescription>
-              Select the Tenant in which the rack belongs to
-            </FormDescription>
-          </FormItem>
-          <FormItem>
-            <FormLabel>Site</FormLabel>
-            <Popover open={siteSelectOpen} onOpenChange={setSiteSelectOpen}>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  role="combobox"
-                  aria-expanded={siteSelectOpen}
-                  className="w-full justify-between"
-                >
-                  {siteValue
-                    ? siteQuery.data?.find((site) => site.id === siteValue)
-                        ?.name
-                    : "Select site..."}
-                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-[200px] p-0">
-                {siteQuery.isStale && (
-                  <Command className="w-full">
-                    <CommandInput
-                      placeholder="Search"
-                      className="pt-1 h-9"
-                    />
-                    {siteQuery.data?.length === 0 && (
-                      <div className="text-center">
-                        <p className="p-3">there are no Sites...</p>
-                        <CreateButton
-                          goToElement={<SiteForm />}
-                          title="Create"
-                        ></CreateButton>
-                      </div>
-                    )}
-                    <ScrollArea
-                      className="
-  max-h-40"
-                    >
-                      <CommandEmpty>
-                        <p className="pb-2">Site not found?</p>
-                        <CreateButton
-                          goToElement={<SiteForm />}
-                          title="Create"
-                        ></CreateButton>
-                      </CommandEmpty>
-
-                      <CommandGroup>
-                        {siteQuery.data?.map((site) => (
-                          <CommandItem
-                            value={site.name}
-                            key={site.id}
-                            onSelect={() => {
-                              setSiteValue(site.id)
-                            }}
-                          >
-                            {site.name}
-                            <CheckIcon
-                              className={cn(
-                                "ml-auto h-4 w-4",
-                                site.id === siteValue
-                                  ? "opacity-100"
-                                  : "opacity-0"
-                              )}
-                            />
-                          </CommandItem>
-                        ))}
-                      </CommandGroup>
-                    </ScrollArea>
-                  </Command>
-                )}
-              </PopoverContent>
-            </Popover>
-            <FormDescription>
-              Search through the Sites to specify location
-            </FormDescription>
-          </FormItem>
+                  </Select>
+                </FormControl>
+              </FormItem>
+            )}
+          />
           <FormField
             control={form.control}
             name="location_id"

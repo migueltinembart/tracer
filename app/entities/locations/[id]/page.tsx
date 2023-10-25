@@ -1,8 +1,6 @@
 "use client";
-import { mainCardClasses } from "@/app/_components/shared";
 import { RouterOutput, trpc } from "@/app/_trpc/client";
 import { useParams } from "next/navigation";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import clsx from "clsx";
 import moment from "moment";
 import {
@@ -21,7 +19,7 @@ import { UpdateIcon } from "@radix-ui/react-icons";
 export default function Site() {
   const { id: paramId } = useParams();
 
-  const { data, isLoading, isSuccess, isError } =
+  const { data, isLoading, isError } =
     trpc.entities.sites.select.one.useQuery(Number(paramId));
 
   if (isLoading) {
