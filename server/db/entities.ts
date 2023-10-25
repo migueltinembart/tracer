@@ -200,7 +200,7 @@ export const racks = pgTable(
   {
     id: uuid("id").notNull().defaultRandom(),
     name: text("name").notNull(),
-    units: numeric("units").notNull(),
+    units: integer("units").notNull(),
     description: text("description").notNull().default(""),
     location_id: integer("location_id")
       .notNull()

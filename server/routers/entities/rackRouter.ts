@@ -31,6 +31,7 @@ export const racks_router = router({
             tenant: tenants,
             location: locations,
             site: sites,
+            units: racks.units,
             description: racks.description,
             updated_at: racks.updated_at,
             created_at: racks.created_at,

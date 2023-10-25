@@ -192,7 +192,7 @@ export default function RackForm() {
                               form.setValue("units", unit)
                             }
                             key={unit}
-                            value={unit}
+                            value={unit.toString()}
                           >
                             {unit.toString()}
                           </SelectItem>
