@@ -19,7 +19,6 @@ export function CreateButton(props: {
     | null
     | undefined;
   title: string;
-  description?: string;
 }) {
   return (
     <>
@@ -27,10 +26,6 @@ export function CreateButton(props: {
         <Button variant={props.variant}>{props.title}</Button>
       </DialogTrigger>
       <DialogContent>
-        <DialogHeader>
-          <DialogTitle>{props.title}</DialogTitle>
-          <DialogDescription>{props.description}</DialogDescription>
-        </DialogHeader>
         {props.goToElement}
       </DialogContent>
     </>
