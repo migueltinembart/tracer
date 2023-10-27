@@ -5,7 +5,7 @@ import {
   FormInput,
   FormSelect,
   FormTextarea,
-} from "@/app/_components/formController/FormFields";
+} from "@/app/_components/FormFields";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { SelectItem } from "@/components/ui/select";
 import { useForm } from "react-hook-form";
@@ -136,7 +136,7 @@ export default function SiteForm() {
                 description="Set the status of this Site"
               >
                 {status.map((v, index) => (
-                  <SelectItem value={v} key={index}></SelectItem>
+                  <SelectItem value={v} key={index}>{capitalize(v)}</SelectItem>
                 ))}
               </FormSelect>
             )}
