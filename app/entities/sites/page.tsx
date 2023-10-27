@@ -2,7 +2,12 @@
 import { trpc } from "@/app/_trpc/client";
 import { RouterOutput } from "@/app/_trpc/client";
 import { Checkbox } from "@/components/ui/checkbox";
-import { CaretSortIcon, DotsHorizontalIcon } from "@radix-ui/react-icons";
+import {
+  CaretSortIcon,
+  DotsHorizontalIcon,
+  Pencil1Icon,
+  TrashIcon,
+} from "@radix-ui/react-icons";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -26,7 +31,6 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -49,15 +53,7 @@ import {
   AlertDialog,
 } from "@/components/ui/alert-dialog";
 import { useState } from "react";
-
-import {
-  DialogTitle,
-  DialogContent,
-  DialogTrigger,
-  DialogHeader,
-  DialogDescription,
-  Dialog,
-} from "@/components/ui/dialog";
+import { Dialog } from "@/components/ui/dialog";
 import { CreateButton } from "@/app/_components/createButton";
 import SiteForm from "@/app/entities/sites/create/page";
 import Link from "next/link";
@@ -66,13 +62,14 @@ export type SiteOutput = RouterOutput["entities"]["sites"]["select"]["one"];
 
 export default function Sites() {
   const [deleteItem, setDeleteItem] = useState<number>(0);
-  const context = trpc.useContext();
   const siteDeleter = trpc.entities.sites.delete.one.useMutation({
     onSuccess: () => siteQuery.refetch(),
   });
   const siteQuery = trpc.entities.sites.select.all.useQuery(undefined);
 
-  const [sorting, setSorting] = useState<SortingState>([]);
+  const [sorting, setSorting] = useState<SortingState>([
+    { desc: false, id: "name" },
+  ]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
@@ -285,20 +282,23 @@ export default function Sites() {
                 <DotsHorizontalIcon className="w-4 h-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent className="text-left" align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuSeparator />
 
               <AlertDialogTrigger asChild>
                 <DropdownMenuItem
-                  className="text-red-600"
+                  className="text-red-600 flex gap-2"
                   onClick={() => setDeleteItem(row.original.id)}
                 >
-                  Delete
+                  <TrashIcon />
+                  Remove
                 </DropdownMenuItem>
               </AlertDialogTrigger>
-
-              <DropdownMenuItem>edit</DropdownMenuItem>
+              <DropdownMenuItem className="flex gap-3">
+                <Pencil1Icon />
+                Edit
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         );
@@ -341,7 +341,7 @@ export default function Sites() {
   }
 
   return (
-    <>
+    <div className="text-left">
       <AlertDialog>
         <Dialog>
           <h1 className="text-3xl font-extrabold tracking-tight scroll-m-20 lg:text-3xl">
@@ -471,19 +471,18 @@ export default function Sites() {
             <AlertDialogHeader>
               <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
               <AlertDialogDescription>
-                This action cannot be undone. This will permanently delete your
-                account and remove your data from our servers.
+                This Action will delete this Site
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={() => siteDeleter.mutate(deleteItem)}>
+              <AlertDialogAction className="hover:bg-rose-500" onClick={() => siteDeleter.mutate(deleteItem)}>
                 Continue
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </Dialog>
       </AlertDialog>
-    </>
+    </div>
   );
 }
