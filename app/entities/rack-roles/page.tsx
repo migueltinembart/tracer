@@ -58,6 +58,7 @@ import { CreateButton } from "@/app/_components/createButton";
 import SiteForm from "@/app/entities/sites/create/page";
 import Link from "next/link";
 import clsx from "clsx";
+import { Badge } from "@/components/ui/badge";
 
 export type RackRolesOutput =
   RouterOutput["entities"]["rack_roles"]["select"]["one"];
@@ -138,7 +139,11 @@ export default function RackRoles() {
           </Button>
         );
       },
-      cell: ({ row }) => <div className={clsx([`bg-[${row.getValue}]`])}></div>,
+      cell: ({ row }) => (
+        <Badge className={clsx(`bg-[${row.original.color}] text-lg`)}>
+          {row.original.color}
+        </Badge>
+      ),
     },
     {
       id: "description",

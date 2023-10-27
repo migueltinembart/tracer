@@ -160,6 +160,24 @@ export default function Racks() {
       ),
     },
     {
+      id: "units",
+      accessorFn: (row) => row.description,
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            <span className="capitalize">{column.id.split("_").join(" ")}</span>
+            <CaretSortIcon className="w-4 h-4 ml-2" />
+          </Button>
+        );
+      },
+      cell: ({ row }) => (
+        <div className="capitalize pl-4">{row.original.units.toString()}</div>
+      ),
+    },
+    {
       id: "tenant",
       accessorFn: (row) => row.tenant?.name,
       header: ({ column }) => {
@@ -327,7 +345,7 @@ export default function Racks() {
       <AlertDialog>
         <Dialog>
           <h1 className="text-3xl font-extrabold tracking-tight scroll-m-20 lg:text-3xl">
-            racks
+            Racks
           </h1>
           <div className="w-full">
             <div className="flex items-center justify-between py-4">
