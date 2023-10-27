@@ -198,7 +198,7 @@ export function FormSelect<
           <SelectTrigger>
             <SelectValue
               className={"capitalize"}
-              placeholder={capitalize(field.value)}
+              placeholder={field.value}
             />
           </SelectTrigger>
 

@@ -1,63 +1,34 @@
 "use client";
 import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { trpc } from "@/app/_trpc/client";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { z } from "zod";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-} from "@/components/ui/command";
-import { Check, CheckIcon, ChevronsUpDown, RefreshCw, X } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { CaretSortIcon } from "@radix-ui/react-icons";
-import { useToast } from "@/components/ui/use-toast";
-
-import type { RouterInput } from "@/app/_trpc/client";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { CreateButton } from "@/app/_components/createButton";
-import { Dialog } from "@/components/ui/dialog";
-import LocationForm from "../../locations/create/page";
-import { useState } from "react";
-import SiteForm from "@/app/entities/sites/create/page";
-import TenantForm from "../../tenants/create/page";
-import { DialogClose } from "@radix-ui/react-dialog";
-import {
   FormCommand,
   FormCommandWrapper,
   FormInput,
   FormSelect,
   FormTextarea,
 } from "@/app/_components/FormFields";
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
+import { SelectItem } from "@/components/ui/select";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { trpc } from "@/app/_trpc/client";
+import { Button } from "@/components/ui/button";
+import { z } from "zod";
+import { CommandItem } from "@/components/ui/command";
+import { SymbolIcon, CheckIcon } from "@radix-ui/react-icons";
+import { useToast } from "@/components/ui/use-toast";
+import SiteGroupForm from "@/app/entities/site-groups/create/page";
+import type { RouterInput } from "@/app/_trpc/client";
+import { capitalize, UnionTuple } from "@/lib/helpers";
+import { Dialog } from "@/components/ui/dialog";
 import clsx from "clsx";
+import TenantForm from "../../tenants/create/page";
+import { DialogClose } from "@radix-ui/react-dialog";
+import LocationForm from "../../locations/create/page";
 import RackRoleForm from "../../rack-roles/create/page";
-
+const unitsArray: number[] = Array.from(
+  { length: 58 - 4 + 1 },
+  (_, index) => 4 + index
+);
 type RackFormInput = RouterInput["entities"]["racks"]["create"]["one"];
 
 const rackFormSchema = z.object({
@@ -66,35 +37,21 @@ const rackFormSchema = z.object({
     .min(2, { message: "Name must be atleast 2 characters" })
     .max(64, { message: "Name cannot be longer than 64 characters" }),
   description: z.string({ description: "Add a description" }).optional(),
-  location_id: z.number(),
   role_id: z.number(),
+  location_id: z.number(),
   units: z.coerce.number(),
 });
 
-const unitsArray: number[] = Array.from(
-  { length: 58 - 4 + 1 },
-  (_, index) => 4 + index
-);
-
-export default function RackForm() {
-  const [siteValue, setSiteValue] = useState(0);
-  const [tenantValue, setTenantValue] = useState(0);
-
+export default function SiteForm() {
   const { toast } = useToast();
-  const locationQuery = trpc.entities.locations.select.all.useQuery({
-    site_id: siteValue !== 0 ? siteValue : undefined,
-  });
-  
-  const tenantQuery = trpc.entities.tenants.select.all.useQuery();
-  const siteQuery = trpc.entities.sites.select.all.useQuery({
-    tenant_id: tenantValue !== 0 ? tenantValue : undefined,
-  });
+  const locationsQuery = trpc.entities.locations.select.all.useQuery();
+  const rackRoleQuery = trpc.entities.rack_roles.select.all.useQuery();
   const context = trpc.useContext();
   const rackCreator = trpc.entities.racks.create.one.useMutation({
     onSuccess: (data) => {
-      context.entities.racks.select.all.invalidate();
+      context.entities.racks.select.all.refetch();
       return toast({
-        title: `Rack "${data.name}" created`,
+        title: `Site "${data.name}" created`,
       });
     },
     onError: () => {
@@ -110,9 +67,8 @@ export default function RackForm() {
     defaultValues: {
       name: "",
       description: undefined,
+      units: undefined,
       location_id: undefined,
-      role_id: undefined,
-      units: 4,
     },
   });
 
@@ -120,7 +76,7 @@ export default function RackForm() {
     if (rackCreator.status === "loading") {
       return (
         <Button type="submit" className="bg-orange-500" disabled>
-          Loading <RefreshCw className="animate-spin"></RefreshCw>
+          Loading <SymbolIcon className="animate-spin"></SymbolIcon>
         </Button>
       );
     }
@@ -131,13 +87,10 @@ export default function RackForm() {
 
     if (rackCreator.status === "idle") {
       return <Button type="submit">Deploy</Button>;
-    } else {
-      return null;
     }
   }
 
-  function onSubmit(values: z.infer<typeof rackFormSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof rackFormSchema>) {
     rackCreator.mutate(values);
     form.reset();
     <DialogClose />;
@@ -145,6 +98,19 @@ export default function RackForm() {
 
   return (
     <Dialog>
+      <p
+        className={clsx([
+          "text-lg",
+          "font-semibold",
+          "leading-none",
+          "tracking-tight",
+        ])}
+      >
+        Rack
+      </p>
+      <p className={clsx(["text-sm", "text-muted-foreground"])}>
+        Create a rack
+      </p>
       <Form {...form}>
         <form
           onSubmit={(e) => {
@@ -158,8 +124,8 @@ export default function RackForm() {
             render={({ field }) => (
               <FormInput
                 field={field}
-                label="Name"
-                description="Pick a name for this Rack"
+                label="Site name"
+                description="Give the site a name"
               />
             )}
           />
@@ -169,8 +135,8 @@ export default function RackForm() {
             render={({ field }) => (
               <FormTextarea
                 field={field}
+                description="Describe the site"
                 label="Description"
-                description="Describe the rack"
               />
             )}
           />
@@ -179,23 +145,18 @@ export default function RackForm() {
             name="units"
             render={({ field }) => (
               <FormSelect
-                field={field}
                 label="Units"
-                description="Choose the height in units"
+                description="Select the height in units"
+                field={field}
               >
-                {unitsArray.map((unit) => (
-                  <SelectItem
-                    onSelect={() => form.setValue("units", unit)}
-                    key={unit}
-                    value={unit.toString()}
-                  >
-                    {unit}
+                {unitsArray.map((v) => (
+                  <SelectItem {...field} value={v.toString()}>
+                    {v}
                   </SelectItem>
                 ))}
               </FormSelect>
             )}
           />
-
           <FormField
             control={form.control}
             name="location_id"
@@ -203,10 +164,10 @@ export default function RackForm() {
               <FormCommandWrapper
                 field={field}
                 label="Location"
-                description="assign this rack to a location"
+                description="assign this site to a location"
                 buttonValue={
                   field.value
-                    ? locationQuery.data?.find((v) => v.id === field.value)
+                    ? locationsQuery.data?.find((v) => v.id === field.value)
                         ?.name
                     : "Select item"
                 }
@@ -217,7 +178,7 @@ export default function RackForm() {
                     variant: "default",
                   }}
                 >
-                  {locationQuery.data?.map((v) => (
+                  {locationsQuery.data?.map((v) => (
                     <CommandItem
                       key={v.id}
                       value={v.name}
@@ -236,11 +197,49 @@ export default function RackForm() {
               </FormCommandWrapper>
             )}
           />
-          
-
+          <FormField
+            control={form.control}
+            name="role_id"
+            render={({ field }) => (
+              <FormCommandWrapper
+                field={field}
+                label="Role"
+                description="assign this site to a Role"
+                buttonValue={
+                  field.value
+                    ? rackRoleQuery.data?.find((v) => v.id === field.value)
+                        ?.name
+                    : "Select item"
+                }
+              >
+                <FormCommand
+                  modalButton={{
+                    formComponent: <RackRoleForm />,
+                    variant: "default",
+                  }}
+                >
+                  {rackRoleQuery.data?.map((v) => (
+                    <CommandItem
+                      key={v.id}
+                      value={v.name}
+                      onSelect={() => form.setValue("role_id", v.id)}
+                    >
+                      {v.name}
+                      <CheckIcon
+                        className={clsx(
+                          "ml-auto h-4 w-4",
+                          v.id === field.value ? "opacity-100" : "opacity-0"
+                        )}
+                      />
+                    </CommandItem>
+                  ))}
+                </FormCommand>
+              </FormCommandWrapper>
+            )}
+          />
           <div className="flex justify-end w-full pt-3">
             <FormField
-              name="submit"
+              name={"submit"}
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
