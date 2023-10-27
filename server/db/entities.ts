@@ -32,7 +32,7 @@ export const tenants = pgTable(
     updated_at: timestamp("updated_at").defaultNow().notNull(),
     created_at: timestamp("created_at").defaultNow().notNull(),
     created_by: text("created_by").references(() => users.id),
-    updated_by: text("updated_by").references(() => users.id)
+    updated_by: text("updated_by").references(() => users.id),
   },
   (tenants) => {
     return {
@@ -51,7 +51,7 @@ export const tenant_groups = pgTable(
     updated_at: timestamp("updated_at").defaultNow().notNull(),
     created_at: timestamp("created_at").defaultNow().notNull(),
     created_by: text("created_by").references(() => users.id),
-    updated_by: text("updated_by").references(() => users.id)
+    updated_by: text("updated_by").references(() => users.id),
   },
   (tenant_groups) => {
     return {
@@ -77,7 +77,7 @@ export const sites = pgTable(
     updated_at: timestamp("updated_at").defaultNow().notNull(),
     created_at: timestamp("created_at").defaultNow().notNull(),
     created_by: text("created_by").references(() => users.id),
-    updated_by: text("updated_by").references(() => users.id)
+    updated_by: text("updated_by").references(() => users.id),
   },
   (sites) => {
     return {
@@ -96,7 +96,7 @@ export const site_groups = pgTable(
     updated_at: timestamp("updated_at").defaultNow().notNull(),
     created_at: timestamp("created_at").defaultNow().notNull(),
     created_by: text("created_by").references(() => users.id),
-    updated_by: text("updated_by").references(() => users.id)
+    updated_by: text("updated_by").references(() => users.id),
   },
   (site_groups) => {
     return {
@@ -122,7 +122,7 @@ export const contacts = pgTable(
     updated_at: timestamp("updated_at").defaultNow().notNull(),
     created_at: timestamp("created_at").defaultNow().notNull(),
     created_by: text("created_by").references(() => users.id),
-    updated_by: text("updated_by").references(() => users.id)
+    updated_by: text("updated_by").references(() => users.id),
   },
   (contacts) => {
     return {
@@ -141,7 +141,7 @@ export const contact_groups = pgTable(
     updated_at: timestamp("updated_at").defaultNow().notNull(),
     created_at: timestamp("created_at").defaultNow().notNull(),
     created_by: text("created_by").references(() => users.id),
-    updated_by: text("updated_by").references(() => users.id)
+    updated_by: text("updated_by").references(() => users.id),
   },
   (contact_groups) => {
     return {
@@ -158,14 +158,13 @@ export const locations = pgTable(
     name: text("name").notNull(),
     site_id: integer("site_id")
       .notNull()
-      .default(sql`null`)
-      .references(() => sites.id, { onDelete: "set null" }),
+      .references(() => sites.id, { onDelete: "cascade" }),
     status: status_enum("status").notNull(),
     description: text("description").notNull().default(""),
     updated_at: timestamp("updated_at").defaultNow().notNull(),
     created_at: timestamp("created_at").defaultNow().notNull(),
     created_by: text("created_by").references(() => users.id),
-    updated_by: text("updated_by").references(() => users.id)
+    updated_by: text("updated_by").references(() => users.id),
   },
   (locations) => {
     return {
@@ -180,12 +179,12 @@ export const rack_roles = pgTable(
   {
     id: serial("id").notNull(),
     name: text("name").notNull().unique(),
-    color_name: text("color_name"),
+    color: text("color").notNull(),
     description: text("description").notNull().default(""),
     updated_at: timestamp("updated_at").defaultNow().notNull(),
     created_at: timestamp("created_at").defaultNow().notNull(),
     created_by: text("created_by").references(() => users.id),
-    updated_by: text("updated_by").references(() => users.id)
+    updated_by: text("updated_by").references(() => users.id),
   },
   (rack_roles) => {
     return {
@@ -205,11 +204,13 @@ export const racks = pgTable(
     location_id: integer("location_id")
       .notNull()
       .references(() => locations.id, { onDelete: "set null" }),
-    role_id: integer("role_id").references(() => rack_roles.id),
+    role_id: integer("role_id")
+      .notNull()
+      .references(() => rack_roles.id),
     updated_at: timestamp("updated_at").defaultNow().notNull(),
     created_at: timestamp("created_at").defaultNow().notNull(),
     created_by: text("created_by").references(() => users.id),
-    updated_by: text("updated_by").references(() => users.id)
+    updated_by: text("updated_by").references(() => users.id),
   },
   (racks) => {
     return {

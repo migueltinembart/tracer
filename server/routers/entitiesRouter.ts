@@ -6,8 +6,8 @@ import { tenant_groups_router } from "@/server/routers/entities/tenantGroupRoute
 import { contacts_router } from "@/server/routers/entities/contactRoter";
 import { contact_groups_router } from "@/server/routers/entities/contactGroupRouter";
 import { racks_router } from "@/server/routers/entities/rackRouter";
-
 import { locations_router } from "@/server/routers/entities/locationRouter";
+import { rack_roles_router } from "./entities/rackRoleRouter";
 
 export const entities_router = router({
   sites: sites_router,
@@ -17,5 +17,6 @@ export const entities_router = router({
   contacts: contacts_router,
   contact_groups: contact_groups_router,
   racks: racks_router,
+  rack_roles: rack_roles_router,
   locations: locations_router,
 });

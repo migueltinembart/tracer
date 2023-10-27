@@ -20,14 +20,15 @@ export const rack_roles_router = router({
         .select({
           id: rack_roles.id,
           name: rack_roles.name,
+          color: rack_roles.color,
           description: rack_roles.description,
           updated_at: rack_roles.updated_at,
           created_at: rack_roles.created_at,
           created_by: users,
-          updated_by: users
+          updated_by: users,
         })
         .from(rack_roles)
-        .leftJoin(users, eq(rack_roles.created_by, users.id))
+        .leftJoin(users, eq(rack_roles.created_by, users.id));
       return result;
     }),
     one: privateProcedure.input(z.number()).query(async (opts) => {
@@ -35,11 +36,12 @@ export const rack_roles_router = router({
         .select({
           id: rack_roles.id,
           name: rack_roles.name,
+          color: rack_roles.color,
           description: rack_roles.description,
           updated_at: rack_roles.updated_at,
           created_at: rack_roles.created_at,
           created_by: users,
-          updated_by: users
+          updated_by: users,
         })
         .from(rack_roles)
         .leftJoin(users, eq(rack_roles.created_by, users.id))
@@ -58,7 +60,10 @@ export const rack_roles_router = router({
     many: privateProcedure
       .input(z.array(insertSchema))
       .mutation(async (opts) => {
-        const result = await db.insert(rack_roles).values(opts.input).returning();
+        const result = await db
+          .insert(rack_roles)
+          .values(opts.input)
+          .returning();
         return result;
       }),
   }),
@@ -74,16 +79,16 @@ export const rack_roles_router = router({
   }),
   delete: router({
     one: privateProcedure.input(z.number()).mutation(async (opts) => {
-      const result = await db.delete(rack_roles).where(eq(rack_roles.id, opts.input));
+      const result = await db
+        .delete(rack_roles)
+        .where(eq(rack_roles.id, opts.input));
       return result;
     }),
-    many: privateProcedure
-      .input(z.array(z.number()))
-      .mutation(async (opts) => {
-        const result = await db
-          .delete(rack_roles)
-          .where(inArray(rack_roles.id, opts.input));
-        return result;
-      }),
+    many: privateProcedure.input(z.array(z.number())).mutation(async (opts) => {
+      const result = await db
+        .delete(rack_roles)
+        .where(inArray(rack_roles.id, opts.input));
+      return result;
+    }),
   }),
 });
