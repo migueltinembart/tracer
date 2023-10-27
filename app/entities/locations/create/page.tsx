@@ -1,51 +1,31 @@
 "use client";
 import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  FormCommand,
+  FormCommandWrapper,
+  FormInput,
+  FormSelect,
+  FormTextarea,
+} from "@/app/_components/FormFields";
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
+import { SelectItem } from "@/components/ui/select";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { trpc } from "@/app/_trpc/client";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { z } from "zod";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-} from "@/components/ui/command";
-import { CheckIcon, RefreshCw, X } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { CaretSortIcon } from "@radix-ui/react-icons";
+import { CommandItem } from "@/components/ui/command";
+import { SymbolIcon, CheckIcon } from "@radix-ui/react-icons";
 import { useToast } from "@/components/ui/use-toast";
 import SiteForm from "@/app/entities/sites/create/page";
 import type { RouterInput } from "@/app/_trpc/client";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { capitalize, UnionTuple } from "@/lib/helpers";
-import { CreateButton } from "@/app/_components/createButton";
 import { Dialog } from "@/components/ui/dialog";
+import clsx from "clsx";
+import { DialogClose } from "@radix-ui/react-dialog";
+import { contextProps } from "@trpc/react-query/shared";
 
 type LocationFormInput = RouterInput["entities"]["locations"]["create"]["one"];
+
 const status: UnionTuple<LocationFormInput["status"]> = [
   "active",
   "planned",
@@ -59,8 +39,8 @@ const locationFormSchema = z.object({
     .min(2, { message: "Name must be atleast 2 characters" })
     .max(64, { message: "Name cannot be longer than 64 characters" }),
   status: z.enum(["active", "planned", "staging", "retired"]),
-  description: z.string({ description: "Add a description"}).optional(),
-  site_id: z.number().optional(),
+  description: z.string({ description: "Add a description" }).optional(),
+  site_id: z.number({ required_error: "This Field is required" }),
 });
 
 export default function LocationForm() {
@@ -69,9 +49,9 @@ export default function LocationForm() {
   const context = trpc.useContext();
   const locationCreator = trpc.entities.locations.create.one.useMutation({
     onSuccess: (data) => {
-      context.entities.locations.select.all.invalidate();
+      context.entities.rack_roles.select.all.refetch();
       return toast({
-        title: `Location "${data.name}" created`,
+        title: `Site "${data.name}" created`,
       });
     },
     onError: () => {
@@ -86,9 +66,9 @@ export default function LocationForm() {
     resolver: zodResolver(locationFormSchema),
     defaultValues: {
       name: "",
+      status: "active",
       description: undefined,
       site_id: undefined,
-      status: "active",
     },
   });
 
@@ -96,7 +76,7 @@ export default function LocationForm() {
     if (locationCreator.status === "loading") {
       return (
         <Button type="submit" className="bg-orange-500" disabled>
-          Loading <RefreshCw className="animate-spin"></RefreshCw>
+          Loading <SymbolIcon className="animate-spin"></SymbolIcon>
         </Button>
       );
     }
@@ -107,18 +87,30 @@ export default function LocationForm() {
 
     if (locationCreator.status === "idle") {
       return <Button type="submit">Deploy</Button>;
-    } else {
-      return null;
     }
   }
 
   async function onSubmit(values: z.infer<typeof locationFormSchema>) {
     locationCreator.mutate(values);
     form.reset();
+    <DialogClose />;
   }
 
   return (
     <Dialog>
+      <p
+        className={clsx([
+          "text-lg",
+          "font-semibold",
+          "leading-none",
+          "tracking-tight",
+        ])}
+      >
+        Location
+      </p>
+      <p className={clsx(["text-sm", "text-muted-foreground"])}>
+        Create a location
+      </p>
       <Form {...form}>
         <form
           onSubmit={(e) => {
@@ -130,154 +122,78 @@ export default function LocationForm() {
             control={form.control}
             name="name"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>Location Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="Contoso" {...field} />
-                </FormControl>
-                <FormDescription>
-                  Try to be as exact as possible
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
+              <FormInput
+                field={field}
+                label="Location Name"
+                description="Describe the location"
+              />
             )}
           />
           <FormField
             control={form.control}
             name="status"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>Status</FormLabel>
-                <FormControl>
-                  <Select onValueChange={field.onChange}>
-                    <SelectTrigger>
-                      <SelectValue
-                        className={"capitalize"}
-                        placeholder={capitalize(field.value)}
-                      />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {status.map((value) => {
-                        return (
-                          <SelectItem
-                            key={value}
-                            value={value}
-                            className="capitalize"
-                          >
-                            {capitalize(value)}
-                          </SelectItem>
-                        );
-                      })}
-                    </SelectContent>
-                  </Select>
-                </FormControl>
-                <FormDescription>Set the Status</FormDescription>
-                <FormMessage />
-              </FormItem>
+              <FormSelect
+                label="Status"
+                field={field}
+                description="Set the Status of this location"
+              >
+                {status.map((v, index) => (
+                  <SelectItem value={v} key={index}>
+                    {capitalize(v)}
+                  </SelectItem>
+                ))}
+              </FormSelect>
             )}
           />
           <FormField
             control={form.control}
             name="description"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>description</FormLabel>
-                <FormControl>
-                  <Textarea value={field.value}></Textarea>
-                </FormControl>
-                <FormDescription>
-                  Add a description to the newly created location
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
+              <FormTextarea
+                field={field}
+                description="Describe the Site"
+                label="Description"
+              />
             )}
           />
           <FormField
             control={form.control}
             name="site_id"
             render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel>Site</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant="outline"
-                        role="combobox"
-                        className={cn(
-                          "w-full justify-between",
-                          !field.value && "text-muted-foreground"
+              <FormCommandWrapper
+                field={field}
+                label="Site"
+                description="assign the location to a site"
+                buttonValue={
+                  field.value
+                    ? sitesQuery.data?.find((v) => v.id === field.value)?.name
+                    : "Select item"
+                }
+              >
+                <FormCommand
+                  modalButton={{
+                    formComponent: <SiteForm />,
+                    variant: "default",
+                  }}
+                >
+                  {sitesQuery.data?.map((v) => (
+                    <CommandItem
+                      key={v.id}
+                      value={v.name}
+                      onSelect={() => form.setValue("site_id", v.id)}
+                    >
+                      {v.name}
+                      <CheckIcon
+                        className={clsx(
+                          "ml-auto h-4 w-4",
+                          v.id === field.value ? "opacity-100" : "opacity-0"
                         )}
-                      >
-                        {field.value
-                          ? sitesQuery.data?.find(
-                              (site) => site.id === field.value
-                            )?.name
-                          : "Select Site"}
-                        <CaretSortIcon className="w-4 h-4 ml-2 opacity-50 shrink-0" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent
-                    className="w-[200px] p-0"
-                    align="center"
-                    side="bottom"
-                  >
-                    {sitesQuery.isStale && (
-                      <Command className="w-full">
-                        <CommandInput
-                          placeholder="Search location groups"
-                          className="pt-1 h-9"
-                        />
-                        {sitesQuery.data?.length === 0 && (
-                          <div className="flex flex-col text-center">
-                            <p className="p-3">
-                              there are no location Groups...
-                            </p>
-                            <CreateButton
-                              goToElement={<SiteForm />}
-                              title="create Site"
-                            ></CreateButton>
-                          </div>
-                        )}
-                        <ScrollArea className="max-h-40">
-                          <CommandEmpty>
-                            <p className="pb-2">Site not found?</p>
-                            <CreateButton
-                              goToElement={<SiteForm />}
-                              title="Create Site"
-                            ></CreateButton>
-                          </CommandEmpty>
-
-                          <CommandGroup>
-                            {sitesQuery.data?.map((site) => (
-                              <CommandItem
-                                value={site.name}
-                                key={site.id}
-                                onSelect={() => {
-                                  form.setValue("site_id", site.id);
-                                }}
-                              >
-                                {site.name}
-                                <CheckIcon
-                                  className={cn(
-                                    "ml-auto h-4 w-4",
-                                    site.id === field.value
-                                      ? "opacity-100"
-                                      : "opacity-0"
-                                  )}
-                                />
-                              </CommandItem>
-                            ))}
-                          </CommandGroup>
-                        </ScrollArea>
-                      </Command>
-                    )}
-                  </PopoverContent>
-                </Popover>
-
-                <FormMessage />
-              </FormItem>
+                      />
+                    </CommandItem>
+                  ))}
+                </FormCommand>
+              </FormCommandWrapper>
             )}
           />
           <div className="flex justify-end w-full pt-3">

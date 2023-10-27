@@ -1,4 +1,5 @@
-export function capitalize(text: string) {
+export function capitalize(text: string | number) {
+  if (typeof text === "number") return;
   return text.slice(0, 1).toUpperCase() + text.slice(1);
 }
 export type UnionTuple<U extends string, R extends string[] = []> = {
@@ -7,4 +8,3 @@ export type UnionTuple<U extends string, R extends string[] = []> = {
     : UnionTuple<Exclude<U, S>, [...R, S]>;
 }[U] &
   string[];
-

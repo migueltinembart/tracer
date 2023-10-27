@@ -14,7 +14,7 @@ import { trpc } from "@/app/_trpc/client";
 import { Button } from "@/components/ui/button";
 import { z } from "zod";
 import { CommandItem } from "@/components/ui/command";
-import { CheckIcon, RefreshCw, X } from "lucide-react";
+import { SymbolIcon, CheckIcon } from "@radix-ui/react-icons";
 import { useToast } from "@/components/ui/use-toast";
 import SiteGroupForm from "@/app/entities/site-groups/create/page";
 import type { RouterInput } from "@/app/_trpc/client";
@@ -51,7 +51,7 @@ export default function SiteForm() {
   const context = trpc.useContext();
   const siteCreator = trpc.entities.sites.create.one.useMutation({
     onSuccess: (data) => {
-      context.entities.sites.select.all.invalidate();
+      context.entities.sites.select.all.refetch();
       return toast({
         title: `Site "${data.name}" created`,
       });
@@ -79,7 +79,7 @@ export default function SiteForm() {
     if (siteCreator.status === "loading") {
       return (
         <Button type="submit" className="bg-orange-500" disabled>
-          Loading <RefreshCw className="animate-spin"></RefreshCw>
+          Loading <SymbolIcon className="animate-spin"></SymbolIcon>
         </Button>
       );
     }
@@ -124,7 +124,13 @@ export default function SiteForm() {
           <FormField
             control={form.control}
             name="name"
-            render={({ field }) => <FormInput field={field} />}
+            render={({ field }) => (
+              <FormInput
+                field={field}
+                label="Site name"
+                description="Give the site a name"
+              />
+            )}
           />
           <FormField
             control={form.control}
@@ -133,10 +139,12 @@ export default function SiteForm() {
               <FormSelect
                 label="Status"
                 field={field}
-                description="Set the status of this Site"
+                description="Set the status of this aite"
               >
                 {status.map((v, index) => (
-                  <SelectItem value={v} key={index}>{capitalize(v)}</SelectItem>
+                  <SelectItem value={v} key={index}>
+                    {capitalize(v)}
+                  </SelectItem>
                 ))}
               </FormSelect>
             )}
@@ -147,7 +155,7 @@ export default function SiteForm() {
             render={({ field }) => (
               <FormTextarea
                 field={field}
-                description="Describe the Site"
+                description="Describe the site"
                 label="Description"
               />
             )}

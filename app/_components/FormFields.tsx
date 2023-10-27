@@ -41,14 +41,22 @@ import { capitalize } from "@/lib/helpers";
 export function FormInput<
   TFieldValues extends FieldValues,
   TName extends FieldPath<TFieldValues>,
->({ field }: { field: ControllerRenderProps<TFieldValues, TName> }) {
+>({
+  field,
+  label,
+  description,
+}: {
+  field: ControllerRenderProps<TFieldValues, TName>;
+  label: string;
+  description: string;
+}) {
   return (
     <FormItem>
-      <FormLabel>Site Name</FormLabel>
+      <FormLabel>{label}</FormLabel>
       <FormControl>
         <Input placeholder="Contoso" {...field} />
       </FormControl>
-      <FormDescription>Try to be as exact as possible</FormDescription>
+      <FormDescription>{description}</FormDescription>
       <FormMessage />
     </FormItem>
   );
@@ -154,7 +162,7 @@ export function FormCommand({
 }) {
   return (
     <Command className="w-full">
-      <CommandInput placeholder="Search site groups" className="pt-1 h-9" />
+      <CommandInput placeholder="search" className="pt-1 h-9" />
       <ScrollArea className="max-h-40">
         <CommandEmpty>
           <DialogTrigger asChild>
@@ -188,9 +196,15 @@ export function FormSelect<
       <FormControl>
         <Select onValueChange={field.onChange}>
           <SelectTrigger>
-            <SelectValue className={"capitalize"} placeholder={capitalize(field.value)} />
+            <SelectValue
+              className={"capitalize"}
+              placeholder={capitalize(field.value)}
+            />
           </SelectTrigger>
-          <SelectContent>{children}</SelectContent>
+
+          <SelectContent>
+            <ScrollArea className="h-60">{children}</ScrollArea>
+          </SelectContent>
         </Select>
       </FormControl>
       <FormDescription>{description}</FormDescription>

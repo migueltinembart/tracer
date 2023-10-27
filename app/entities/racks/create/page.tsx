@@ -47,6 +47,16 @@ import LocationForm from "../../locations/create/page";
 import { useState } from "react";
 import SiteForm from "@/app/entities/sites/create/page";
 import TenantForm from "../../tenants/create/page";
+import { DialogClose } from "@radix-ui/react-dialog";
+import {
+  FormCommand,
+  FormCommandWrapper,
+  FormInput,
+  FormSelect,
+  FormTextarea,
+} from "@/app/_components/FormFields";
+import clsx from "clsx";
+import RackRoleForm from "../../rack-roles/create/page";
 
 type RackFormInput = RouterInput["entities"]["racks"]["create"]["one"];
 
@@ -57,7 +67,8 @@ const rackFormSchema = z.object({
     .max(64, { message: "Name cannot be longer than 64 characters" }),
   description: z.string({ description: "Add a description" }).optional(),
   location_id: z.number(),
-  units: z.number()
+  role_id: z.number(),
+  units: z.coerce.number(),
 });
 
 const unitsArray: number[] = Array.from(
@@ -73,6 +84,7 @@ export default function RackForm() {
   const locationQuery = trpc.entities.locations.select.all.useQuery({
     site_id: siteValue !== 0 ? siteValue : undefined,
   });
+  
   const tenantQuery = trpc.entities.tenants.select.all.useQuery();
   const siteQuery = trpc.entities.sites.select.all.useQuery({
     tenant_id: tenantValue !== 0 ? tenantValue : undefined,
@@ -99,8 +111,8 @@ export default function RackForm() {
       name: "",
       description: undefined,
       location_id: undefined,
+      role_id: undefined,
       units: 4,
-      
     },
   });
 
@@ -125,9 +137,10 @@ export default function RackForm() {
   }
 
   function onSubmit(values: z.infer<typeof rackFormSchema>) {
-    
+    console.log(values);
     rackCreator.mutate(values);
     form.reset();
+    <DialogClose />;
   }
 
   return (
@@ -143,160 +156,91 @@ export default function RackForm() {
             control={form.control}
             name="name"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>Rack Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="Contoso" {...field} />
-                </FormControl>
-                <FormDescription>
-                  Try to be as exact as possible
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
+              <FormInput
+                field={field}
+                label="Name"
+                description="Pick a name for this Rack"
+              />
             )}
           />
           <FormField
             control={form.control}
             name="description"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>description</FormLabel>
-                <FormControl>
-                  <Textarea value={field.value}></Textarea>
-                </FormControl>
-                <FormDescription>
-                  Add a description to the newly created rack
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
+              <FormTextarea
+                field={field}
+                label="Description"
+                description="Describe the rack"
+              />
             )}
           />
           <FormField
             control={form.control}
             name="units"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>Units</FormLabel>
-                <FormControl>
-                  <Select>
-                    <SelectTrigger className="w-[180px]">
-                      <SelectValue
-                        placeholder={field.value ? field.value : "units"}
-                      />
-                    </SelectTrigger>
-                    <ScrollArea>
-                      <SelectContent>
-                        {unitsArray.map((unit) => (
-                          <SelectItem
-                            onSelect={() =>
-                              form.setValue("units", unit)
-                            }
-                            key={unit}
-                            value={unit.toString()}
-                          >
-                            {unit.toString()}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </ScrollArea>
-                  </Select>
-                </FormControl>
-              </FormItem>
+              <FormSelect
+                field={field}
+                label="Units"
+                description="Choose the height in units"
+              >
+                {unitsArray.map((unit) => (
+                  <SelectItem
+                    onSelect={() => form.setValue("units", unit)}
+                    key={unit}
+                    value={unit.toString()}
+                  >
+                    {unit}
+                  </SelectItem>
+                ))}
+              </FormSelect>
             )}
           />
+
           <FormField
             control={form.control}
             name="location_id"
             render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel>Location</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant="outline"
-                        role="combobox"
-                        className={cn(
-                          "w-full justify-between",
-                          !field.value && "text-muted-foreground"
+              <FormCommandWrapper
+                field={field}
+                label="Location"
+                description="assign this rack to a location"
+                buttonValue={
+                  field.value
+                    ? locationQuery.data?.find((v) => v.id === field.value)
+                        ?.name
+                    : "Select item"
+                }
+              >
+                <FormCommand
+                  modalButton={{
+                    formComponent: <LocationForm />,
+                    variant: "default",
+                  }}
+                >
+                  {locationQuery.data?.map((v) => (
+                    <CommandItem
+                      key={v.id}
+                      value={v.name}
+                      onSelect={() => form.setValue("location_id", v.id)}
+                    >
+                      {v.name}
+                      <CheckIcon
+                        className={clsx(
+                          "ml-auto h-4 w-4",
+                          v.id === field.value ? "opacity-100" : "opacity-0"
                         )}
-                      >
-                        {field.value
-                          ? locationQuery.data?.find(
-                              (location) => location.id === field.value
-                            )?.name
-                          : "Select site group"}
-                        <CaretSortIcon className="w-4 h-4 ml-2 opacity-50 shrink-0" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent
-                    className="w-[200px] p-0"
-                    align="center"
-                    side="bottom"
-                  >
-                    {locationQuery.isStale && (
-                      <Command className="w-full">
-                        <CommandInput
-                          placeholder="Search"
-                          className="pt-1 h-9"
-                        />
-                        {locationQuery.data?.length === 0 && (
-                          <div className="text-center">
-                            <p className="p-3">there are no site Groups...</p>
-                            <CreateButton
-                              goToElement={<LocationForm />}
-                              title="Create"
-                            ></CreateButton>
-                          </div>
-                        )}
-                        <ScrollArea
-                          className="
-  max-h-40"
-                        >
-                          <CommandEmpty>
-                            <p className="pb-2">Group not found?</p>
-                            <CreateButton
-                              goToElement={<LocationForm />}
-                              title="Create"
-                            ></CreateButton>
-                          </CommandEmpty>
-
-                          <CommandGroup>
-                            {locationQuery.data?.map((location) => (
-                              <CommandItem
-                                value={location.name}
-                                key={location.id}
-                                onSelect={() => {
-                                  form.setValue("location_id", location.id);
-                                }}
-                              >
-                                {location.name}
-                                <CheckIcon
-                                  className={cn(
-                                    "ml-auto h-4 w-4",
-                                    location.id === field.value
-                                      ? "opacity-100"
-                                      : "opacity-0"
-                                  )}
-                                />
-                              </CommandItem>
-                            ))}
-                          </CommandGroup>
-                        </ScrollArea>
-                      </Command>
-                    )}
-                  </PopoverContent>
-                </Popover>
-
-                <FormMessage />
-              </FormItem>
+                      />
+                    </CommandItem>
+                  ))}
+                </FormCommand>
+              </FormCommandWrapper>
             )}
           />
+          
 
           <div className="flex justify-end w-full pt-3">
             <FormField
-              name={"submit"}
+              name="submit"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
