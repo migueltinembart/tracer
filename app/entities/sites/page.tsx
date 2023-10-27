@@ -206,7 +206,7 @@ export default function Sites() {
         );
       },
       cell: ({ row }) => (
-        <div className="pl-4">{row.getValue("created_by")}</div>
+        <div className="pl-4">{row.original.created_by?.name}</div>
       ),
     },
     {
@@ -224,7 +224,7 @@ export default function Sites() {
         );
       },
       cell: ({ row }) => (
-        <div className="pl-4">{row.getValue("updated_by")}</div>
+        <div className="pl-4">{row.original.created_by?.name}</div>
       ),
     },
     {
@@ -476,7 +476,10 @@ export default function Sites() {
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction className="hover:bg-rose-500" onClick={() => siteDeleter.mutate(deleteItem)}>
+              <AlertDialogAction
+                className="hover:bg-rose-500"
+                onClick={() => siteDeleter.mutate(deleteItem)}
+              >
                 Continue
               </AlertDialogAction>
             </AlertDialogFooter>

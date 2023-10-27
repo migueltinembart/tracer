@@ -49,7 +49,7 @@ import {
   AlertDialog,
 } from "@/components/ui/alert-dialog";
 import { useState } from "react";
-import LocationForm from "@/app/entities/locations/create/page"
+import LocationForm from "@/app/entities/locations/create/page";
 import { Dialog } from "@/components/ui/dialog";
 import { CreateButton } from "@/app/_components/createButton";
 import Link from "next/link";
@@ -59,7 +59,9 @@ export type LocationOutput =
 
 export default function Locations() {
   const [deleteItem, setDeleteItem] = useState<number>(0);
-  const locationDeleter = trpc.entities.locations.delete.one.useMutation();
+  const locationDeleter = trpc.entities.locations.delete.one.useMutation({
+    onSuccess: () => locationQuery.refetch(),
+  });
   const locationQuery = trpc.entities.locations.select.all.useQuery();
 
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -165,7 +167,7 @@ export default function Locations() {
         );
       },
       cell: ({ row }) => (
-        <div className="pl-4">{row.getValue("created_by")}</div>
+        <div className="pl-4">{row.original.created_by?.name}</div>
       ),
     },
     {
@@ -183,7 +185,7 @@ export default function Locations() {
         );
       },
       cell: ({ row }) => (
-        <div className="pl-4">{row.getValue("updated_by")}</div>
+        <div className="pl-4">{row.original.created_by?.name}</div>
       ),
     },
     {
@@ -264,7 +266,6 @@ export default function Locations() {
 
   const table = useReactTable({
     data: locationQuery.data ?? [],
-    //@ts-ignore
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,

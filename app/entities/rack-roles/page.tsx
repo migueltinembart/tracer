@@ -2,7 +2,12 @@
 import { trpc } from "@/app/_trpc/client";
 import { RouterOutput } from "@/app/_trpc/client";
 import { Checkbox } from "@/components/ui/checkbox";
-import { CaretSortIcon, DotsHorizontalIcon } from "@radix-ui/react-icons";
+import {
+  CaretSortIcon,
+  DotsHorizontalIcon,
+  Pencil1Icon,
+  TrashIcon,
+} from "@radix-ui/react-icons";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -26,7 +31,6 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -49,29 +53,26 @@ import {
   AlertDialog,
 } from "@/components/ui/alert-dialog";
 import { useState } from "react";
-
-import {
-  DialogTitle,
-  DialogContent,
-  DialogTrigger,
-  DialogHeader,
-  DialogDescription,
-  Dialog,
-} from "@/components/ui/dialog";
+import { Dialog } from "@/components/ui/dialog";
 import { CreateButton } from "@/app/_components/createButton";
-import RackForm from "@/app/entities/racks/create/page";
+import SiteForm from "@/app/entities/sites/create/page";
 import Link from "next/link";
+import clsx from "clsx";
 
-export type RackOutput = RouterOutput["entities"]["racks"]["select"]["one"];
+export type RackRolesOutput =
+  RouterOutput["entities"]["rack_roles"]["select"]["one"];
 
-export default function Racks() {
-  const [deleteItem, setDeleteItem] = useState<string>("");
-  const rackDeleter = trpc.entities.racks.delete.one.useMutation({
-    onSuccess: () => rackQuery.refetch(),
+export default function RackRoles() {
+  const [deleteItem, setDeleteItem] = useState<number>(0);
+  const rackRoleDeleter = trpc.entities.rack_roles.delete.one.useMutation({
+    onSuccess: () => rackRolesQuery.refetch(),
   });
-  const rackQuery = trpc.entities.racks.select.all.useQuery();
+  const rackRolesQuery =
+    trpc.entities.rack_roles.select.all.useQuery(undefined);
 
-  const [sorting, setSorting] = useState<SortingState>([]);
+  const [sorting, setSorting] = useState<SortingState>([
+    { desc: false, id: "name" },
+  ]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
@@ -83,7 +84,7 @@ export default function Racks() {
   });
   const [rowSelection, setRowSelection] = useState({});
 
-  const columns: ColumnDef<RackOutput>[] = [
+  const columns: ColumnDef<RackRolesOutput>[] = [
     {
       id: "select",
       header: ({ table }) => (
@@ -107,7 +108,7 @@ export default function Racks() {
       id: "name",
       accessorFn: (row) => row.name,
       cell: ({ row }) => (
-        <Link href={`/entities/racks/${row.original.id}`}>
+        <Link href={`/entities/sites/${row.original.id}`}>
           <Button variant={"link"}>{row.original.name}</Button>
         </Link>
       ),
@@ -124,8 +125,8 @@ export default function Racks() {
       },
     },
     {
-      id: "site",
-      accessorFn: (row) => row.site?.name,
+      id: "color",
+      accessorFn: (row) => row.color,
       header: ({ column }) => {
         return (
           <Button
@@ -137,9 +138,7 @@ export default function Racks() {
           </Button>
         );
       },
-      cell: ({ row }) => (
-        <div className="capitalize pl-4">{row.getValue("site")}</div>
-      ),
+      cell: ({ row }) => <div className={clsx([`bg-[${row.getValue}]`])}></div>,
     },
     {
       id: "description",
@@ -158,22 +157,6 @@ export default function Racks() {
       cell: ({ row }) => (
         <div className="capitalize pl-4">{row.getValue("description")}</div>
       ),
-    },
-    {
-      id: "tenant",
-      accessorFn: (row) => row.tenant?.name,
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            <span className="capitalize">{column.id.split("_").join(" ")}</span>
-            <CaretSortIcon className="w-4 h-4 ml-2" />
-          </Button>
-        );
-      },
-      cell: ({ row }) => <div className="pl-4">{row.getValue("tenant")}</div>,
     },
     {
       id: "created_by",
@@ -211,7 +194,6 @@ export default function Racks() {
         <div className="pl-4">{row.original.created_by?.name}</div>
       ),
     },
-
     {
       id: "created_at",
       accessorFn: (row) => row.created_at,
@@ -267,20 +249,23 @@ export default function Racks() {
                 <DotsHorizontalIcon className="w-4 h-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent className="text-left" align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuSeparator />
 
               <AlertDialogTrigger asChild>
                 <DropdownMenuItem
-                  className="text-red-600"
+                  className="text-red-600 flex gap-2"
                   onClick={() => setDeleteItem(row.original.id)}
                 >
-                  Delete
+                  <TrashIcon />
+                  Remove
                 </DropdownMenuItem>
               </AlertDialogTrigger>
-
-              <DropdownMenuItem>edit</DropdownMenuItem>
+              <DropdownMenuItem className="flex gap-3">
+                <Pencil1Icon />
+                Edit
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         );
@@ -289,7 +274,7 @@ export default function Racks() {
   ];
 
   const table = useReactTable({
-    data: rackQuery.data ?? [],
+    data: rackRolesQuery.data ?? [],
     //@ts-ignore
     columns,
     onSortingChange: setSorting,
@@ -314,25 +299,25 @@ export default function Racks() {
     },
   });
 
-  if (rackQuery.isLoading) {
+  if (rackRolesQuery.isLoading) {
     return <div>Loading</div>;
   }
 
-  if (rackQuery.isError) {
+  if (rackRolesQuery.isError) {
     return <div>Error</div>;
   }
 
   return (
-    <>
+    <div className="text-left">
       <AlertDialog>
         <Dialog>
           <h1 className="text-3xl font-extrabold tracking-tight scroll-m-20 lg:text-3xl">
-            racks
+            Sites
           </h1>
           <div className="w-full">
             <div className="flex items-center justify-between py-4">
               <Input
-                placeholder="Filter by Rack..."
+                placeholder="Filter by Site..."
                 value={
                   (table.getColumn("name")?.getFilterValue() as string) ?? ""
                 }
@@ -343,8 +328,8 @@ export default function Racks() {
               />
               <div className="flex gap-2">
                 <CreateButton
-                  goToElement={<RackForm />}
-                  title="Create Rack"
+                  goToElement={<SiteForm />}
+                  title="Create Site"
                 ></CreateButton>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -453,16 +438,14 @@ export default function Racks() {
             <AlertDialogHeader>
               <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
               <AlertDialogDescription>
-                This action cannot be undone. This will permanently delete your
-                account and remove your data from our servers.
+                This Action will delete this Site
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
               <AlertDialogAction
-                onClick={() => {
-                  rackDeleter.mutate(deleteItem);
-                }}
+                className="hover:bg-rose-500"
+                onClick={() => rackRoleDeleter.mutate(deleteItem)}
               >
                 Continue
               </AlertDialogAction>
@@ -470,6 +453,6 @@ export default function Racks() {
           </AlertDialogContent>
         </Dialog>
       </AlertDialog>
-    </>
+    </div>
   );
 }

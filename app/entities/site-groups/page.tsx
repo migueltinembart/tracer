@@ -62,13 +62,14 @@ import { CreateButton } from "@/app/_components/createButton";
 import SiteGroupForm from "@/app/entities/site-groups/create/page";
 import Link from "next/link";
 
-
-export type SiteOutput =
+export type SiteGroupOutput =
   RouterOutput["entities"]["site_groups"]["select"]["one"];
 
 export default function Sites() {
   const [deleteItem, setDeleteItem] = useState<number>(0);
-  const siteGroupDeleter = trpc.entities.site_groups.delete.one.useMutation();
+  const siteGroupDeleter = trpc.entities.site_groups.delete.one.useMutation({
+    onSuccess: () => siteGroupQuery.refetch(),
+  });
   const siteGroupQuery = trpc.entities.site_groups.select.all.useQuery();
 
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -77,10 +78,12 @@ export default function Sites() {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
     updated_at: false,
     created_at: false,
+    created_by: false,
+    updated_by: false,
   });
   const [rowSelection, setRowSelection] = useState({});
 
-  const columns: ColumnDef<SiteOutput>[] = [
+  const columns: ColumnDef<SiteGroupOutput>[] = [
     {
       id: "select",
       header: ({ table }) => (
@@ -119,6 +122,42 @@ export default function Sites() {
           </Button>
         );
       },
+    },
+    {
+      id: "created_by",
+      accessorFn: (row) => row.created_by,
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            <span className="capitalize">{column.id.split("_").join(" ")}</span>
+            <CaretSortIcon className="w-4 h-4 ml-2" />
+          </Button>
+        );
+      },
+      cell: ({ row }) => (
+        <div className="pl-4">{row.original.created_by?.name}</div>
+      ),
+    },
+    {
+      id: "updated_by",
+      accessorFn: (row) => row.updated_by,
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            <span className="capitalize">{column.id.split("_").join(" ")}</span>
+            <CaretSortIcon className="w-4 h-4 ml-2" />
+          </Button>
+        );
+      },
+      cell: ({ row }) => (
+        <div className="pl-4">{row.original.created_by?.name}</div>
+      ),
     },
     {
       id: "created_at",
