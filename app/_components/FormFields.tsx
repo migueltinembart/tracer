@@ -33,6 +33,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ReactNode } from "react";
+import { capitalize } from "@/lib/helpers";
 
 /**
  * this function returns a formfield which returns an Input
@@ -187,7 +188,7 @@ export function FormSelect<
       <FormControl>
         <Select onValueChange={field.onChange}>
           <SelectTrigger>
-            <SelectValue className={"capitalize"} placeholder={field.value} />
+            <SelectValue className={"capitalize"} placeholder={capitalize(field.value)} />
           </SelectTrigger>
           <SelectContent>{children}</SelectContent>
         </Select>
