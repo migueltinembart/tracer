@@ -42,7 +42,9 @@ export const sites_router = router({
           .leftJoin(site_groups, eq(sites.site_group_id, site_groups.id))
           .leftJoin(tenants, eq(sites.tenant_id, tenants.id))
           .leftJoin(users, eq(sites.created_by, users.id))
-          .where(input?.tenant_id ? eq(sites.tenant_id, input.tenant_id) : undefined);
+          .where(
+            input?.tenant_id ? eq(sites.tenant_id, input.tenant_id) : undefined
+          );
         return result;
       }),
     one: privateProcedure.input(z.number()).query(async (opts) => {
