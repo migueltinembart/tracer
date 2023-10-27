@@ -53,7 +53,10 @@ export const contacts_router = router({
   }),
   create: router({
     one: privateProcedure.input(insertSchema).mutation(async (opts) => {
-      const result = await db.insert(contacts).values(opts.input).returning();
+      const values = opts.input;
+      values.created_by = opts.ctx.token.sub;
+      values.updated_by = opts.ctx.token.sub;
+      const result = await db.insert(contacts).values(values).returning();
       return result[0];
     }),
     many: privateProcedure

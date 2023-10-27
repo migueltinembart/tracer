@@ -29,9 +29,12 @@ export const contact_groups_router = router({
   }),
   create: router({
     one: privateProcedure.input(insertSchema).mutation(async (opts) => {
+      const values = opts.input;
+      values.created_by = opts.ctx.token.sub;
+      values.updated_by = opts.ctx.token.sub;
       const result = await db
         .insert(contact_groups)
-        .values(opts.input)
+        .values(values)
         .returning();
       return result[0];
     }),
