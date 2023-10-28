@@ -61,6 +61,7 @@ import {
 import { CreateButton } from "@/app/_components/createButton";
 import RackForm from "@/app/entities/racks/create/page";
 import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
 
 export type RackOutput = RouterOutput["entities"]["racks"]["select"]["one"];
 
@@ -175,6 +176,29 @@ export default function Racks() {
       },
       cell: ({ row }) => (
         <div className="capitalize pl-4">{row.original.units.toString()}</div>
+      ),
+    },
+    {
+      id: "role",
+      accessorFn: (row) => row.role?.name,
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            <span className="capitalize">{column.id.split("_").join(" ")}</span>
+            <CaretSortIcon className="w-4 h-4 ml-2" />
+          </Button>
+        );
+      },
+      cell: ({ row }) => (
+        <Badge
+          style={{ backgroundColor: row.original.role?.color }}
+          variant={"default"}
+        >
+          {row.getValue("role")}
+        </Badge>
       ),
     },
     {

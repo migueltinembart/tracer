@@ -150,7 +150,7 @@ export default function SiteForm() {
                 field={field}
               >
                 {unitsArray.map((v) => (
-                  <SelectItem {...field} value={v.toString()}>
+                  <SelectItem key={v} {...field} value={v.toString()}>
                     {v}
                   </SelectItem>
                 ))}

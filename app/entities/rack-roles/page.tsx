@@ -140,8 +140,11 @@ export default function RackRoles() {
         );
       },
       cell: ({ row }) => (
-        <Badge className={clsx(`bg-[${row.original.color}] text-lg`)}>
-          {row.original.color}
+        <Badge
+          style={{ backgroundColor: row.getValue("color") }}
+          variant={"default"}
+        >
+          {row.original.color.toUpperCase()}
         </Badge>
       ),
     },

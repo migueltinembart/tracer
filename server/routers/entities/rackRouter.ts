@@ -1,6 +1,12 @@
 import { privateProcedure, router } from "@/server/trpc";
 import { db } from "@/server/db";
-import { locations, sites, racks, tenants } from "@/server/db/entities";
+import {
+  locations,
+  sites,
+  racks,
+  tenants,
+  rack_roles,
+} from "@/server/db/entities";
 import { z } from "zod";
 import { eq, inArray, sql } from "drizzle-orm";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
@@ -32,6 +38,7 @@ export const racks_router = router({
             location: locations,
             site: sites,
             units: racks.units,
+            role: rack_roles,
             description: racks.description,
             updated_at: racks.updated_at,
             created_at: racks.created_at,
@@ -40,6 +47,7 @@ export const racks_router = router({
           })
           .from(racks)
           .leftJoin(users, eq(racks.created_by, users.id))
+          .leftJoin(rack_roles, eq(racks.role_id, rack_roles.id))
           .leftJoin(locations, eq(racks.location_id, locations.id))
           .leftJoin(sites, eq(locations.site_id, sites.id))
           .leftJoin(tenants, eq(sites.tenant_id, tenants.id))
@@ -55,6 +63,7 @@ export const racks_router = router({
           tenant: tenants,
           site: sites,
           units: racks.units,
+          role: rack_roles,
           description: racks.description,
           updated_at: racks.updated_at,
           created_at: racks.created_at,
@@ -63,6 +72,7 @@ export const racks_router = router({
         })
         .from(racks)
         .leftJoin(users, eq(racks.created_by, users.id))
+        .leftJoin(rack_roles, eq(racks.role_id, rack_roles.id))
         .leftJoin(locations, eq(racks.location_id, locations.id))
         .leftJoin(sites, eq(locations.site_id, sites.id))
         .leftJoin(tenants, eq(sites.tenant_id, tenants.id))
